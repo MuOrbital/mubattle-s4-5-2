@@ -1,0 +1,194 @@
+//=========================================================================================================================================
+// NPCS
+//=========================================================================================================================================
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+256            51             00         037            241            01             //Lahap
+415            51             00         044            229            01             //Silvia
+416            51             00         029            236            02             //Rhea
+417            51             00         036            219            02             //Marce
+257            51             00         043            191            03             //Shadow Phantom Soldier
+257            51             00         057            232            03             //Shadow Phantom Soldier
+257            51             00         073            220            01             //Shadow Phantom Soldier
+240            51             00         050            229            01             //Safety Guardian
+385            51             00         055            243            01             //Mirage
+568            51             00         055            199            01             //Wandering Merchant Zyro
+452            51             00         046            243            01             //Seed Master
+453            51             00         050            243            01             //Seed Researcher
+540            51             00         049            216            02             //Lugard
+579            51             00         020            214            03             //David
+end
+
+//=========================================================================================================================================
+// SPOTS
+//=========================================================================================================================================
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+003            51             30         013            125            056          168          -1             15            //Spider
+003            51             30         102            194            142          238          -1             15            //Spider
+418            51             30         054            131            088          180          -1             10            //Strange Rabbit
+418            51             30         084            178            142          212          -1             10            //Strange Rabbit
+421            51             30         087            090            125          170          -1             10            //Polluted Butterfly
+421            51             30         118            130            164          172          -1             10            //Polluted Butterfly
+419            51             30         118            087            160          141          -1             20            //Hideous Rabbit
+end
+
+//=========================================================================================================================================
+// MONSTERS
+//=========================================================================================================================================
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+425            51             30         205            016            -1             //Captain Grizzly
+425            51             30         200            054            -1             //Captain Grizzly
+425            51             30         219            074            -1             //Captain Grizzly
+423            51             30         230            143            -1             //Totem Golem
+423            51             30         196            171            -1             //Totem Golem
+420            51             30         074            081            -1             //Werewolf
+420            51             30         102            106            -1             //Werewolf
+424            51             30         169            124            -1             //Grizzly
+419            51             30         093            117            -1             //Hideous Rabbit
+423            51             30         202            193            -1             //Totem Golem
+423            51             30         184            194            -1             //Totem Golem
+422            51             30         135            089            -1             //Cursed Lich
+419            51             30         139            141            -1             //Hideous Rabbit
+419            51             30         129            119            -1             //Hideous Rabbit
+419            51             30         130            132            -1             //Hideous Rabbit
+419            51             30         115            109            -1             //Hideous Rabbit
+418            51             30         045            160            -1             //Strange Rabbit
+418            51             30         031            157            -1             //Strange Rabbit
+418            51             30         050            149            -1             //Strange Rabbit
+418            51             30         024            144            -1             //Strange Rabbit
+421            51             30         068            137            -1             //Polluted Butterfly
+421            51             30         122            189            -1             //Polluted Butterfly
+421            51             30         133            213            -1             //Polluted Butterfly
+421            51             30         033            130            -1             //Polluted Butterfly
+425            51             30         205            016            -1             //Captain Grizzly
+425            51             30         219            074            -1             //Captain Grizzly
+423            51             30         230            143            -1             //Totem Golem
+423            51             30         196            171            -1             //Totem Golem
+420            51             30         074            081            -1             //Werewolf
+423            51             30         202            193            -1             //Totem Golem
+423            51             30         184            194            -1             //Totem Golem
+425            51             30         185            020            -1             //Captain Grizzly
+419            51             30         139            141            -1             //Hideous Rabbit
+419            51             30         129            119            -1             //Hideous Rabbit
+419            51             30         130            132            -1             //Hideous Rabbit
+418            51             30         045            160            -1             //Strange Rabbit
+418            51             30         031            157            -1             //Strange Rabbit
+418            51             30         050            149            -1             //Strange Rabbit
+418            51             30         024            144            -1             //Strange Rabbit
+421            51             30         068            137            -1             //Polluted Butterfly
+421            51             30         122            189            -1             //Polluted Butterfly
+421            51             30         093            117            -1             //Polluted Butterfly
+421            51             30         119            139            -1             //Polluted Butterfly
+419            51             30         135            089            -1             //Hideous Rabbit
+419            51             30         169            124            -1             //Hideous Rabbit
+422            51             30         118            049            -1             //Cursed Lich
+423            51             30         228            130            -1             //Totem Golem
+419            51             30         150            110            -1             //Hideous Rabbit
+423            51             30         226            149            -1             //Totem Golem
+425            51             30         202            057            -1             //Captain Grizzly
+425            51             30         205            053            -1             //Captain Grizzly
+424            51             30         176            068            -1             //Grizzly
+425            51             30         176            038            -1             //Captain Grizzly
+419            51             30         111            127            -1             //Hideous Rabbit
+425            51             30         196            038            -1             //Captain Grizzly
+425            51             30         212            020            -1             //Captain Grizzly
+425            51             30         230            048            -1             //Captain Grizzly
+425            51             30         226            045            -1             //Captain Grizzly
+425            51             30         226            051            -1             //Captain Grizzly
+425            51             30         214            052            -1             //Captain Grizzly
+425            51             30         173            034            -1             //Captain Grizzly
+423            51             30         171            175            -1             //Totem Golem
+423            51             30         174            180            -1             //Totem Golem
+423            51             30         192            144            -1             //Totem Golem
+423            51             30         190            150            -1             //Totem Golem
+423            51             30         195            149            -1             //Totem Golem
+423            51             30         223            143            -1             //Totem Golem
+424            51             30         186            075            -1             //Grizzly
+424            51             30         180            075            -1             //Grizzly
+424            51             30         184            079            -1             //Grizzly
+420            51             30         045            077            -1             //Werewolf
+425            51             30         168            024            -1             //Captain Grizzly
+424            51             30         195            033            -1             //Grizzly
+424            51             30         193            088            -1             //Grizzly
+424            51             30         192            093            -1             //Grizzly
+424            51             30         152            051            -1             //Grizzly
+425            51             30         177            033            -1             //Captain Grizzly
+419            51             30         151            156            -1             //Hideous Rabbit
+419            51             30         155            147            -1             //Hideous Rabbit
+422            51             30         115            089            -1             //Cursed Lich
+421            51             30         135            195            -1             //Polluted Butterfly
+418            51             30         075            173            -1             //Strange Rabbit
+421            51             30         075            154            -1             //Polluted Butterfly
+419            51             30         102            139            -1             //Hideous Rabbit
+422            51             30         121            023            -1             //Cursed Lich
+420            51             30         068            030            -1             //Werewolf
+422            51             30         125            038            -1             //Cursed Lich
+424            51             30         182            098            -1             //Grizzly
+424            51             30         173            094            -1             //Grizzly
+424            51             30         160            081            -1             //Grizzly
+424            51             30         152            076            -1             //Grizzly
+424            51             30         154            080            -1             //Grizzly
+418            51             30         123            227            -1             //Strange Rabbit
+418            51             30         109            217            -1             //Strange Rabbit
+424            51             30         150            055            -1             //Grizzly
+424            51             30         156            052            -1             //Grizzly
+424            51             30         154            056            -1             //Grizzly
+424            51             30         163            069            -1             //Grizzly
+424            51             30         173            080            -1             //Grizzly
+424            51             30         189            090            -1             //Grizzly
+423            51             30         212            150            -1             //Totem Golem
+425            51             30         202            019            -1             //Captain Grizzly
+425            51             30         207            020            -1             //Captain Grizzly
+425            51             30         212            024            -1             //Captain Grizzly
+423            51             30         200            157            -1             //Totem Golem
+423            51             30         177            175            -1             //Totem Golem
+423            51             30         208            125            -1             //Totem Golem
+423            51             30         214            135            -1             //Totem Golem
+423            51             30         227            118            -1             //Totem Golem
+424            51             30         167            091            -1             //Grizzly
+424            51             30         171            090            -1             //Grizzly
+425            51             30         199            035            -1             //Captain Grizzly
+425            51             30         194            046            -1             //Captain Grizzly
+425            51             30         196            050            -1             //Captain Grizzly
+425            51             30         198            047            -1             //Captain Grizzly
+425            51             30         218            038            -1             //Captain Grizzly
+425            51             30         207            038            -1             //Captain Grizzly
+422            51             30         104            067            -1             //Cursed Lich
+422            51             30         104            030            -1             //Cursed Lich
+422            51             30         102            032            -1             //Cursed Lich
+419            51             30         137            103            -1             //Hideous Rabbit
+421            51             30         115            163            -1             //Polluted Butterfly
+421            51             30         082            138            -1             //Polluted Butterfly
+419            51             30         150            129            -1             //Hideous Rabbit
+419            51             30         151            126            -1             //Hideous Rabbit
+418            51             30         105            201            -1             //Strange Rabbit
+418            51             30         106            187            -1             //Strange Rabbit
+418            51             30         097            190            -1             //Strange Rabbit
+419            51             30         128            169            -1             //Hideous Rabbit
+420            51             30         072            032            -1             //Werewolf
+422            51             30         087            039            -1             //Cursed Lich
+420            51             30         092            058            -1             //Werewolf
+421            51             30         118            155            -1             //Polluted Butterfly
+422            51             30         076            015            -1             //Cursed Lich
+422            51             30         080            016            -1             //Cursed Lich
+419            51             30         097            105            -1             //Hideous Rabbit
+420            51             30         069            059            -1             //Werewolf
+420            51             30         072            060            -1             //Werewolf
+420            51             30         070            063            -1             //Werewolf
+420            51             30         046            082            -1             //Werewolf
+420            51             30         057            091            -1             //Werewolf
+420            51             30         052            069            -1             //Werewolf
+420            51             30         065            075            -1             //Werewolf
+420            51             30         073            084            -1             //Werewolf
+422            51             30         127            040            -1             //Cursed Lich
+422            51             30         135            028            -1             //Cursed Lich
+422            51             30         135            025            -1             //Cursed Lich
+422            51             30         096            045            -1             //Cursed Lich
+420            51             30         083            057            -1             //Werewolf
+422            51             30         104            049            -1             //Cursed Lich
+422            51             30         104            063            -1             //Cursed Lich
+420            51             30         084            042            -1             //Werewolf
+421            51             30         132            209            -1             //Polluted Butterfly
+end

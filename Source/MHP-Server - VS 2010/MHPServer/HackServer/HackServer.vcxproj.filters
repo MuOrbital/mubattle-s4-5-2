@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\ScreenShow">
+      <UniqueIdentifier>{21125e32-111f-4bb7-bfef-5b8a3e4ff55e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Protection">
+      <UniqueIdentifier>{93c375df-4fb9-46cd-a0aa-9dae5df63338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{dedda280-935c-4df3-aaf8-3264d50d28d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\xmlreader">
+      <UniqueIdentifier>{ac57c7d5-d1c2-491b-a151-19ca1a39c2a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ProcessListInfo">
+      <UniqueIdentifier>{b4f1655a-78b0-48fb-a536-8599e4d7903e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ScreenShot">
+      <UniqueIdentifier>{41aee301-3aeb-43a4-a991-9bd9b2fc46df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HelperPlayers">
+      <UniqueIdentifier>{83cc6335-1647-4e42-9cc8-312e9b5c941e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Protection\helpers">
+      <UniqueIdentifier>{df8f4883-4ca6-4484-be4c-36a6b3351bcb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="icon.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HackServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniDump.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerDisplayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CriticalSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HackServerProtocol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IpManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MemScript.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReadFiles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HidManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Authenticate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CCRC32.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileDownloadURL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileDownloadHTTP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenShow.h">
+      <Filter>Source Files\ScreenShow</Filter>
+    </ClInclude>
+    <ClInclude Include="Protection.h">
+      <Filter>Source Files\Protection</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessListInfo.h">
+      <Filter>Source Files\ProcessListInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenShot.h">
+      <Filter>Source Files\ScreenShot</Filter>
+    </ClInclude>
+    <ClInclude Include="HelperPlayers.h">
+      <Filter>Source Files\HelperPlayers</Filter>
+    </ClInclude>
+    <ClInclude Include="ThemidaSDK.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base64.h">
+      <Filter>Source Files\Protection\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="computerHash.h">
+      <Filter>Source Files\Protection\helpers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HackServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniDump.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerDisplayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CriticalSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HackServerProtocol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IpManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ReadFiles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MemScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HidManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Authenticate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CCRC32.Cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileDownloadURL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileDownloadHTTP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenShow.cpp">
+      <Filter>Source Files\ScreenShow</Filter>
+    </ClCompile>
+    <ClCompile Include="Protection.cpp">
+      <Filter>Source Files\Protection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Util\libpugixml\pugixml\pugixml.cpp">
+      <Filter>Util\xmlreader</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessListInfo.cpp">
+      <Filter>Source Files\ProcessListInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenShot.cpp">
+      <Filter>Source Files\ScreenShot</Filter>
+    </ClCompile>
+    <ClCompile Include="HelperPlayers.cpp">
+      <Filter>Source Files\HelperPlayers</Filter>
+    </ClCompile>
+    <ClCompile Include="computerHash.cpp">
+      <Filter>Source Files\Protection\helpers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="HackServer.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

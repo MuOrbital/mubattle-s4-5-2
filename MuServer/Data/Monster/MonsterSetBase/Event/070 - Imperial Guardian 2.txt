@@ -1,0 +1,63 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+3
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction     Quantity      Value      Comment
+end
+
+
+4
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+523            70             00         045            067            08             //Trap
+523            70             00         042            062            08             //Trap
+523            70             00         039            067            08             //Trap
+523            70             00         035            062            08             //Trap
+523            70             00         032            067            08             //Trap
+523            70             00         029            062            08             //Trap
+523            70             00         026            067            08             //Trap
+523            70             00         024            062            08             //Trap
+523            70             00         022            066            08             //Trap
+523            70             00         041            122            08             //Trap
+523            70             00         041            126            08             //Trap
+523            70             00         041            130            08             //Trap
+523            70             00         045            128            08             //Trap
+523            70             00         050            128            08             //Trap
+523            70             00         055            129            08             //Trap
+523            70             00         055            134            08             //Trap
+523            70             00         055            139            08             //Trap
+523            70             00         055            144            08             //Trap
+523            70             00         055            149            08             //Trap
+523            70             00         045            067            08             //Trap
+523            70             00         042            062            08             //Trap
+523            70             00         039            067            08             //Trap
+523            70             00         035            062            08             //Trap
+523            70             00         032            067            08             //Trap
+523            70             00         029            062            08             //Trap
+523            70             00         026            067            08             //Trap
+523            70             00         024            062            08             //Trap
+523            70             00         022            066            08             //Trap
+523            70             00         041            122            08             //Trap
+523            70             00         041            126            08             //Trap
+523            70             00         041            130            08             //Trap
+523            70             00         045            128            08             //Trap
+523            70             00         050            128            08             //Trap
+523            70             00         055            129            08             //Trap
+523            70             00         055            134            08             //Trap
+523            70             00         055            139            08             //Trap
+523            70             00         055            144            08             //Trap
+523            70             00         055            149            08             //Trap
+end
+
+

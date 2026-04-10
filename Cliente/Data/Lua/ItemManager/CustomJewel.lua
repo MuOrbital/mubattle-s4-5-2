@@ -1,0 +1,26 @@
+OpenFolder("Definitions")
+
+CUSTOM_JEWEL = {
+{Index = 0, ItemIndex = 7412, MinItemLevel = 0, MaxItemLevel = 9, MaxItemOption1 = -1, MaxItemOption2 = -1, MinItemOption3 = -1, MaxItemOption3 = -1, MinItemNewOption = -1, MaxItemNewOption = -1, MaxItemSetOption = -1, MinItemSocketOption = -1, MaxItemSocketOption = -1, EnableSlotWeapon = -1, EnableSlotArmor = -1, EnableSlotWing = -1, EnableSlotRing = 1, EnableSlotPets = -1, SuccessRate0 = 70, SuccessRate1 = 100, SuccessRate2 = 100, SuccessRate3 = 100, SalePrice = 20, ModelName = "Jewel180"},
+{Index = 1, ItemIndex = 7413, MinItemLevel = 0, MaxItemLevel = 9, MaxItemOption1 = -1, MaxItemOption2 = -1, MinItemOption3 = -1, MaxItemOption3 = -1, MinItemNewOption = -1, MaxItemNewOption = -1, MaxItemSetOption = -1, MinItemSocketOption = -1, MaxItemSocketOption = -1, EnableSlotWeapon = -1, EnableSlotArmor = -1, EnableSlotWing = -1, EnableSlotRing = 1, EnableSlotPets = -1, SuccessRate0 = 70, SuccessRate1 = 100, SuccessRate2 = 100, SuccessRate3 = 100, SalePrice = 20, ModelName = "Jewel181"},
+{Index = 2, ItemIndex = 7414, MinItemLevel = 0, MaxItemLevel = 9, MaxItemOption1 = -1, MaxItemOption2 = -1, MinItemOption3 = -1, MaxItemOption3 = -1, MinItemNewOption = -1, MaxItemNewOption = -1, MaxItemSetOption = -1, MinItemSocketOption = -1, MaxItemSocketOption = -1, EnableSlotWeapon = -1, EnableSlotArmor = -1, EnableSlotWing = -1, EnableSlotRing = 1, EnableSlotPets = -1, SuccessRate0 = 70, SuccessRate1 = 100, SuccessRate2 = 100, SuccessRate3 = 100, SalePrice = 20, ModelName = "Jewel182"},
+{Index = 3, ItemIndex = 7415, MinItemLevel = 0, MaxItemLevel = 9, MaxItemOption1 = -1, MaxItemOption2 = -1, MinItemOption3 = -1, MaxItemOption3 = -1, MinItemNewOption = -1, MaxItemNewOption = -1, MaxItemSetOption = -1, MinItemSocketOption = -1, MaxItemSocketOption = -1, EnableSlotWeapon = -1, EnableSlotArmor = -1, EnableSlotWing = -1, EnableSlotRing = 1, EnableSlotPets = -1, SuccessRate0 = 70, SuccessRate1 = 100, SuccessRate2 = 100, SuccessRate3 = 100, SalePrice = 20, ModelName = "Jewel183"},
+{Index = 4, ItemIndex = 7416, MinItemLevel = 0, MaxItemLevel = 9, MaxItemOption1 = -1, MaxItemOption2 = -1, MinItemOption3 = -1, MaxItemOption3 = -1, MinItemNewOption = -1, MaxItemNewOption = -1, MaxItemSetOption = -1, MinItemSocketOption = -1, MaxItemSocketOption = -1, EnableSlotWeapon = -1, EnableSlotArmor = -1, EnableSlotWing = -1, EnableSlotRing = 1, EnableSlotPets = -1, SuccessRate0 = 70, SuccessRate1 = 100, SuccessRate2 = 100, SuccessRate3 = 100, SalePrice = 20, ModelName = "Jewel184"},
+{Index = 5, ItemIndex = 7417, MinItemLevel = 0, MaxItemLevel = 9, MaxItemOption1 = -1, MaxItemOption2 = -1, MinItemOption3 = -1, MaxItemOption3 = -1, MinItemNewOption = -1, MaxItemNewOption = -1, MaxItemSetOption = -1, MinItemSocketOption = -1, MaxItemSocketOption = -1, EnableSlotWeapon = -1, EnableSlotArmor = -1, EnableSlotWing = -1, EnableSlotRing = 1, EnableSlotPets = -1, SuccessRate0 = 70, SuccessRate1 = 100, SuccessRate2 = 100, SuccessRate3 = 100, SalePrice = 20, ModelName = "Jewel185"},
+{Index = 6, ItemIndex = 7418, MinItemLevel = 0, MaxItemLevel = 9, MaxItemOption1 = -1, MaxItemOption2 = -1, MinItemOption3 = -1, MaxItemOption3 = -1, MinItemNewOption = -1, MaxItemNewOption = -1, MaxItemSetOption = -1, MinItemSocketOption = -1, MaxItemSocketOption = -1, EnableSlotWeapon = -1, EnableSlotArmor = -1, EnableSlotWing = -1, EnableSlotRing = 1, EnableSlotPets = -1, SuccessRate0 = 70, SuccessRate1 = 100, SuccessRate2 = 100, SuccessRate3 = 100, SalePrice = 20, ModelName = "Jewel187"},
+{Index = 7, ItemIndex = 7419, MinItemLevel = 0, MaxItemLevel = 9, MaxItemOption1 = -1, MaxItemOption2 = -1, MinItemOption3 = -1, MaxItemOption3 = -1, MinItemNewOption = -1, MaxItemNewOption = -1, MaxItemSetOption = -1, MinItemSocketOption = -1, MaxItemSocketOption = -1, EnableSlotWeapon = -1, EnableSlotArmor = -1, EnableSlotWing = -1, EnableSlotRing = 1, EnableSlotPets = -1, SuccessRate0 = 70, SuccessRate1 = 100, SuccessRate2 = 100, SuccessRate3 = 100, SalePrice = 20, ModelName = "Jewel188"},
+{Index = 8, ItemIndex = 7420, MinItemLevel = 0, MaxItemLevel = 9, MaxItemOption1 = -1, MaxItemOption2 = -1, MinItemOption3 = -1, MaxItemOption3 = -1, MinItemNewOption = -1, MaxItemNewOption = -1, MaxItemSetOption = -1, MinItemSocketOption = -1, MaxItemSocketOption = -1, EnableSlotWeapon = -1, EnableSlotArmor = -1, EnableSlotWing = -1, EnableSlotRing = 1, EnableSlotPets = -1, SuccessRate0 = 70, SuccessRate1 = 100, SuccessRate2 = 100, SuccessRate3 = 100, SalePrice = 20, ModelName = "Jewel186"},
+}
+
+function LoadCustomJewel()
+
+	for _, jewel in ipairs(CUSTOM_JEWEL) do
+		SetCustomJewel(jewel.Index, jewel.ItemIndex, jewel.MinItemLevel, 
+		jewel.MaxItemLevel, jewel.MaxItemOption1, jewel.MaxItemOption2, jewel.MinItemOption3, jewel.MaxItemOption3,jewel.MinItemNewOption, jewel.MaxItemNewOption,
+		jewel.MaxItemSetOption, jewel.MinItemSocketOption, 
+		jewel.MaxItemSocketOption, jewel.EnableSlotWeapon, jewel.EnableSlotArmor,jewel.EnableSlotWing, 
+		jewel.EnableSlotRing, jewel.EnableSlotPets, jewel.SuccessRate0, jewel.SuccessRate1,
+		jewel.SuccessRate2, jewel.SuccessRate3, jewel.SalePrice, jewel.ModelName)
+	end
+
+end

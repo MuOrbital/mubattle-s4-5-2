@@ -1,0 +1,328 @@
+//=========================================================================================================================================
+// TRAPS
+//=========================================================================================================================================
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+101            01             00         010            026            01             //Iron Stick
+101            01             00         011            026            01             //Iron Stick
+101            01             00         027            012            01             //Iron Stick
+101            01             00         024            005            01             //Iron Stick
+101            01             00         024            004            01             //Iron Stick
+101            01             00         027            011            01             //Iron Stick
+101            01             00         023            024            01             //Iron Stick
+101            01             00         027            021            01             //Iron Stick
+101            01             00         019            019            01             //Iron Stick
+101            01             00         022            024            01             //Iron Stick
+101            01             00         023            029            01             //Iron Stick
+101            01             00         023            028            01             //Iron Stick
+101            01             00         033            009            01             //Iron Stick
+101            01             00         035            009            01             //Iron Stick
+101            01             00         039            018            01             //Iron Stick
+101            01             00         039            017            01             //Iron Stick
+101            01             00         039            016            01             //Iron Stick
+102            01             00         045            224            03             //Fire
+101            01             00         048            193            01             //Iron Stick
+101            01             00         049            193            01             //Iron Stick
+102            01             00         066            071            03             //Fire
+102            01             00         080            061            01             //Fire
+101            01             00         090            164            01             //Iron Stick
+101            01             00         092            164            01             //Iron Stick
+101            01             00         091            164            01             //Iron Stick
+100            01             00         126            099            01             //Lance
+100            01             00         123            099            01             //Lance
+100            01             00         120            099            01             //Lance
+100            01             00         117            099            01             //Lance
+100            01             00         136            095            01             //Lance
+100            01             00         139            095            01             //Lance
+101            01             00         128            212            01             //Iron Stick
+101            01             00         130            213            01             //Iron Stick
+101            01             00         143            214            01             //Iron Stick
+101            01             00         155            230            05             //Iron Stick
+100            01             00         172            012            01             //Lance
+100            01             00         166            012            01             //Lance
+102            01             00         169            012            01             //Fire
+102            01             00         175            012            01             //Fire
+100            01             00         178            012            01             //Lance
+100            01             00         177            103            01             //Lance
+100            01             00         180            103            01             //Lance
+100            01             00         183            103            01             //Lance
+100            01             00         186            103            01             //Lance
+100            01             00         189            103            01             //Lance
+100            01             00         186            151            03             //Lance
+100            01             00         196            033            01             //Lance
+100            01             00         193            033            01             //Lance
+100            01             00         202            093            01             //Lance
+100            01             00         205            093            01             //Lance
+100            01             00         198            130            01             //Lance
+100            01             00         202            150            01             //Lance
+100            01             00         232            046            03             //Lance
+100            01             00         232            040            03             //Lance
+100            01             00         232            037            03             //Lance
+100            01             00         227            061            01             //Lance
+100            01             00         229            093            01             //Lance
+100            01             00         232            093            01             //Lance
+end
+
+//=========================================================================================================================================
+// MONSTERS
+//=========================================================================================================================================
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+008            01             30         050            123            -1             //Poison Bull Fighter
+008            01             30         042            122            -1             //Poison Bull Fighter
+008            01             30         004            073            -1             //Poison Bull Fighter
+008            01             30         012            056            -1             //Poison Bull Fighter
+008            01             30         002            078            -1             //Poison Bull Fighter
+016            01             30         108            009            -1             //Chief Skeleton Warrior
+014            01             30         120            232            -1             //Skeleton
+014            01             30         107            230            -1             //Skeleton
+012            01             30         065            205            -1             //Larva
+014            01             30         084            244            -1             //Skeleton
+015            01             30         061            169            -1             //Skeleton Archer
+014            01             30         094            242            -1             //Skeleton
+014            01             30         108            195            -1             //Skeleton
+014            01             30         094            208            -1             //Skeleton
+011            01             30         069            167            -1             //Ghost
+012            01             30         087            177            -1             //Larva
+011            01             30         136            149            -1             //Ghost
+012            01             30         070            195            -1             //Larva
+014            01             30         062            181            -1             //Skeleton
+012            01             30         061            213            -1             //Larva
+011            01             30         133            212            -1             //Ghost
+012            01             30         069            222            -1             //Larva
+012            01             30         057            247            -1             //Larva
+012            01             30         049            246            -1             //Larva
+014            01             30         031            247            -1             //Skeleton
+014            01             30         003            246            -1             //Skeleton
+014            01             30         029            246            -1             //Skeleton
+014            01             30         083            198            -1             //Skeleton
+017            01             30         018            220            -1             //Cyclops
+014            01             30         033            209            -1             //Skeleton
+011            01             30         135            212            -1             //Ghost
+012            01             30         086            196            -1             //Larva
+011            01             30         151            212            -1             //Ghost
+011            01             30         168            220            -1             //Ghost
+012            01             30         046            210            -1             //Larva
+014            01             30         045            201            -1             //Skeleton
+012            01             30         046            205            -1             //Larva
+011            01             30         046            146            -1             //Ghost
+011            01             30         049            182            -1             //Ghost
+011            01             30         044            162            -1             //Ghost
+011            01             30         045            180            -1             //Ghost
+011            01             30         045            183            -1             //Ghost
+011            01             30         164            232            -1             //Ghost
+012            01             30         137            241            -1             //Larva
+012            01             30         130            244            -1             //Larva
+011            01             30         092            157            -1             //Ghost
+011            01             30         102            174            -1             //Ghost
+011            01             30         113            166            -1             //Ghost
+015            01             30         217            229            -1             //Skeleton Archer
+011            01             30         222            223            -1             //Ghost
+011            01             30         163            184            -1             //Ghost
+011            01             30         164            186            -1             //Ghost
+017            01             30         230            173            -1             //Cyclops
+017            01             30         236            167            -1             //Cyclops
+011            01             30         150            193            -1             //Ghost
+011            01             30         142            218            -1             //Ghost
+012            01             30         134            240            -1             //Larva
+017            01             30         241            173            -1             //Cyclops
+011            01             30         199            116            -1             //Ghost
+005            01             30         170            126            -1             //Hell Hound
+014            01             30         120            243            -1             //Skeleton
+011            01             30         240            247            -1             //Ghost
+011            01             30         242            247            -1             //Ghost
+011            01             30         241            226            -1             //Ghost
+011            01             30         246            220            -1             //Ghost
+011            01             30         243            201            -1             //Ghost
+005            01             30         163            114            -1             //Hell Hound
+011            01             30         244            192            -1             //Ghost
+011            01             30         213            248            -1             //Ghost
+017            01             30         173            200            -1             //Cyclops
+011            01             30         148            149            -1             //Ghost
+005            01             30         163            125            -1             //Hell Hound
+015            01             30         141            110            -1             //Skeleton Archer
+005            01             30         145            118            -1             //Hell Hound
+013            01             30         112            093            -1             //Hell Spider
+015            01             30         098            054            -1             //Skeleton Archer
+014            01             30         099            049            -1             //Skeleton
+013            01             30         104            065            -1             //Hell Spider
+013            01             30         183            027            -1             //Hell Spider
+008            01             30         187            015            -1             //Poison Bull Fighter
+008            01             30         158            017            -1             //Poison Bull Fighter
+016            01             30         159            041            -1             //Chief Skeleton Warrior
+016            01             30         115            008            -1             //Chief Skeleton Warrior
+005            01             30         123            120            -1             //Hell Hound
+015            01             30         114            110            -1             //Skeleton Archer
+015            01             30         068            110            -1             //Skeleton Archer
+015            01             30         076            111            -1             //Skeleton Archer
+016            01             30         124            020            -1             //Chief Skeleton Warrior
+016            01             30         090            006            -1             //Chief Skeleton Warrior
+013            01             30         114            020            -1             //Hell Spider
+005            01             30         138            086            -1             //Hell Hound
+016            01             30         212            083            -1             //Chief Skeleton Warrior
+016            01             30         211            090            -1             //Chief Skeleton Warrior
+016            01             30         226            058            -1             //Chief Skeleton Warrior
+016            01             30         239            056            -1             //Chief Skeleton Warrior
+016            01             30         235            023            -1             //Chief Skeleton Warrior
+013            01             30         247            087            -1             //Hell Spider
+011            01             30         247            007            -1             //Ghost
+011            01             30         240            007            -1             //Ghost
+011            01             30         241            009            -1             //Ghost
+009            01             30         028            018            -1             //Thunder Lich
+009            01             30         022            004            -1             //Thunder Lich
+009            01             30         018            029            -1             //Thunder Lich
+009            01             30         018            023            -1             //Thunder Lich
+009            01             30         034            004            -1             //Thunder Lich
+008            01             30         119            047            -1             //Poison Bull Fighter
+009            01             30         022            090            -1             //Thunder Lich
+009            01             30         033            078            -1             //Thunder Lich
+008            01             30         025            100            -1             //Poison Bull Fighter
+016            01             30         029            080            -1             //Chief Skeleton Warrior
+009            01             30         042            117            -1             //Thunder Lich
+010            01             30         014            107            -1             //Dark Knight
+008            01             30         021            082            -1             //Poison Bull Fighter
+010            01             30         022            065            -1             //Dark Knight
+010            01             30         039            077            -1             //Dark Knight
+010            01             30         029            066            -1             //Dark Knight
+008            01             30         016            055            -1             //Poison Bull Fighter
+008            01             30         035            055            -1             //Poison Bull Fighter
+008            01             30         116            047            -1             //Poison Bull Fighter
+008            01             30         122            046            -1             //Poison Bull Fighter
+008            01             30         193            030            -1             //Poison Bull Fighter
+005            01             30         120            075            -1             //Hell Hound
+013            01             30         149            094            -1             //Hell Spider
+005            01             30         081            058            -1             //Hell Hound
+013            01             30         126            094            -1             //Hell Spider
+005            01             30         071            053            -1             //Hell Hound
+005            01             30         069            088            -1             //Hell Hound
+016            01             30         086            105            -1             //Chief Skeleton Warrior
+016            01             30         088            104            -1             //Chief Skeleton Warrior
+005            01             30         098            111            -1             //Hell Hound
+015            01             30         156            125            -1             //Skeleton Archer
+017            01             30         165            171            -1             //Cyclops
+017            01             30         208            162            -1             //Cyclops
+017            01             30         220            161            -1             //Cyclops
+017            01             30         176            188            -1             //Cyclops
+017            01             30         168            150            -1             //Cyclops
+017            01             30         156            171            -1             //Cyclops
+017            01             30         176            161            -1             //Cyclops
+017            01             30         185            161            -1             //Cyclops
+017            01             30         181            171            -1             //Cyclops
+017            01             30         198            168            -1             //Cyclops
+017            01             30         190            172            -1             //Cyclops
+011            01             30         227            248            -1             //Ghost
+011            01             30         181            246            -1             //Ghost
+014            01             30         152            247            -1             //Skeleton
+017            01             30         128            232            -1             //Cyclops
+014            01             30         156            247            -1             //Skeleton
+012            01             30         193            224            -1             //Larva
+012            01             30         194            222            -1             //Larva
+012            01             30         194            221            -1             //Larva
+011            01             30         086            150            -1             //Ghost
+011            01             30         098            145            -1             //Ghost
+012            01             30         079            154            -1             //Larva
+012            01             30         078            189            -1             //Larva
+014            01             30         097            187            -1             //Skeleton
+014            01             30         105            208            -1             //Skeleton
+014            01             30         085            208            -1             //Skeleton
+014            01             30         084            220            -1             //Skeleton
+014            01             30         085            229            -1             //Skeleton
+012            01             30         100            198            -1             //Larva
+012            01             30         095            192            -1             //Larva
+012            01             30         090            187            -1             //Larva
+014            01             30         068            227            -1             //Skeleton
+014            01             30         061            238            -1             //Skeleton
+014            01             30         073            245            -1             //Skeleton
+012            01             30         073            241            -1             //Larva
+014            01             30         003            232            -1             //Skeleton
+014            01             30         003            219            -1             //Skeleton
+014            01             30         007            219            -1             //Skeleton
+014            01             30         017            211            -1             //Skeleton
+017            01             30         013            235            -1             //Cyclops
+017            01             30         027            236            -1             //Cyclops
+011            01             30         045            188            -1             //Ghost
+011            01             30         053            188            -1             //Ghost
+011            01             30         052            166            -1             //Ghost
+011            01             30         062            154            -1             //Ghost
+011            01             30         070            154            -1             //Ghost
+011            01             30         077            152            -1             //Ghost
+011            01             30         110            145            -1             //Ghost
+011            01             30         119            146            -1             //Ghost
+011            01             30         120            159            -1             //Ghost
+011            01             30         111            188            -1             //Ghost
+011            01             30         125            195            -1             //Ghost
+011            01             30         135            196            -1             //Ghost
+011            01             30         144            187            -1             //Ghost
+011            01             30         125            218            -1             //Ghost
+017            01             30         143            232            -1             //Cyclops
+017            01             30         050            211            -1             //Cyclops
+011            01             30         197            245            -1             //Ghost
+011            01             30         247            211            -1             //Ghost
+011            01             30         231            186            -1             //Ghost
+011            01             30         223            187            -1             //Ghost
+011            01             30         213            186            -1             //Ghost
+011            01             30         209            175            -1             //Ghost
+015            01             30         193            148            -1             //Skeleton Archer
+015            01             30         188            145            -1             //Skeleton Archer
+015            01             30         206            152            -1             //Skeleton Archer
+015            01             30         212            151            -1             //Skeleton Archer
+017            01             30         220            172            -1             //Cyclops
+017            01             30         247            168            -1             //Cyclops
+015            01             30         247            176            -1             //Skeleton Archer
+017            01             30         052            222            -1             //Cyclops
+017            01             30         050            235            -1             //Cyclops
+017            01             30         038            234            -1             //Cyclops
+017            01             30         016            227            -1             //Cyclops
+017            01             30         025            220            -1             //Cyclops
+017            01             30         235            108            -1             //Cyclops
+017            01             30         228            105            -1             //Cyclops
+017            01             30         214            116            -1             //Cyclops
+011            01             30         183            128            -1             //Ghost
+015            01             30         175            127            -1             //Skeleton Archer
+015            01             30         175            118            -1             //Skeleton Archer
+015            01             30         183            123            -1             //Skeleton Archer
+005            01             30         087            114            -1             //Hell Hound
+005            01             30         065            127            -1             //Hell Hound
+015            01             30         068            125            -1             //Skeleton Archer
+015            01             30         080            097            -1             //Skeleton Archer
+005            01             30         070            076            -1             //Hell Hound
+013            01             30         168            096            -1             //Hell Spider
+013            01             30         196            100            -1             //Hell Spider
+016            01             30         240            077            -1             //Chief Skeleton Warrior
+016            01             30         247            077            -1             //Chief Skeleton Warrior
+016            01             30         248            020            -1             //Chief Skeleton Warrior
+016            01             30         244            009            -1             //Chief Skeleton Warrior
+016            01             30         229            011            -1             //Chief Skeleton Warrior
+008            01             30         205            024            -1             //Poison Bull Fighter
+016            01             30         155            032            -1             //Chief Skeleton Warrior
+016            01             30         137            033            -1             //Chief Skeleton Warrior
+016            01             30         122            029            -1             //Chief Skeleton Warrior
+009            01             30         118            011            -1             //Thunder Lich
+016            01             30         048            011            -1             //Chief Skeleton Warrior
+009            01             30         038            023            -1             //Thunder Lich
+009            01             30         160            010            -1             //Thunder Lich
+009            01             30         194            018            -1             //Thunder Lich
+009            01             30         213            012            -1             //Thunder Lich
+009            01             30         221            014            -1             //Thunder Lich
+009            01             30         243            016            -1             //Thunder Lich
+009            01             30         233            066            -1             //Thunder Lich
+008            01             30         039            112            -1             //Poison Bull Fighter
+008            01             30         026            111            -1             //Poison Bull Fighter
+008            01             30         015            113            -1             //Poison Bull Fighter
+008            01             30         012            097            -1             //Poison Bull Fighter
+008            01             30         044            056            -1             //Poison Bull Fighter
+010            01             30         041            088            -1             //Dark Knight
+010            01             30         019            120            -1             //Dark Knight
+010            01             30         037            098            -1             //Dark Knight
+009            01             30         030            105            -1             //Thunder Lich
+009            01             30         027            053            -1             //Thunder Lich
+009            01             30         010            068            -1             //Thunder Lich
+009            01             30         033            090            -1             //Thunder Lich
+009            01             30         012            121            -1             //Thunder Lich
+018            01             30         043            111            -1             //Gorgon
+018            01             30         008            123            -1             //Gorgon
+018            01             30         007            056            -1             //Gorgon
+018            01             30         026            067            -1             //Gorgon
+end
+
+

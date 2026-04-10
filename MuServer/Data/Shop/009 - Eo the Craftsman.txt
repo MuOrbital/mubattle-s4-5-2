@@ -1,0 +1,34 @@
+//Section       Type    Level   Dur     Skill   Luck    Option  ExcOp   Coment
+14		3	0	255	0	0	0	0	// Large Healing Potion
+14		6	0	255	0	0	0	0	// Large Mana Potion
+12		8	0	255	0	0	0	0	// Healing Orb
+12		9	0	255	0	0	0	0	// Orb of Greater Fortitude
+12		10	0	255	0	0	0	0	// Orb of Greater Damage
+12		17	0	255	0	0	0	0	// Orb of Penetration
+12		11	0	255	0	0	0	0	// Orb of Summoning
+12		11	1	255	0	0	0	0	// Orb of Summoning
+12		11	2	255	0	0	0	0	// Orb of Summoning
+12		11	3	255	0	0	0	0	// Orb of Summoning
+12		11	4	255	0	0	0	0	// Orb of Summoning
+12		11	4	255	0	0	0	0	// Orb of Summoning
+12		11	6	255	0	0	0	0	// Orb of Summoning
+12		18	0	255	0	0	0	0	// Orb of Ice Arrow
+12		45	0	220	0	0	0	0	// Crystal of Multi-Shot
+12		46	0	220	0	0	0	0	// Crystal of Recovery
+12		8	0	255	0	0	0	0	// Healing Orb
+12		9	0	255	0	0	0	0	// Orb of Greater Fortitude
+12		10	0	255	0	0	0	0	// Orb of Greater Damage
+12		11	0	255	0	0	0	0	// Orb of Summoning
+12		11	1	255	0	0	0	0	// Orb of Summoning
+12		11	2	255	0	0	0	0	// Orb of Summoning
+12		11	3	255	0	0	0	0	// Orb of Summoning
+12		11	4	255	0	0	0	0	// Orb of Summoning
+12		11	5	255	0	0	0	0	// Orb of Summoning
+12		11	6	255	0	0	0	0	// Orb of Summoning
+12		17	0	255	0	0	0	0	// Orb of Penetration
+12		18	0	255	0	0	0	0	// Orb of Ice Arrow
+12		45	0	255	0	0	0	0	// Crystal of Multi-Shot
+12		46	0	255	0	0	0	0	// Crystal of Recovery
+4		7	0	255	0	0	0	0	// Short Bow
+4		15	0	255	0	0	0	0	// Short Bow
+end

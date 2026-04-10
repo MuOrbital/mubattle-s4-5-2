@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Processes>
+  <Process Run="True" Delay="1000" Path="C:\Windows\system32\notepad.exe" Parameters="" />
+  <Process Run="True" Delay="1000" Path="C:\Users\Mineiro\Desktop\Mu Battle 5.2 - S4\MuServer\ConnectServer\ConnectServer.exe" Parameters="" />
+  <Process Run="True" Delay="1000" Path="C:\Users\Mineiro\Desktop\Mu Battle 5.2 - S4\MuServer\DataServer\DataServer.exe" Parameters="" />
+  <Process Run="True" Delay="1000" Path="C:\Users\Mineiro\Desktop\Mu Battle 5.2 - S4\MuServer\JoinServer\JoinServer.exe" Parameters="" />
+  <Process Run="True" Delay="1000" Path="C:\Users\Mineiro\Desktop\Mu Battle 5.2 - S4\MuServer\GameServer\GameServer.exe" Parameters="" />
+  <Process Run="True" Delay="1000" Path="C:\Users\Mineiro\Desktop\Mu Battle 5.2 - S4\MuServer\GameServerCS\GameServerCS.exe" Parameters="" />
+</Processes>

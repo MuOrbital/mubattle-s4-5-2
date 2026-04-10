@@ -1,0 +1,5 @@
+//Section   Type   Level   Dur      Skill     Luck      Option    ExcOp	    Coment
+14	    3      0       255      0         0         0         0         //Small Mana Potion
+14	    5      0       255      0         0         0         0         //Mana Potion
+14	    8      0       255      0         0         0         0         //Antidote
+end

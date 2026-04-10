@@ -1,0 +1,47 @@
+0
+// -------------------------------------------------------------------------------------
+// Index   CommonMinReset   CommonMaxReset   SpecialMinReset   SpecialMaxReset  Comment
+// -------------------------------------------------------------------------------------
+   0       0                5                0                4                 //Blood Castle Level 1
+   1       6                10               5                8                 //Blood Castle Level 2
+   2       11               20               9                17                //Blood Castle Level 3
+   3       21               40               18               36                //Blood Castle Level 4
+   4       41               70               37               65                //Blood Castle Level 5
+   5       71               110              66               100               //Blood Castle Level 6
+   6       111              500              101              500               //Blood Castle Level 7
+end
+
+1
+// -------------------------------------------------------------------------------------
+// Index   CommonMinReset   CommonMaxReset   SpecialMinReset   SpecialMaxReset Comment
+// -------------------------------------------------------------------------------------
+   0       0                5               0                4                 //Devil Square 1
+   1       6                10              5                8                 //Devil Square 2
+   2       11               20              9                17                //Devil Square 3
+   3       21               40              18               36                //Devil Square 4
+   4       41               70              37               65                //Devil Square 5
+   5       71               500             66               500               //Devil Square 6
+end
+
+2
+// -------------------------------------------------------------------------------------
+// Index   CommonMinLevel   CommonMaxReset   SpecialMinReset   SpecialMaxReset Comment
+// -------------------------------------------------------------------------------------
+   0       0                5               0                4                 //Chaos Castle 1
+   1       6                10              5                8                 //Chaos Castle 2
+   2       11               20              9                17                //Chaos Castle 3
+   3       21               40              18               36                //Chaos Castle 4
+   4       41               70              37               65                //Chaos Castle 5
+   5       71               500             66               500               //Chaos Castle 6
+end
+
+3
+// -------------------------------------------------------------------------------------
+// Index   GeneralMinLevel   GeneralManLevel   Comment
+// -------------------------------------------------------------------------------------
+   0       1                5                //Illusion Temple 1
+   1       6                10               //Illusion Temple 2
+   2       11               20               //Illusion Temple 3
+   3       21               40               //Illusion Temple 4
+   4       41               500              //Illusion Temple 5
+end

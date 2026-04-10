@@ -1,0 +1,396 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+#include "resource.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Русский (Россия) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
+LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+#pragma code_page(1251)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON                    "icon.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDM_BANNED DIALOGEX 0, 0, 316, 182
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "ОК",IDOK,205,161,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,259,161,50,14
+    LISTBOX         IDC_LIST1,7,7,302,109,LBS_SORT | LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+END
+
+IDM_SCREEN DIALOGEX 0, 0, 787, 438
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_WINDOWEDGE | WS_EX_STATICEDGE
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    COMBOBOX        IDC_DISPLAYS,92,4,105,120,CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "SELECTED DISPLAY:",IDC_STATIC,16,6,67,8
+END
+
+IDD_INFO_DIALOG DIALOGEX 0, 0, 607, 280
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Reload",ID_RELOAD,356,247,116,23
+    PUSHBUTTON      "Close",IDCANCEL,476,247,116,23
+    LISTBOX         IDC_LIST_IP,7,7,157,266,LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Show Desktop",ID_DESKTOP,356,193,236,23
+    LISTBOX         IDC_LIST_HWID,171,7,179,266,LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Process List",ID_PROCESSLIST,476,220,116,23
+    GROUPBOX        "IP address",IDC_STATIC,356,7,236,46
+    CONTROL         "",IDC_IP_ADDRESS,"SysIPAddress32",WS_TABSTOP,360,16,161,15
+    PUSHBUTTON      "Delet",IDC_CLEAR_IP,524,16,64,15
+    PUSHBUTTON      "Search",IDC_SEARCH_IP,360,33,228,16
+    GROUPBOX        "Info",IDC_STATIC,356,56,236,128
+    LTEXT           "IP address:",IDC_STATIC_1,363,68,50,8
+    LTEXT           "HardwareID:",IDC_STATIC_2,363,82,50,8
+    LTEXT           "NONE",IDC_STATIC_IP,424,68,131,8
+    LTEXT           "NONE",IDC_STATIC_HWID,424,82,161,8
+    PUSHBUTTON      "Ban IP",IDC_BAN_IP,361,130,71,23
+    PUSHBUTTON      "Ban Hwid",IDC_BAN_HWID,439,130,71,23
+    PUSHBUTTON      "Disconnect",IDC_CLOSE_CLIENT,516,130,71,23
+    PUSHBUTTON      "Restart PC",IDC_RESET_PC,361,157,71,23
+    PUSHBUTTON      "Screenshot",ID_MAKE_SCREENSHOT,356,220,116,23
+    LTEXT           "Conta:",IDC_STATIC_3,363,97,50,8
+    LTEXT           "NONE",IDC_STATIC_ACCOUNT,424,97,160,8
+    LTEXT           "Char:",IDC_STATIC_4,363,112,57,8
+    LTEXT           "NONE",IDC_STATIC_CHARACTER_NAME,424,112,163,8
+END
+
+IDD_LICENSE_BOX DIALOGEX 0, 0, 427, 116
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "GameServer::License"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CTEXT           "No active license found! Please activate this software.",IDC_STATIC,31,16,369,8
+    EDITTEXT        IDC_EDIT1,78,31,323,14,ES_CENTER | ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "Hardware ID:",IDC_STATIC,31,32,44,8
+    PUSHBUTTON      "Okay",IDC_BUTTON1,28,75,98,19
+    PUSHBUTTON      "Copy registration data to clipboard",IDC_BTNCOPY,130,75,126,19
+    EDITTEXT        IDC_EDIT2,78,48,323,14,ES_CENTER | ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "IP Address:",IDC_STATIC,30,49,44,8
+    PUSHBUTTON      "Copy HardwareID",IDC_BTNCOPY_HARDWAREID,260,75,69,19
+    PUSHBUTTON      "Copy IP Address",IDC_BTNCOPY_IPADDRES,332,75,69,19
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDM_BANNED, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 175
+    END
+
+    IDM_SCREEN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 780
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 431
+    END
+
+    IDD_INFO_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 561
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 273
+    END
+
+    IDD_LICENSE_BOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 418
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 109
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_INFO_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // Русский (Россия) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Английский (США) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 22, 17, 230, 42
+STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
+CAPTION "Acerca de"
+FONT 8, "Sistema", 0, 0, 0x0
+BEGIN
+    ICON            107,IDC_MYICON,14,9,20,20
+    LTEXT           "MuBattle AntihackServer",IDC_STATIC,49,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2026",IDC_STATIC,49,20,119,8
+    DEFPUSHBUTTON   "OK",IDOK,195,6,30,11,WS_GROUP
+END
+
+IDM_PROCESS_LIST DIALOGEX 0, 0, 729, 377
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "List of process:"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Get Dump Info",IDC_GET_DUMP,16,347,115,23
+    PUSHBUTTON      "Get Window Class",IDC_GET_CLASS,147,347,115,23
+    PUSHBUTTON      "Download",IDC_DOWNLOAD_FILE,281,347,115,23
+    CONTROL         "",IDC_PROGRESS1,"msctls_progress32",PBS_SMOOTH | WS_BORDER,403,351,310,14
+    LTEXT           "PID:",IDC_STATIC,18,335,15,8
+    LTEXT           "Path:",IDC_STATIC,18,320,18,8
+    LTEXT           "Name:",IDC_STATIC,18,306,22,8
+    LTEXT           "static",IDC_STATIC_NAME,56,306,637,8
+    LTEXT           "static",IDC_STATIC_PATH,56,320,637,8
+    LTEXT           "static",IDC_STATIC_PID,56,335,637,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+    END
+
+    IDM_PROCESS_LIST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 722
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 370
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDM_PROCESS_LIST AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDC_HACKSERVER MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "Close",                        IDM_EXIT
+    END
+    POPUP "Reload"
+    BEGIN
+        MENUITEM "Reload Config",               IDM_RELOAD_CONFIG
+        MENUITEM "Reload Dump List",            IDM_RELOAD_DUMP
+        MENUITEM "Reload Checksum List",        IDM_RELOAD_CHECKSUM
+        MENUITEM "Reload Window List",          IDM_RELOAD_WINDOW
+        MENUITEM "Reload Black List",           IDM_RELOAD_BLACKLIST
+    END
+    POPUP "Extra"
+    BEGIN
+        MENUITEM "Banneds",            ID_OTHER_BANNED
+        MENUITEM "LClear Bannedsi",       ID_OTHER_DELETETEMPBANS
+        MENUITEM "Users Info",                ID_OTHER_SCREEN
+    END
+    POPUP "&Ayuda"
+    BEGIN
+        MENUITEM "&More Info ...",                  IDM_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDC_HACKSERVER ACCELERATORS
+BEGIN
+    "?",            IDM_ABOUT,              ASCII,  ALT
+    "/",            IDM_ABOUT,              ASCII,  ALT
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+2 TEXTINCLUDE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""resource.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_APP_TITLE           "HackServer"
+    IDC_HACKSERVER          "HACKSERVER"
+END
+
+#endif    // Английский (США) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Португальский (Бразилия) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTB)
+LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,1,0,0
+ PRODUCTVERSION 1,1,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "MuBattle"
+            VALUE "FileDescription", "Antihack Server"
+            VALUE "FileVersion", "1.1.0.0"
+            VALUE "InternalName", "Antihack Server"
+            VALUE "LegalCopyright", "Copyright © MuBattle 2026"
+            VALUE "OriginalFilename", "AHMuBattle.exe"
+            VALUE "ProductName", "MuBattle Antihack Server"
+            VALUE "ProductVersion", "1.1.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // Португальский (Бразилия) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

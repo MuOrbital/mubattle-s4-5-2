@@ -1,0 +1,11 @@
+// Custom Pick (/pick all pega tudo)
+//      #ID    #String        #Cat 	#Item	 
+	0      "soul"         14        14     
+	1      "bless"        14        13     
+	2      "chaos"        12        15
+	3      "zen"          14        15
+	4      "life"         14        16
+	5      "creation"     14        22
+	6      "guardiam"     14        31
+	7      "gem"          14        41
+end

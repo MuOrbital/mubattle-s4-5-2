@@ -1,0 +1,3 @@
+//MinLevel   MaxLevel   MinMasterLevel   MaxMasterLevel   MinReset   MaxReset   MinMasterReset   MaxMasterReset   ExperienceRate
+//*	     *		*		 *		  0	     5		*		 *		  100
+end

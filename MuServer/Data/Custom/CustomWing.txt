@@ -1,0 +1,3 @@
+//In	IIndex	DefA	IncDmgA	IncDmgB	DecDmgA	DecDmgB	Opt1	Opt1	Opt2	Opt2   	Opt3	Opt3	NewOpt1	NewOpt1	NewOpt2	NewOpt2	NewOpt3	NewOpt3	NewOpt4	NewOpt4	ModelType ThirdClass	ModelName         Class
+0	6294	4 	145 	2 	65 	2 	80 	4 	86 	2 	83 	4 	101 	50 	102 	5 	103 	5 	98 	5	0	"Wing150"       //Conqueror
+end

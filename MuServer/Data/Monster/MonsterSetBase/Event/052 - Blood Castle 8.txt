@@ -1,0 +1,121 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+232            52             00         010            009            01             //Archangel
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+3
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction     Quantity      Value      Comment
+end
+
+
+4
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+428            52             30         014            034            07             //Chief Skeleton Warrior
+428            52             30         014            038            07             //Chief Skeleton Warrior
+428            52             30         013            035            07             //Chief Skeleton Warrior
+428            52             30         013            028            07             //Chief Skeleton Warrior
+428            52             30         015            035            07             //Chief Skeleton Warrior
+428            52             30         014            033            07             //Chief Skeleton Warrior
+428            52             30         015            041            07             //Chief Skeleton Warrior
+428            52             30         014            042            07             //Chief Skeleton Warrior
+428            52             30         015            025            07             //Chief Skeleton Warrior
+428            52             30         015            023            07             //Chief Skeleton Warrior
+428            52             30         013            026            07             //Chief Skeleton Warrior
+428            52             30         013            037            07             //Chief Skeleton Warrior
+428            52             30         014            040            07             //Chief Skeleton Warrior
+428            52             30         013            039            07             //Chief Skeleton Warrior
+428            52             30         014            027            07             //Chief Skeleton Warrior
+428            52             30         014            024            07             //Chief Skeleton Warrior
+428            52             30         014            032            07             //Chief Skeleton Warrior
+428            52             30         015            045            07             //Chief Skeleton Warrior
+428            52             30         015            031            07             //Chief Skeleton Warrior
+429            52             30         015            026            07             //Chief Skeleton Archer
+429            52             30         013            045            07             //Chief Skeleton Archer
+429            52             30         013            023            07             //Chief Skeleton Archer
+429            52             30         015            043            07             //Chief Skeleton Archer
+429            52             30         015            039            07             //Chief Skeleton Archer
+429            52             30         015            037            07             //Chief Skeleton Archer
+429            52             30         013            029            07             //Chief Skeleton Archer
+429            52             30         015            028            07             //Chief Skeleton Archer
+429            52             30         013            025            07             //Chief Skeleton Archer
+429            52             30         013            021            07             //Chief Skeleton Archer
+429            52             30         014            022            07             //Chief Skeleton Archer
+429            52             30         015            021            07             //Chief Skeleton Archer
+429            52             30         013            031            07             //Chief Skeleton Archer
+429            52             30         015            030            07             //Chief Skeleton Archer
+429            52             30         015            033            07             //Chief Skeleton Archer
+429            52             30         014            021            07             //Chief Skeleton Archer
+429            52             30         013            043            07             //Chief Skeleton Archer
+430            52             30         015            046            07             //Dark Skull Soldier
+430            52             30         015            063            07             //Dark Skull Soldier
+430            52             30         015            053            07             //Dark Skull Soldier
+430            52             30         013            065            07             //Dark Skull Soldier
+430            52             30         013            067            07             //Dark Skull Soldier
+430            52             30         015            059            07             //Dark Skull Soldier
+430            52             30         013            059            07             //Dark Skull Soldier
+430            52             30         015            055            07             //Dark Skull Soldier
+430            52             30         013            062            07             //Dark Skull Soldier
+430            52             30         013            041            07             //Dark Skull Soldier
+430            52             30         015            069            07             //Dark Skull Soldier
+430            52             30         013            050            07             //Dark Skull Soldier
+430            52             30         015            048            07             //Dark Skull Soldier
+430            52             30         013            046            07             //Dark Skull Soldier
+430            52             30         014            044            07             //Dark Skull Soldier
+430            52             30         015            051            07             //Dark Skull Soldier
+430            52             30         014            049            07             //Dark Skull Soldier
+430            52             30         015            057            07             //Dark Skull Soldier
+430            52             30         014            064            07             //Dark Skull Soldier
+430            52             30         014            067            07             //Dark Skull Soldier
+430            52             30         013            053            07             //Dark Skull Soldier
+430            52             30         015            065            07             //Dark Skull Soldier
+430            52             30         015            060            07             //Dark Skull Soldier
+430            52             30         013            057            07             //Dark Skull Soldier
+431            52             30         013            069            07             //Giant Ogre
+431            52             30         014            061            07             //Giant Ogre
+431            52             30         013            055            07             //Giant Ogre
+431            52             30         014            058            07             //Giant Ogre
+431            52             30         014            052            07             //Giant Ogre
+431            52             30         015            050            07             //Giant Ogre
+431            52             30         015            066            07             //Giant Ogre
+431            52             30         014            056            07             //Giant Ogre
+431            52             30         014            070            07             //Giant Ogre
+431            52             30         013            063            07             //Giant Ogre
+431            52             30         013            048            07             //Giant Ogre
+432            52             30         013            078            07             //Red Skeleton Knight
+432            52             30         014            083            07             //Red Skeleton Knight
+432            52             30         014            078            07             //Red Skeleton Knight
+432            52             30         015            078            07             //Red Skeleton Knight
+432            52             30         016            080            07             //Red Skeleton Knight
+432            52             30         015            062            07             //Red Skeleton Knight
+432            52             30         052            083            07             //Red Skeleton Knight
+432            52             30         014            090            07             //Red Skeleton Knight
+432            52             30         011            083            07             //Red Skeleton Knight
+432            52             30         015            094            07             //Red Skeleton Knight
+432            52             30         020            082            07             //Red Skeleton Knight
+432            52             30         020            088            07             //Red Skeleton Knight
+432            52             30         014            054            07             //Red Skeleton Knight
+432            52             30         014            036            07             //Red Skeleton Knight
+432            52             30         015            068            07             //Red Skeleton Knight
+432            52             30         014            047            07             //Red Skeleton Knight
+433            52             30         016            087            07             //Magic Skeleton
+433            52             30         012            081            07             //Magic Skeleton
+433            52             30         013            088            07             //Magic Skeleton
+433            52             30         013            085            07             //Magic Skeleton
+433            52             30         019            085            07             //Magic Skeleton
+433            52             30         013            093            07             //Magic Skeleton
+433            52             30         014            080            07             //Magic Skeleton
+433            52             30         018            081            07             //Magic Skeleton
+end
+
+

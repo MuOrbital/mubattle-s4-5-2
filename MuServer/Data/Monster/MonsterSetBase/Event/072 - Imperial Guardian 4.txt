@@ -1,0 +1,58 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+3
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction     Quantity      Value      Comment
+end
+
+
+4
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+523            72             00         045            067            08             //Trap
+523            72             00         045            074            08             //Trap
+523            72             00         041            074            08             //Trap
+523            72             00         041            067            08             //Trap
+523            72             00         037            067            08             //Trap
+523            72             00         037            074            08             //Trap
+523            72             00         033            067            08             //Trap
+523            72             00         033            074            08             //Trap
+523            72             00         029            067            08             //Trap
+523            72             00         029            074            08             //Trap
+523            72             00         031            078            08             //Trap
+523            72             00         031            083            08             //Trap
+523            72             00         031            087            08             //Trap
+523            72             00         057            191            08             //Trap
+523            72             00         061            191            08             //Trap
+523            72             00         065            191            08             //Trap
+523            72             00         069            191            08             //Trap
+523            72             00         068            186            08             //Trap
+523            72             00         068            181            08             //Trap
+523            72             00         068            176            08             //Trap
+523            72             00         068            171            08             //Trap
+523            72             00         202            133            08             //Trap
+523            72             00         206            133            08             //Trap
+523            72             00         210            133            08             //Trap
+523            72             00         214            133            08             //Trap
+523            72             00         218            133            08             //Trap
+523            72             00         222            133            08             //Trap
+523            72             00         226            133            08             //Trap
+523            72             00         224            137            08             //Trap
+523            72             00         224            142            08             //Trap
+523            72             00         224            147            08             //Trap
+523            72             00         224            152            08             //Trap
+523            72             00         224            155            08             //Trap
+end
+
+

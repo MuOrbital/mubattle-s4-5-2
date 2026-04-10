@@ -1,0 +1,61 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+232            17             00         010            009            01             //Archangel
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+3
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction     Quantity      Value      Comment
+end
+
+
+4
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+138            17             30         014            034            06             //Chief Skeleton Warrior
+138            17             30         014            038            06             //Chief Skeleton Warrior
+138            17             30         013            035            06             //Chief Skeleton Warrior
+138            17             30         013            028            06             //Chief Skeleton Warrior
+138            17             30         014            024            06             //Chief Skeleton Warrior
+138            17             30         014            032            06             //Chief Skeleton Warrior
+138            17             30         015            045            06             //Chief Skeleton Warrior
+138            17             30         015            031            06             //Chief Skeleton Warrior
+139            17             30         015            026            06             //Chief Skeleton Archer
+139            17             30         013            045            06             //Chief Skeleton Archer
+139            17             30         013            023            06             //Chief Skeleton Archer
+139            17             30         015            021            06             //Chief Skeleton Archer
+139            17             30         013            031            06             //Chief Skeleton Archer
+139            17             30         015            030            06             //Chief Skeleton Archer
+139            17             30         015            033            06             //Chief Skeleton Archer
+139            17             30         014            021            06             //Chief Skeleton Archer
+139            17             30         013            043            06             //Chief Skeleton Archer
+140            17             30         015            046            06             //Dark Skull Soldier
+140            17             30         015            063            06             //Dark Skull Soldier
+140            17             30         014            044            06             //Dark Skull Soldier
+140            17             30         015            051            06             //Dark Skull Soldier
+140            17             30         014            049            06             //Dark Skull Soldier
+140            17             30         015            065            06             //Dark Skull Soldier
+140            17             30         015            060            06             //Dark Skull Soldier
+140            17             30         013            057            06             //Dark Skull Soldier
+141            17             30         013            069            06             //Giant Ogre
+141            17             30         014            061            06             //Giant Ogre
+141            17             30         013            063            06             //Giant Ogre
+141            17             30         013            048            06             //Giant Ogre
+142            17             30         013            078            06             //Red Skeleton Knight
+142            17             30         014            083            06             //Red Skeleton Knight
+142            17             30         015            094            06             //Red Skeleton Knight
+142            17             30         020            082            06             //Red Skeleton Knight
+143            17             30         019            085            06             //Magic Skeleton
+143            17             30         013            093            06             //Magic Skeleton
+end
+
+

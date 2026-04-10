@@ -1,0 +1,77 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+259            26             00         007            019            02             //Oracle Layla
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+185            26             30         030            075            6             //Aegis
+185            26             30         035            021            1             //Aegis
+185            26             30         028            017            4             //Aegis
+185            26             30         036            011            7             //Aegis
+185            26             30         051            011            2             //Aegis
+185            26             30         042            012            2             //Aegis
+185            26             30         045            022            5             //Aegis
+185            26             30         052            024            7             //Aegis
+185            26             30         053            017            4             //Aegis
+185            26             30         060            009            7             //Aegis
+186            26             30         067            022            6             //Rogue Centurion
+185            26             30         060            022            4             //Aegis
+186            26             30         069            009            3             //Rogue Centurion
+186            26             30         074            014            3             //Rogue Centurion
+186            26             30         082            008            6             //Rogue Centurion
+186            26             30         081            019            0             //Rogue Centurion
+186            26             30         086            013            1             //Rogue Centurion
+186            26             30         092            006            3             //Rogue Centurion
+186            26             30         096            016            2             //Rogue Centurion
+186            26             30         099            009            1             //Rogue Centurion
+186            26             30         109            019            4             //Rogue Centurion
+184            26             30         110            009            2             //Blood Soldier
+184            26             30         118            017            6             //Blood Soldier
+184            26             30         110            035            7             //Blood Soldier
+184            26             30         121            027            6             //Blood Soldier
+184            26             30         119            035            4             //Blood Soldier
+184            26             30         114            044            4             //Blood Soldier
+182            26             30         120            050            4             //Death Angel
+182            26             30         105            054            2             //Death Angel
+182            26             30         119            057            3             //Death Angel
+182            26             30         110            065            4             //Death Angel
+182            26             30         121            067            7             //Death Angel
+184            26             30         108            028            2             //Blood Soldier
+182            26             30         111            072            1             //Death Angel
+182            26             30         105            086            7             //Death Angel
+187            26             30         118            084            6             //Necron
+182            26             30         118            095            2             //Death Angel
+187            26             30         104            101            3             //Necron
+187            26             30         115            106            4             //Necron
+187            26             30         093            096            1             //Necron
+187            26             30         093            084            5             //Necron
+187            26             30         082            085            1             //Necron
+187            26             30         082            077            4             //Necron
+187            26             30         074            076            6             //Necron
+183            26             30         087            090            7             //Death Centurion
+183            26             30         068            077            7             //Death Centurion
+183            26             30         063            072            6             //Death Centurion
+183            26             30         058            078            3             //Death Centurion
+182            26             30         120            075            6             //Death Angel
+183            26             30         057            071            0             //Death Centurion
+188            26             30         032            050            6             //Schriker
+188            26             30         042            051            1             //Schriker
+188            26             30         038            058            1             //Schriker
+188            26             30         029            065            1             //Schriker
+188            26             30         046            066            2             //Schriker
+188            26             30         042            097            2             //Schriker
+188            26             30         037            109            4             //Schriker
+188            26             30         047            107            4             //Schriker
+188            26             30         053            093            1             //Schriker
+188            26             30         035            087            3             //Schriker
+189            26             30         026            076            5             //Illusion of Kundun
+end
+
+

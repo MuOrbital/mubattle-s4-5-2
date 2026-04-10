@@ -1,0 +1,34 @@
+//Section   	Type    Level   Dur   	Skill   Luck    Option  ExcOp	Coment
+7		2	7	255	0	1	1	0	// Pad Helm
+7		3	7	255	0	1	1	0	// Legendary Helm
+15		3	0	0	0	0	0	0	// Scroll of Fire Ball
+15		10	0	0	0	0	0	0	// Scroll of Power Wave
+15		1	0	0	0	0	0	0	// Scroll of Meteorite
+15		5	0	0	0	0	0	0	// Scroll of Teleport
+8		2	7	255	0	1	1	0	// Pad Armor
+8		3	7	255	0	1	1	0	// Legendary Armor
+15		2	0	0	0	0	0	0	// Scroll of Lighting
+15		6	0	0	0	0	0	0	// Scroll of Ice
+15		0	0	0	0	0	0	0	// Scroll of Poison
+9		2	7	255	0	1	1	0	// Pad Pants
+9		3	7	255	0	1	1	0	// Legendary Pants
+15		4	0	0	0	0	0	0	// Scroll of Flame
+15		8	0	0	0	0	0	0	// Scroll of Evil Spirit
+15		9	0	0	0	0	0	0	// Scroll of Hellfire
+15		11	0	0	0	0	0	0	// Scroll of Aqua Beam
+10		2	7	255	0	1	1	0	// Pad Gloves
+10		3	7	255	0	1	1	0	// Legendary Gloves
+15		12	0	0	0	0	0	0	// Scroll of Cometfall
+15		13	0	0	0	0	0	0	// Scroll of Inferno
+15		14	0	0	0	0	0	0	// Scroll of Teleport Ally
+15		15	0	0	0	0	0	0	// Scroll of Soul Barrier
+15		16	0	0	0	0	0	0	// Scroll of Decay
+11		2	7	255	0	1	1	0	// Pad Boots
+11		3	7	255	0	1	1	0	// Legendary Boots
+15		17	0	0	0	0	0	0	// Scroll of Ice Storm
+15		18	0	0	0	0	0	0	// Scroll of Nova
+15		28	0	0	0	0	0	0	// Scroll of Wizardry Enhance
+15		29	0	0	0	0	0	0	// Scroll of Gigantic Storm
+5		10	7	255	0	1	1	0	// Grand Viper Staff
+5		13	7	255	0	1	1	0	// Platina Staff
+end

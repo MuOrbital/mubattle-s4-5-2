@@ -1,0 +1,33 @@
+//Section   	Type    Level   Dur     Skill   Luck    Option  ExcOp   Coment
+7		1	7	255	0	1	0	0	// Dragon Helm
+7		16	7	255	0	1	1	0	// Black Dragon Helm
+7		17	7	255	0	1	1	0	// Dark Phoenix Helm
+0		14	7	255	1	1	1	0	// Lighting Sword
+0		13	7	255	1	1	1	0	// Double Blade
+8		1	7	255	0	1	1	0	// Dragon Armor
+8		16	7	255	0	1	1	0	// Black Dragon Armor
+8		17	7	255	0	1	1	0	// Dark Phoenix Armor
+0		16	7	255	1	1	1	0	// Sword of Destruction
+0		19	7	255	1	1	1	0	// Divine Sword of Archangel
+9		1	7	255	0	1	1	0	// Dragon Pants
+9		16	7	255	0	1	1	0	// Black Dragon Pants
+9		17	7	255	0	1	1	0	// Dark Phoenix Pants
+10		1	7	255	0	1	1	0	// Dragon Gloves
+10		16	7	255	0	1	1	0	// Black Dragon Gloves
+10		17	7	255	0	1	1	0	// Dark Phoenix Gloves
+0		20	7	255	1	1	1	0	// Knight Blade
+0		20	7	255	1	1	1	0	// Knight Blade
+11		1	7	255	0	1	1	0	// Dragon Boots
+11		16	7	255	0	1	1	0	// Black Dragon Boots
+11		17	7	255	0	1	1	0	// Dark Phoenix Boots
+0		29	7	255	1	1	1	0	// 
+12		7	0	0	1	1	1	0	// Orb of Twisting Slash
+12		12	0	0	1	1	1	0	// Orb of Rageful Blow
+12		19	0	0	1	1	1	0	// Orb of Death Stab
+12		14	0	0	1	1	1	0	// Orb of Greater Fortitude
+12		13	0	0	1	1	1	0	// Orb of Impale
+12		44	0	0	1	1	1	0	// Crystal of Destruction
+12		16	0	255	0	0	0	0	// Orb of Fire Slash
+12		47	0	255	0	0	0	0	// Crystal of Flame Strike
+15		29	0	255	0	0	0	0	// Scroll of Gigantic Storm
+end

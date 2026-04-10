@@ -1,0 +1,124 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+3
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction     Quantity      Value      Comment
+end
+
+
+4
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+166            20             30         026            105            02             //Chaos Castle 5
+167            20             30         026            098            02             //Chaos Castle 6
+166            20             30         028            090            02             //Chaos Castle 5
+167            20             30         027            086            02             //Chaos Castle 6
+166            20             30         028            082            02             //Chaos Castle 5
+167            20             30         026            079            02             //Chaos Castle 6
+166            20             30         034            078            02             //Chaos Castle 5
+167            20             30         033            081            02             //Chaos Castle 6
+166            20             30         039            078            02             //Chaos Castle 5
+167            20             30         026            077            02             //Chaos Castle 6
+166            20             30         038            080            02             //Chaos Castle 5
+167            20             30         043            077            02             //Chaos Castle 6
+166            20             30         038            086            02             //Chaos Castle 5
+167            20             30         043            084            02             //Chaos Castle 6
+166            20             30         041            082            02             //Chaos Castle 5
+167            20             30         027            094            02             //Chaos Castle 6
+166            20             30         032            091            02             //Chaos Castle 5
+167            20             30         029            084            02             //Chaos Castle 6
+166            20             30         042            090            02             //Chaos Castle 5
+167            20             30         044            087            02             //Chaos Castle 6
+166            20             30         030            078            02             //Chaos Castle 5
+167            20             30         038            092            02             //Chaos Castle 6
+166            20             30         040            098            02             //Chaos Castle 5
+167            20             30         029            101            02             //Chaos Castle 6
+166            20             30         033            103            02             //Chaos Castle 5
+167            20             30         038            089            02             //Chaos Castle 6
+166            20             30         042            105            02             //Chaos Castle 5
+167            20             30         042            099            02             //Chaos Castle 6
+166            20             30         035            105            02             //Chaos Castle 5
+167            20             30         029            093            02             //Chaos Castle 6
+166            20             30         028            097            02             //Chaos Castle 5
+167            20             30         026            084            02             //Chaos Castle 6
+166            20             30         028            079            02             //Chaos Castle 5
+166            20             30         025            082            02             //Chaos Castle 5
+167            20             30         029            076            02             //Chaos Castle 6
+166            20             30         033            076            02             //Chaos Castle 5
+167            20             30         035            079            02             //Chaos Castle 6
+166            20             30         031            080            02             //Chaos Castle 5
+167            20             30         041            079            02             //Chaos Castle 6
+166            20             30         038            076            02             //Chaos Castle 5
+167            20             30         036            081            02             //Chaos Castle 6
+166            20             30         039            082            02             //Chaos Castle 5
+167            20             30         041            086            02             //Chaos Castle 6
+166            20             30         042            094            02             //Chaos Castle 5
+167            20             30         035            092            02             //Chaos Castle 6
+166            20             30         034            090            02             //Chaos Castle 5
+167            20             30         038            101            02             //Chaos Castle 6
+166            20             30         030            105            02             //Chaos Castle 5
+167            20             30         026            102            02             //Chaos Castle 6
+166            20             30         028            100            02             //Chaos Castle 5
+167            20             30         038            106            02             //Chaos Castle 6
+166            20             30         035            102            02             //Chaos Castle 5
+167            20             30         042            102            02             //Chaos Castle 6
+166            20             30         043            096            02             //Chaos Castle 5
+167            20             30         030            088            02             //Chaos Castle 6
+166            20             30         025            091            02             //Chaos Castle 5
+167            20             30         029            091            02             //Chaos Castle 6
+166            20             30         030            098            02             //Chaos Castle 5
+167            20             30         041            093            02             //Chaos Castle 6
+166            20             30         041            089            02             //Chaos Castle 5
+167            20             30         043            091            02             //Chaos Castle 6
+166            20             30         039            095            02             //Chaos Castle 5
+167            20             30         032            101            02             //Chaos Castle 6
+166            20             30         029            103            02             //Chaos Castle 5
+167            20             30         033            105            02             //Chaos Castle 6
+166            20             30         025            097            02             //Chaos Castle 5
+167            20             30         024            094            02             //Chaos Castle 6
+166            20             30         027            088            02             //Chaos Castle 5
+167            20             30         032            094            02             //Chaos Castle 6
+166            20             30         032            089            02             //Chaos Castle 5
+167            20             30         036            092            02             //Chaos Castle 6
+166            20             30         037            089            02             //Chaos Castle 5
+167            20             30         040            091            02             //Chaos Castle 6
+166            20             30         038            099            02             //Chaos Castle 5
+167            20             30         040            101            02             //Chaos Castle 6
+166            20             30         043            081            02             //Chaos Castle 5
+167            20             30         036            076            02             //Chaos Castle 6
+166            20             30         042            075            02             //Chaos Castle 5
+167            20             30         026            075            02             //Chaos Castle 6
+166            20             30         024            080            02             //Chaos Castle 5
+167            20             30         030            082            02             //Chaos Castle 6
+166            20             30         024            089            02             //Chaos Castle 5
+167            20             30         024            086            02             //Chaos Castle 6
+166            20             30         024            101            02             //Chaos Castle 5
+167            20             30         037            104            02             //Chaos Castle 6
+166            20             30         041            096            02             //Chaos Castle 5
+167            20             30         039            087            02             //Chaos Castle 6
+166            20             30         041            076            02             //Chaos Castle 5
+167            20             30         038            084            02             //Chaos Castle 6
+166            20             30         038            096            02             //Chaos Castle 5
+167            20             30         030            095            02             //Chaos Castle 6
+166            20             30         032            078            02             //Chaos Castle 5
+167            20             30         029            086            02             //Chaos Castle 6
+166            20             30         027            104            02             //Chaos Castle 5
+167            20             30         040            104            02             //Chaos Castle 6
+166            20             30         044            102            02             //Chaos Castle 5
+167            20             30         043            098            02             //Chaos Castle 6
+166            20             30         039            093            02             //Chaos Castle 5
+167            20             30         041            084            02             //Chaos Castle 6
+end
+
+

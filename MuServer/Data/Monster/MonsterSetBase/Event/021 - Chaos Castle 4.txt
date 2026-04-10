@@ -1,0 +1,124 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+3
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction     Quantity      Value      Comment
+end
+
+
+4
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+168            21             30         026            105            03             //Chaos Castle 7
+169            21             30         026            098            03             //Chaos Castle 8
+168            21             30         028            090            03             //Chaos Castle 7
+169            21             30         027            086            03             //Chaos Castle 8
+168            21             30         028            082            03             //Chaos Castle 7
+169            21             30         026            079            03             //Chaos Castle 8
+168            21             30         034            078            03             //Chaos Castle 7
+169            21             30         033            081            03             //Chaos Castle 8
+168            21             30         039            078            03             //Chaos Castle 7
+169            21             30         026            077            03             //Chaos Castle 8
+168            21             30         038            080            03             //Chaos Castle 7
+169            21             30         043            077            03             //Chaos Castle 8
+168            21             30         038            086            03             //Chaos Castle 7
+169            21             30         043            084            03             //Chaos Castle 8
+168            21             30         041            082            03             //Chaos Castle 7
+169            21             30         027            094            03             //Chaos Castle 8
+168            21             30         032            091            03             //Chaos Castle 7
+169            21             30         029            084            03             //Chaos Castle 8
+168            21             30         042            090            03             //Chaos Castle 7
+169            21             30         044            087            03             //Chaos Castle 8
+168            21             30         030            078            03             //Chaos Castle 7
+169            21             30         038            092            03             //Chaos Castle 8
+168            21             30         040            098            03             //Chaos Castle 7
+169            21             30         029            101            03             //Chaos Castle 8
+168            21             30         033            103            03             //Chaos Castle 7
+169            21             30         038            089            03             //Chaos Castle 8
+168            21             30         042            105            03             //Chaos Castle 7
+169            21             30         042            099            03             //Chaos Castle 8
+168            21             30         035            105            03             //Chaos Castle 7
+169            21             30         029            093            03             //Chaos Castle 8
+168            21             30         028            097            03             //Chaos Castle 7
+169            21             30         026            084            03             //Chaos Castle 8
+168            21             30         028            079            03             //Chaos Castle 7
+168            21             30         025            082            03             //Chaos Castle 7
+169            21             30         029            076            03             //Chaos Castle 8
+168            21             30         033            076            03             //Chaos Castle 7
+169            21             30         035            079            03             //Chaos Castle 8
+168            21             30         031            080            03             //Chaos Castle 7
+169            21             30         041            079            03             //Chaos Castle 8
+168            21             30         038            076            03             //Chaos Castle 7
+169            21             30         036            081            03             //Chaos Castle 8
+168            21             30         039            082            03             //Chaos Castle 7
+169            21             30         041            086            03             //Chaos Castle 8
+168            21             30         042            094            03             //Chaos Castle 7
+169            21             30         035            092            03             //Chaos Castle 8
+168            21             30         034            090            03             //Chaos Castle 7
+169            21             30         038            101            03             //Chaos Castle 8
+168            21             30         030            105            03             //Chaos Castle 7
+169            21             30         026            102            03             //Chaos Castle 8
+168            21             30         028            100            03             //Chaos Castle 7
+169            21             30         038            106            03             //Chaos Castle 8
+168            21             30         035            102            03             //Chaos Castle 7
+169            21             30         042            102            03             //Chaos Castle 8
+168            21             30         043            096            03             //Chaos Castle 7
+169            21             30         030            088            03             //Chaos Castle 8
+168            21             30         025            091            03             //Chaos Castle 7
+169            21             30         029            091            03             //Chaos Castle 8
+168            21             30         030            098            03             //Chaos Castle 7
+169            21             30         041            093            03             //Chaos Castle 8
+168            21             30         041            089            03             //Chaos Castle 7
+169            21             30         043            091            03             //Chaos Castle 8
+168            21             30         039            095            03             //Chaos Castle 7
+169            21             30         032            101            03             //Chaos Castle 8
+168            21             30         029            103            03             //Chaos Castle 7
+169            21             30         033            105            03             //Chaos Castle 8
+168            21             30         025            097            03             //Chaos Castle 7
+169            21             30         024            094            03             //Chaos Castle 8
+168            21             30         027            088            03             //Chaos Castle 7
+169            21             30         032            094            03             //Chaos Castle 8
+168            21             30         032            089            03             //Chaos Castle 7
+169            21             30         036            092            03             //Chaos Castle 8
+168            21             30         037            089            03             //Chaos Castle 7
+169            21             30         040            091            03             //Chaos Castle 8
+168            21             30         038            099            03             //Chaos Castle 7
+169            21             30         040            101            03             //Chaos Castle 8
+168            21             30         043            081            03             //Chaos Castle 7
+169            21             30         036            076            03             //Chaos Castle 8
+168            21             30         042            075            03             //Chaos Castle 7
+169            21             30         026            075            03             //Chaos Castle 8
+168            21             30         024            080            03             //Chaos Castle 7
+169            21             30         030            082            03             //Chaos Castle 8
+168            21             30         024            089            03             //Chaos Castle 7
+169            21             30         024            086            03             //Chaos Castle 8
+168            21             30         024            101            03             //Chaos Castle 7
+169            21             30         037            104            03             //Chaos Castle 8
+168            21             30         041            096            03             //Chaos Castle 7
+169            21             30         039            087            03             //Chaos Castle 8
+168            21             30         041            076            03             //Chaos Castle 7
+169            21             30         038            084            03             //Chaos Castle 8
+168            21             30         038            096            03             //Chaos Castle 7
+169            21             30         030            095            03             //Chaos Castle 8
+168            21             30         032            078            03             //Chaos Castle 7
+169            21             30         029            086            03             //Chaos Castle 8
+168            21             30         027            104            03             //Chaos Castle 7
+169            21             30         040            104            03             //Chaos Castle 8
+168            21             30         044            102            03             //Chaos Castle 7
+169            21             30         043            098            03             //Chaos Castle 8
+168            21             30         039            093            03             //Chaos Castle 7
+169            21             30         041            084            03             //Chaos Castle 8
+end
+
+

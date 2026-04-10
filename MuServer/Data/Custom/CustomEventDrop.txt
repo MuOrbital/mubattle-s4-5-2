@@ -1,0 +1,32 @@
+0
+//Index   Year   Month   Day   DoW   Hour   Minute   Second
+0         *      *       *     *     12     00       0
+end
+
+1
+//Index   Name                                 DropMap   DropX   DropY   DropRange   AlarmTime   EventTime
+0         "Drop Lorencia"                      0         140     128     15          5           3
+end
+
+2
+//Index   ItemIndex   ItemLevel   DropCount   DropDelay   Comment
+0	  7179        8           3           00	  //Box Kundum +1
+0	  7179        8           3           10	  //Box Kundum +1
+0	  7179        8           3           20	  //Box Kundum +1
+0	  7179        8           3           30	  //Box Kundum +1
+0	  7179        9           3           40	  //Box Kundum +2
+0	  7179        9           3           50	  //Box Kundum +2
+0	  7179        9           3           60	  //Box Kundum +2
+0	  7179        9           3           70	  //Box Kundum +2
+0	  7179        10          3           80	  //Box Kundum +3
+0	  7179        10          3           90	  //Box Kundum +3
+0	  7179        10          3           100	  //Box Kundum +3
+0	  7179        10          3           110	  //Box Kundum +3
+0	  7179        11          3           120	  //Box Kundum +4
+0	  7179        11          3           130	  //Box Kundum +4
+0	  7179        11          3           140	  //Box Kundum +4
+0	  7179        11          3           150	  //Box Kundum +4
+0	  7179        11          3           160	  //Box Kundum +5
+0	  7179        11          3           170	  //Box Kundum +5
+0	  7179        11          3           180	  //Box Kundum +5
+end

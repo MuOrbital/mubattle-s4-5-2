@@ -1,0 +1,4 @@
+//	SkillID	     DamageRateUser	DamageRateMonster
+===============================================================
+//	215	     50			50
+end

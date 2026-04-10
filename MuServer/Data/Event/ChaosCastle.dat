@@ -1,0 +1,27 @@
+0
+//WarningTime   NotifyTime   EventTime   CloseTime
+5               1            10          4         
+end
+
+1
+//Year   Month   Day   DoW   Hour   Minute   Second
+*        *       *     *     00     50       00
+*        *       *     *     03     50       00
+*        *       *     *     06     50       00
+*        *       *     *     09     50       00
+*        *       *     *     12     50       00
+*        *       *     *     15     50       00
+*        *       *     *     18     50       00
+*        *       *     *     21     50       00
+end
+
+2
+//Level   ExperienceTable1   ExperienceTable2
+0         1000               500
+1         1500               100
+2         2000               1500
+3         2500               2000
+4         3000               2500
+5         3500               3000
+6         4000               3500
+end

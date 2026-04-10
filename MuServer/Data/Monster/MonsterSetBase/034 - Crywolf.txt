@@ -1,0 +1,201 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+226            34             00         135            047            02             //Trainer
+256            34             00         096            025            02             //Lahap
+251            34             00         145            014            01             //Hanzo the Blacksmith
+240            34             00         113            056            02             //Safety Guardian
+224            34             00         118            011            04             //Guardsman
+204            34             00         121            031            02             //Wolf Status
+205            34             00         125            027            02             //Wolf Altar 1
+206            34             00         126            035            02             //Wolf Altar 2
+207            34             00         120            038            02             //Wolf Altar 3
+208            34             00         115            035            02             //Wolf Altar 4
+209            34             00         117            027            02             //Wolf Altar 5
+406            34             00         228            048            01             //Apostle Devin
+407            34             00         062            239            01             //Werewolf Quarel
+248            34             00         099            040            02             //Wandering Merchant Martin
+end
+
+
+//=========================================================================================================================================
+// MONSTERS
+//=========================================================================================================================================
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+310            34             30         058            047            -1             //Hammer Scout
+310            34             30         060            038            -1             //Hammer Scout
+310            34             30         065            024            -1             //Hammer Scout
+310            34             30         070            037            -1             //Hammer Scout
+310            34             30         074            020            -1             //Hammer Scout
+310            34             30         077            032            -1             //Hammer Scout
+310            34             30         078            051            -1             //Hammer Scout
+310            34             30         079            043            -1             //Hammer Scout
+310            34             30         083            010            -1             //Hammer Scout
+310            34             30         088            050            -1             //Hammer Scout
+310            34             30         088            060            -1             //Hammer Scout
+310            34             30         094            054            -1             //Hammer Scout
+310            34             30         098            060            -1             //Hammer Scout
+310            34             30         150            060            -1             //Hammer Scout
+310            34             30         159            060            -1             //Hammer Scout
+310            34             30         162            041            -1             //Hammer Scout
+310            34             30         164            018            -1             //Hammer Scout
+310            34             30         169            060            -1             //Hammer Scout
+310            34             30         176            032            -1             //Hammer Scout
+310            34             30         178            022            -1             //Hammer Scout
+310            34             30         179            048            -1             //Hammer Scout
+310            34             30         185            035            -1             //Hammer Scout
+310            34             30         191            027            -1             //Hammer Scout
+310            34             30         194            044            -1             //Hammer Scout
+310            34             30         195            033            -1             //Hammer Scout
+310            34             30         199            060            -1             //Hammer Scout
+310            34             30         201            040            -1             //Hammer Scout
+310            34             30         205            046            -1             //Hammer Scout
+310            34             30         206            045            -1             //Hammer Scout
+310            34             30         214            060            -1             //Hammer Scout
+311            34             30         022            100            -1             //Lance Scout
+311            34             30         027            122            -1             //Lance Scout
+311            34             30         035            078            -1             //Lance Scout
+311            34             30         047            053            -1             //Lance Scout
+311            34             30         047            065            -1             //Lance Scout
+311            34             30         079            078            -1             //Lance Scout
+311            34             30         082            067            -1             //Lance Scout
+311            34             30         095            078            -1             //Lance Scout
+311            34             30         103            071            -1             //Lance Scout
+311            34             30         113            078            -1             //Lance Scout
+311            34             30         117            099            -1             //Lance Scout
+311            34             30         122            078            -1             //Lance Scout
+311            34             30         135            069            -1             //Lance Scout
+311            34             30         138            078            -1             //Lance Scout
+311            34             30         146            068            -1             //Lance Scout
+311            34             30         156            069            -1             //Lance Scout
+311            34             30         157            078            -1             //Lance Scout
+311            34             30         159            049            -1             //Lance Scout
+311            34             30         170            047            -1             //Lance Scout
+311            34             30         170            078            -1             //Lance Scout
+311            34             30         173            097            -1             //Lance Scout
+311            34             30         174            054            -1             //Lance Scout
+311            34             30         177            078            -1             //Lance Scout
+311            34             30         197            078            -1             //Lance Scout
+311            34             30         210            088            -1             //Lance Scout
+311            34             30         211            069            -1             //Lance Scout
+311            34             30         221            078            -1             //Lance Scout
+311            34             30         223            120            -1             //Lance Scout
+311            34             30         225            068            -1             //Lance Scout
+311            34             30         231            078            -1             //Lance Scout
+312            34             30         021            088            -1             //Bow Scout
+312            34             30         023            115            -1             //Bow Scout
+312            34             30         030            088            -1             //Bow Scout
+312            34             30         056            115            -1             //Bow Scout
+312            34             30         068            115            -1             //Bow Scout
+312            34             30         078            088            -1             //Bow Scout
+312            34             30         079            115            -1             //Bow Scout
+312            34             30         083            101            -1             //Bow Scout
+312            34             30         090            088            -1             //Bow Scout
+312            34             30         100            088            -1             //Bow Scout
+312            34             30         114            088            -1             //Bow Scout
+312            34             30         122            115            -1             //Bow Scout
+312            34             30         124            088            -1             //Bow Scout
+312            34             30         135            088            -1             //Bow Scout
+312            34             30         145            099            -1             //Bow Scout
+312            34             30         146            088            -1             //Bow Scout
+312            34             30         155            115            -1             //Bow Scout
+312            34             30         156            084            -1             //Bow Scout
+312            34             30         168            088            -1             //Bow Scout
+312            34             30         178            088            -1             //Bow Scout
+312            34             30         192            088            -1             //Bow Scout
+312            34             30         201            089            -1             //Bow Scout
+312            34             30         202            098            -1             //Bow Scout
+312            34             30         217            094            -1             //Bow Scout
+312            34             30         233            102            -1             //Bow Scout
+312            34             30         236            088            -1             //Bow Scout
+313            34             30         019            131            -1             //Werewolf
+313            34             30         020            145            -1             //Werewolf
+313            34             30         033            130            -1             //Werewolf
+313            34             30         046            123            -1             //Werewolf
+313            34             30         071            109            -1             //Werewolf
+313            34             30         076            145            -1             //Werewolf
+313            34             30         082            107            -1             //Werewolf
+313            34             30         082            130            -1             //Werewolf
+313            34             30         088            144            -1             //Werewolf
+313            34             30         119            108            -1             //Werewolf
+313            34             30         123            130            -1             //Werewolf
+313            34             30         123            145            -1             //Werewolf
+313            34             30         149            110            -1             //Werewolf
+313            34             30         155            098            -1             //Werewolf
+313            34             30         163            130            -1             //Werewolf
+313            34             30         164            144            -1             //Werewolf
+313            34             30         197            145            -1             //Werewolf
+313            34             30         204            130            -1             //Werewolf
+313            34             30         204            130            -1             //Werewolf
+313            34             30         206            110            -1             //Werewolf
+313            34             30         218            110            -1             //Werewolf
+313            34             30         226            130            -1             //Werewolf
+313            34             30         235            110            -1             //Werewolf
+313            34             30         237            144            -1             //Werewolf
+313            34             30         240            131            -1             //Werewolf
+314            34             30         016            156            -1             //Scout(Hero)
+314            34             30         028            156            -1             //Scout(Hero)
+314            34             30         065            148            -1             //Scout(Hero)
+314            34             30         092            156            -1             //Scout(Hero)
+314            34             30         119            156            -1             //Scout(Hero)
+314            34             30         159            156            -1             //Scout(Hero)
+314            34             30         171            148            -1             //Scout(Hero)
+314            34             30         177            156            -1             //Scout(Hero)
+314            34             30         236            156            -1             //Scout(Hero)
+314            34             30         236            156            -1             //Scout(Hero)
+315            34             30         030            172            -1             //Werewolf(Hero)
+315            34             30         049            194            -1             //Werewolf(Hero)
+315            34             30         051            213            -1             //Werewolf(Hero)
+315            34             30         052            171            -1             //Werewolf(Hero)
+315            34             30         059            211            -1             //Werewolf(Hero)
+315            34             30         068            224            -1             //Werewolf(Hero)
+315            34             30         073            210            -1             //Werewolf(Hero)
+315            34             30         085            230            -1             //Werewolf(Hero)
+315            34             30         092            219            -1             //Werewolf(Hero)
+315            34             30         100            182            -1             //Werewolf(Hero)
+315            34             30         102            171            -1             //Werewolf(Hero)
+315            34             30         115            204            -1             //Werewolf(Hero)
+315            34             30         117            193            -1             //Werewolf(Hero)
+315            34             30         133            195            -1             //Werewolf(Hero)
+315            34             30         133            214            -1             //Werewolf(Hero)
+315            34             30         145            208            -1             //Werewolf(Hero)
+315            34             30         148            195            -1             //Werewolf(Hero)
+315            34             30         159            206            -1             //Werewolf(Hero)
+315            34             30         170            208            -1             //Werewolf(Hero)
+315            34             30         175            197            -1             //Werewolf(Hero)
+315            34             30         199            200            -1             //Werewolf(Hero)
+315            34             30         222            189            -1             //Werewolf(Hero)
+316            34             30         047            184            -1             //Balram
+316            34             30         084            201            -1             //Balram
+316            34             30         104            194            -1             //Balram
+316            34             30         117            184            -1             //Balram
+316            34             30         146            184            -1             //Balram
+316            34             30         161            194            -1             //Balram
+316            34             30         173            184            -1             //Balram
+316            34             30         212            193            -1             //Balram
+316            34             30         228            180            -1             //Balram
+317            34             30         014            164            -1             //Soram
+317            34             30         025            164            -1             //Soram
+317            34             30         041            171            -1             //Soram
+317            34             30         056            164            -1             //Soram
+317            34             30         065            234            -1             //Soram
+317            34             30         096            164            -1             //Soram
+317            34             30         114            164            -1             //Soram
+317            34             30         116            172            -1             //Soram
+317            34             30         140            230            -1             //Soram
+317            34             30         145            174            -1             //Soram
+317            34             30         147            164            -1             //Soram
+317            34             30         168            229            -1             //Soram
+317            34             30         177            167            -1             //Soram
+317            34             30         233            169            -1             //Soram
+316            34             30         054            217            -1             //Balram
+316            34             30         066            217            -1             //Balram
+316            34             30         083            217            -1             //Balram
+316            34             30         100            217            -1             //Balram
+316            34             30         134            215            -1             //Balram
+316            34             30         153            215            -1             //Balram
+317            34             30         115            221            -1             //Soram
+317            34             30         103            206            -1             //Soram
+end
+
+

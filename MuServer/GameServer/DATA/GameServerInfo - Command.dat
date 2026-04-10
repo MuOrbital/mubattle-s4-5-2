@@ -1,0 +1,190 @@
+[GameServerInfo]
+;==================================================
+; Case Sensitive / Case Insensitive
+; 1 = Apenas Minusculos ou como esta no Command.txt
+; 2 = Aceita Maiusculos ou Minusculos
+;==================================================
+CommandCaseSensitive = 2
+
+;==================================================
+; Post Command Settings
+;==================================================
+CommandPostSwitch = 1
+CommandPostType = 7
+
+;==================================================
+; Add Point Command Settings
+;==================================================
+CommandAddPointAutoEnable_AL0 = 0
+CommandAddPointAutoEnable_AL1 = 1
+CommandAddPointAutoEnable_AL2 = 1
+CommandAddPointAutoEnable_AL3 = 1
+
+;==================================================
+; Change Command Settings
+;==================================================
+CommandChangeLimit_AL0 = 2
+CommandChangeLimit_AL1 = 2
+CommandChangeLimit_AL2 = 2
+CommandChangeLimit_AL3 = 2
+
+;==================================================
+; Ware Command Settings
+;==================================================
+CommandWareNumber_AL0 = 10
+CommandWareNumber_AL1 = 15
+CommandWareNumber_AL2 = 15
+CommandWareNumber_AL3 = 15
+
+;==================================================
+; Reset Command Settings
+;==================================================
+CommandResetSwitch = 1
+CommandResetType = 0
+CommandResetEnable_AL0 = 1
+CommandResetEnable_AL1 = 1
+CommandResetEnable_AL2 = 1
+CommandResetEnable_AL3 = 1
+CommandResetAutoEnable_AL0 = 1
+CommandResetAutoEnable_AL1 = 1
+CommandResetAutoEnable_AL2 = 1
+CommandResetAutoEnable_AL3 = 1
+CommandResetCheckItem_AL0 = 0
+CommandResetCheckItem_AL1 = 0
+CommandResetCheckItem_AL2 = 0
+CommandResetCheckItem_AL3 = 0
+CommandResetMove_AL0 = 1
+CommandResetMove_AL1 = 1
+CommandResetMove_AL2 = 1
+CommandResetMove_AL3 = 1
+CommandResetQuest_AL0 = 0
+CommandResetQuest_AL1 = 0
+CommandResetQuest_AL2 = 0
+CommandResetQuest_AL3 = 0
+CommandResetSkill_AL0 = 0
+CommandResetSkill_AL1 = 0
+CommandResetSkill_AL2 = 0
+CommandResetSkill_AL3 = 0
+CommandResetLevel_AL0 = 400
+CommandResetLevel_AL1 = 380
+CommandResetLevel_AL2 = 380
+CommandResetLevel_AL3 = 380
+CommandResetMoney_AL0 = 0
+CommandResetMoney_AL1 = 0
+CommandResetMoney_AL2 = 0
+CommandResetMoney_AL3 = 0
+CommandResetCount_AL0 = 1
+CommandResetCount_AL1 = 1
+CommandResetCount_AL2 = 1
+CommandResetCount_AL3 = 1	
+CommandResetLimit_AL0 = 100000
+CommandResetLimit_AL1 = 100000
+CommandResetLimit_AL2 = 100000
+CommandResetLimit_AL3 = 100000
+CommandResetLimitDay_AL0 = 100000
+CommandResetLimitDay_AL1 = 100000
+CommandResetLimitDay_AL2 = 100000
+CommandResetLimitDay_AL3 = 100000
+CommandResetLimitWek_AL0 = 100000
+CommandResetLimitWek_AL1 = 100000
+CommandResetLimitWek_AL2 = 100000
+CommandResetLimitWek_AL3 = 100000
+CommandResetLimitMon_AL0 = 100000
+CommandResetLimitMon_AL1 = 100000
+CommandResetLimitMon_AL2 = 100000
+CommandResetLimitMon_AL3 = 100000
+CommandResetStartLevel_AL0 = 1
+CommandResetStartLevel_AL1 = 1
+CommandResetStartLevel_AL2 = 1
+CommandResetStartLevel_AL3 = 1
+CommandResetPoint_AL0 = 600
+CommandResetPoint_AL1 = 700
+CommandResetPoint_AL2 = 700
+CommandResetPoint_AL3 = 700
+CommandResetPointRateDW = 100
+CommandResetPointRateDK = 100
+CommandResetPointRateFE = 100
+CommandResetPointRateMG = 100
+CommandResetPointRateDL = 100
+CommandResetPointRateSU = 100
+
+;==================================================
+; Master Reset Command Settings
+;==================================================
+CommandMasterResetSwitch = 1
+CommandMasterResetType = 0
+CommandMasterResetEnable_AL0 = 1
+CommandMasterResetEnable_AL1 = 1
+CommandMasterResetEnable_AL2 = 1
+CommandMasterResetEnable_AL3 = 1
+CommandMasterResetCheckItem_AL0 = 0
+CommandMasterResetCheckItem_AL1 = 0
+CommandMasterResetCheckItem_AL2 = 0
+CommandMasterResetCheckItem_AL3 = 0
+CommandMasterResetMove_AL0 = 1
+CommandMasterResetMove_AL1 = 1
+CommandMasterResetMove_AL2 = 1
+CommandMasterResetMove_AL3 = 1
+CommandMasterResetQuest_AL0 = 0
+CommandMasterResetQuest_AL1 = 0
+CommandMasterResetQuest_AL2 = 0
+CommandMasterResetQuest_AL3 = 0
+CommandMasterResetSkill_AL0 = 0
+CommandMasterResetSkill_AL1 = 0
+CommandMasterResetSkill_AL2 = 0
+CommandMasterResetSkill_AL3 = 0
+CommandMasterResetLevel_AL0 = 400
+CommandMasterResetLevel_AL1 = 400
+CommandMasterResetLevel_AL2 = 400
+CommandMasterResetLevel_AL3 = 400
+CommandMasterResetReset_AL0 = 1000
+CommandMasterResetReset_AL1 = 1000
+CommandMasterResetReset_AL2 = 1000
+CommandMasterResetReset_AL3 = 1000
+CommandMasterResetMoney_AL0 = 0
+CommandMasterResetMoney_AL1 = 0
+CommandMasterResetMoney_AL2 = 0
+CommandMasterResetMoney_AL3 = 0
+CommandMasterResetCount_AL0 = 1					
+CommandMasterResetCount_AL1 = 1	
+CommandMasterResetCount_AL2 = 1	
+CommandMasterResetCount_AL3 = 1
+CommandMasterResetLimit_AL0 = 10000
+CommandMasterResetLimit_AL1 = 10000
+CommandMasterResetLimit_AL2 = 10000
+CommandMasterResetLimit_AL3 = 10000
+CommandMasterResetLimitDay_AL0 = 10000
+CommandMasterResetLimitDay_AL1 = 10000
+CommandMasterResetLimitDay_AL2 = 10000
+CommandMasterResetLimitDay_AL3 = 10000
+CommandMasterResetLimitWek_AL0 = 10000
+CommandMasterResetLimitWek_AL1 = 10000
+CommandMasterResetLimitWek_AL2 = 10000
+CommandMasterResetLimitWek_AL3 = 10000
+CommandMasterResetLimitMon_AL0 = 10000
+CommandMasterResetLimitMon_AL1 = 10000
+CommandMasterResetLimitMon_AL2 = 10000
+CommandMasterResetLimitMon_AL3 = 10000
+CommandMasterResetStartLevel_AL0 = 1
+CommandMasterResetStartLevel_AL1 = 1
+CommandMasterResetStartLevel_AL2 = 1
+CommandMasterResetStartLevel_AL3 = 1
+CommandMasterResetStartReset_AL0 = -1
+CommandMasterResetStartReset_AL1 = -1
+CommandMasterResetStartReset_AL2 = -1
+CommandMasterResetStartReset_AL3 = -1
+CommandMasterResetPoint_AL0 = 1000
+CommandMasterResetPoint_AL1 = 1000
+CommandMasterResetPoint_AL2 = 1000
+CommandMasterResetPoint_AL3 = 1000
+CommandMasterResetPointRateDW = 100
+CommandMasterResetPointRateDK = 100
+CommandMasterResetPointRateFE = 100
+CommandMasterResetPointRateMG = 100
+CommandMasterResetPointRateDL = 100
+CommandMasterResetPointRateSU = 100
+CommandMasterResetStrengthReq = 65000
+CommandMasterResetAgilityReq = 65000
+CommandMasterResetVitalityhReq = 65000
+CommandMasterResetEnergyReq = 65000
+CommandMasterResetCommandReq = 65000

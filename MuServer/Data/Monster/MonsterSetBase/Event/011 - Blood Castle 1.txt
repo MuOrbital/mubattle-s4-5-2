@@ -1,0 +1,64 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+232            11             00         010            009            01             //Archangel
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+3
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction     Quantity      Value      Comment
+end
+
+
+4
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+084            11             30         014            034            00             //Chief Skeleton Warrior
+084            11             30         014            038            00             //Chief Skeleton Warrior
+084            11             30         015            045            00             //Chief Skeleton Warrior
+084            11             30         015            031            00             //Chief Skeleton Warrior
+085            11             30         013            023            00             //Chief Skeleton Archer
+085            11             30         015            043            00             //Chief Skeleton Archer
+085            11             30         015            030            00             //Chief Skeleton Archer
+085            11             30         015            033            00             //Chief Skeleton Archer
+085            11             30         014            021            00             //Chief Skeleton Archer
+085            11             30         013            043            00             //Chief Skeleton Archer
+085            11             30         015            026            00             //Chief Skeleton Archer
+086            11             30         015            046            00             //Dark Skull Soldier
+086            11             30         015            063            00             //Dark Skull Soldier
+086            11             30         015            053            00             //Dark Skull Soldier
+086            11             30         013            065            00             //Dark Skull Soldier
+086            11             30         014            064            00             //Dark Skull Soldier
+086            11             30         014            067            00             //Dark Skull Soldier
+086            11             30         013            053            00             //Dark Skull Soldier
+086            11             30         015            065            00             //Dark Skull Soldier
+086            11             30         015            060            00             //Dark Skull Soldier
+086            11             30         013            057            00             //Dark Skull Soldier
+087            11             30         013            069            00             //Giant Ogre
+087            11             30         014            061            00             //Giant Ogre
+087            11             30         013            055            00             //Giant Ogre
+087            11             30         014            070            00             //Giant Ogre
+087            11             30         013            048            00             //Giant Ogre
+087            11             30         013            063            00             //Giant Ogre
+088            11             30         013            078            00             //Red Skeleton Knight
+088            11             30         014            083            00             //Red Skeleton Knight
+088            11             30         014            078            00             //Red Skeleton Knight
+088            11             30         015            078            00             //Red Skeleton Knight
+088            11             30         016            080            00             //Red Skeleton Knight
+088            11             30         015            062            00             //Red Skeleton Knight
+088            11             30         015            068            00             //Red Skeleton Knight
+088            11             30         014            047            00             //Red Skeleton Knight
+089            11             30         016            087            00             //Magic Skeleton
+089            11             30         014            080            00             //Magic Skeleton
+089            11             30         018            081            00             //Magic Skeleton
+end
+
+

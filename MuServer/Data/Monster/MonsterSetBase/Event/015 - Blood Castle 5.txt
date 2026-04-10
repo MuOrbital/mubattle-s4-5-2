@@ -1,0 +1,62 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+232            15             00         010            009            01             //Archangel
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+3
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction     Quantity      Value      Comment
+end
+
+
+4
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+119            15             30         014            034            04             //Chief Skeleton Warrior
+119            15             30         014            038            04             //Chief Skeleton Warrior
+119            15             30         013            035            04             //Chief Skeleton Warrior
+119            15             30         013            028            04             //Chief Skeleton Warrior
+119            15             30         015            035            04             //Chief Skeleton Warrior
+119            15             30         014            032            04             //Chief Skeleton Warrior
+119            15             30         015            045            04             //Chief Skeleton Warrior
+119            15             30         015            031            04             //Chief Skeleton Warrior
+120            15             30         013            045            04             //Chief Skeleton Archer
+120            15             30         013            023            04             //Chief Skeleton Archer
+120            15             30         015            043            04             //Chief Skeleton Archer
+120            15             30         015            037            04             //Chief Skeleton Archer
+120            15             30         014            021            04             //Chief Skeleton Archer
+120            15             30         013            043            04             //Chief Skeleton Archer
+120            15             30         015            026            04             //Chief Skeleton Archer
+121            15             30         015            046            04             //Dark Skull Soldier
+121            15             30         014            067            04             //Dark Skull Soldier
+121            15             30         013            053            04             //Dark Skull Soldier
+121            15             30         015            065            04             //Dark Skull Soldier
+121            15             30         015            060            04             //Dark Skull Soldier
+121            15             30         013            057            04             //Dark Skull Soldier
+122            15             30         013            069            04             //Giant Ogre
+122            15             30         014            070            04             //Giant Ogre
+122            15             30         013            048            04             //Giant Ogre
+122            15             30         013            063            04             //Giant Ogre
+123            15             30         013            078            04             //Red Skeleton Knight
+123            15             30         014            083            04             //Red Skeleton Knight
+123            15             30         020            088            04             //Red Skeleton Knight
+123            15             30         014            054            04             //Red Skeleton Knight
+123            15             30         014            036            04             //Red Skeleton Knight
+123            15             30         015            068            04             //Red Skeleton Knight
+123            15             30         014            047            04             //Red Skeleton Knight
+124            15             30         016            087            04             //Magic Skeleton
+124            15             30         013            093            04             //Magic Skeleton
+124            15             30         014            080            04             //Magic Skeleton
+124            15             30         018            081            04             //Magic Skeleton
+end
+
+

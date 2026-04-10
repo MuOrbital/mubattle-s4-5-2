@@ -1,0 +1,34 @@
+//Section   Type   Level   Dur   Skill   Luck   Option   Excellent  Coment
+7	    39	   7	   255	 0	 1	1	 0	    // Violent Wind Helm
+7	    40	   7	   255	 0	 1	1	 0	    // Red Wing Helm
+7	    41	   7	   255	 0	 1	1	 0	    // Ancient Helm
+7	    42	   7	   255	 0	 1	1	 0	    // Demonic Helm
+8	    39	   7	   255	 0	 1	1	 0	    // Violent Wind Armor
+8	    40	   7	   255	 0	 1	1	 0	    // Red Wing Armor
+8	    41	   7	   255	 0	 1	1	 0	    // Ancient Armor
+8	    42	   7	   255	 0	 1	1	 0	    // Demonic Armor
+9	    39	   7	   255	 0	 1	1	 0	    // Violent Wind Pants
+9	    40	   7	   255	 0	 1	1	 0	    // Red Wing Pants
+9	    41	   7	   255	 0	 1	1	 0	    // Ancient Pants
+9	    42	   7	   255	 0	 1	1	 0	    // Demonic Pants
+10	    39	   7	   255	 0	 1	1	 0	    // Violent Wind Gloves
+10	    40	   7	   255	 0	 1	1	 0	    // Red Wing Gloves
+10	    41	   7	   255	 0	 1	1	 0	    // Ancient Gloves
+10	    42	   7	   255	 0	 1	1	 0	    // Demonic Gloves
+11	    39	   7	   255	 0	 1	1	 0	    // Violent Wind Boots
+11	    40	   7	   255	 0	 1	1	 0	    // Red Wing Boots
+11	    41	   7	   255	 0	 1	1	 0	    // Ancient Boots
+11	    42	   7	   255	 0	 1	1	 0	    // Demonic Boots
+5	    15	   7	   255	 1	 1	1	 0	    // Violent Wind Stick
+5	    16	   7	   255	 1	 1	1	 0	    // Red Wing Stick
+5	    17	   7	   255	 1	 1	1	 0	    // Ancient Stick
+5	    18	   7	   255	 1	 1	1	 0	    // Demonic Stick
+15	    19	   0	   0	 0	 0	0	 0	    // Chain Lightning Parchment
+15	    20	   0	   0	 0	 0	0	 0	    // Drain Life Parchment
+15	    21	   0	   0	 0	 0	0	 0	    // Lightning Shock Parchment
+15	    22	   0	   0	 0	 0	0	 0	    // Damage Reflection Parchment
+15	    23	   0	   0	 0	 0	0	 0	    // Berserker Parchment
+15	    24	   0	   0	 0	 0	0	 0	    // Sleep Parchment
+15	    26	   0	   0	 0	 0	0	 0	    // Weakness Parchment
+15	    27	   0	   0	 0	 0	0	 0	    // Innovation Parchment
+end

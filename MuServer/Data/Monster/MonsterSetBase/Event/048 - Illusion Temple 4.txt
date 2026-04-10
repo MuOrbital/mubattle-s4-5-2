@@ -1,0 +1,61 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+381            48             00         195            116            02             //MU Allies General
+382            48             00         140            061            02             //Illusion Sorcerer Elder
+383            48             00         139            059            02             //Alliance Sacred Item Storage
+384            48             00         192            116            02             //Illusion Castle Sacred Item Sto
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+3
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction     Quantity      Value      Comment
+end
+
+
+4
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+395            48             10         131            093            05             //Illusion Sorcerer Spirit
+396            48             10         131            089            03             //Illusion Sorcerer Spirit
+397            48             10         131            085            02             //Illusion Sorcerer Spirit
+395            48             10         168            123            06             //Illusion Sorcerer Spirit
+396            48             10         164            123            02             //Illusion Sorcerer Spirit
+397            48             10         160            123            01             //Illusion Sorcerer Spirit
+395            48             10         169            048            03             //Illusion Sorcerer Spirit
+396            48             10         169            052            00             //Illusion Sorcerer Spirit
+397            48             10         169            056            03             //Illusion Sorcerer Spirit
+395            48             10         206            085            02             //Illusion Sorcerer Spirit
+396            48             10         206            081            02             //Illusion Sorcerer Spirit
+397            48             10         206            077            07             //Illusion Sorcerer Spirit
+395            48             10         158            085            04             //Illusion Sorcerer Spirit
+396            48             10         168            094            04             //Illusion Sorcerer Spirit
+397            48             10         169            075            03             //Illusion Sorcerer Spirit
+395            48             10         179            085            07             //Illusion Sorcerer Spirit
+396            48             10         157            066            04             //Illusion Sorcerer Spirit
+397            48             10         162            066            00             //Illusion Sorcerer Spirit
+395            48             10         150            078            07             //Illusion Sorcerer Spirit
+396            48             10         150            073            01             //Illusion Sorcerer Spirit
+397            48             10         176            103            00             //Illusion Sorcerer Spirit
+395            48             10         181            103            03             //Illusion Sorcerer Spirit
+396            48             10         187            098            04             //Illusion Sorcerer Spirit
+397            48             10         187            092            06             //Illusion Sorcerer Spirit
+395            48             10         197            057            05             //Illusion Sorcerer Spirit
+396            48             10         141            113            05             //Illusion Sorcerer Spirit
+397            48             10         193            061            03             //Illusion Sorcerer Spirit
+395            48             10         145            109            05             //Illusion Sorcerer Spirit
+396            48             10         189            065            05             //Illusion Sorcerer Spirit
+397            48             10         149            105            07             //Illusion Sorcerer Spirit
+395            48             10         167            087            05             //Illusion Sorcerer Spirit
+396            48             10         171            083            05             //Illusion Sorcerer Spirit
+end
+
+

@@ -1,0 +1,124 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+3
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction     Quantity      Value      Comment
+end
+
+
+4
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+164            19             30         026            105            01             //Chaos Castle 3
+165            19             30         026            098            01             //Chaos Castle 4
+164            19             30         028            090            01             //Chaos Castle 3
+165            19             30         027            086            01             //Chaos Castle 4
+164            19             30         028            082            01             //Chaos Castle 3
+165            19             30         026            079            01             //Chaos Castle 4
+164            19             30         034            078            01             //Chaos Castle 3
+165            19             30         033            081            01             //Chaos Castle 4
+164            19             30         039            078            01             //Chaos Castle 3
+165            19             30         026            077            01             //Chaos Castle 4
+164            19             30         038            080            01             //Chaos Castle 3
+165            19             30         043            077            01             //Chaos Castle 4
+164            19             30         038            086            01             //Chaos Castle 3
+165            19             30         043            084            01             //Chaos Castle 4
+164            19             30         041            082            01             //Chaos Castle 3
+165            19             30         027            094            01             //Chaos Castle 4
+164            19             30         032            091            01             //Chaos Castle 3
+165            19             30         029            084            01             //Chaos Castle 4
+164            19             30         042            090            01             //Chaos Castle 3
+165            19             30         044            087            01             //Chaos Castle 4
+164            19             30         030            078            01             //Chaos Castle 3
+165            19             30         038            092            01             //Chaos Castle 4
+164            19             30         040            098            01             //Chaos Castle 3
+165            19             30         029            101            01             //Chaos Castle 4
+164            19             30         033            103            01             //Chaos Castle 3
+165            19             30         038            089            01             //Chaos Castle 4
+164            19             30         042            105            01             //Chaos Castle 3
+165            19             30         042            099            01             //Chaos Castle 4
+164            19             30         035            105            01             //Chaos Castle 3
+165            19             30         029            093            01             //Chaos Castle 4
+164            19             30         028            097            01             //Chaos Castle 3
+165            19             30         026            084            01             //Chaos Castle 4
+164            19             30         028            079            01             //Chaos Castle 3
+164            19             30         025            082            01             //Chaos Castle 3
+165            19             30         029            076            01             //Chaos Castle 4
+164            19             30         033            076            01             //Chaos Castle 3
+165            19             30         035            079            01             //Chaos Castle 4
+164            19             30         031            080            01             //Chaos Castle 3
+165            19             30         041            079            01             //Chaos Castle 4
+164            19             30         038            076            01             //Chaos Castle 3
+165            19             30         036            081            01             //Chaos Castle 4
+164            19             30         039            082            01             //Chaos Castle 3
+165            19             30         041            086            01             //Chaos Castle 4
+164            19             30         042            094            01             //Chaos Castle 3
+165            19             30         035            092            01             //Chaos Castle 4
+164            19             30         034            090            01             //Chaos Castle 3
+165            19             30         038            101            01             //Chaos Castle 4
+164            19             30         030            105            01             //Chaos Castle 3
+165            19             30         026            102            01             //Chaos Castle 4
+164            19             30         028            100            01             //Chaos Castle 3
+165            19             30         038            106            01             //Chaos Castle 4
+164            19             30         035            102            01             //Chaos Castle 3
+165            19             30         042            102            01             //Chaos Castle 4
+164            19             30         043            096            01             //Chaos Castle 3
+165            19             30         030            088            01             //Chaos Castle 4
+164            19             30         025            091            01             //Chaos Castle 3
+165            19             30         029            091            01             //Chaos Castle 4
+164            19             30         030            098            01             //Chaos Castle 3
+165            19             30         041            093            01             //Chaos Castle 4
+164            19             30         041            089            01             //Chaos Castle 3
+165            19             30         043            091            01             //Chaos Castle 4
+164            19             30         039            095            01             //Chaos Castle 3
+165            19             30         032            101            01             //Chaos Castle 4
+164            19             30         029            103            01             //Chaos Castle 3
+165            19             30         033            105            01             //Chaos Castle 4
+164            19             30         025            097            01             //Chaos Castle 3
+165            19             30         024            094            01             //Chaos Castle 4
+164            19             30         027            088            01             //Chaos Castle 3
+165            19             30         032            094            01             //Chaos Castle 4
+164            19             30         032            089            01             //Chaos Castle 3
+165            19             30         036            092            01             //Chaos Castle 4
+164            19             30         037            089            01             //Chaos Castle 3
+165            19             30         040            091            01             //Chaos Castle 4
+164            19             30         038            099            01             //Chaos Castle 3
+165            19             30         040            101            01             //Chaos Castle 4
+164            19             30         043            081            01             //Chaos Castle 3
+165            19             30         036            076            01             //Chaos Castle 4
+164            19             30         042            075            01             //Chaos Castle 3
+165            19             30         026            075            01             //Chaos Castle 4
+164            19             30         024            080            01             //Chaos Castle 3
+165            19             30         030            082            01             //Chaos Castle 4
+164            19             30         024            089            01             //Chaos Castle 3
+165            19             30         024            086            01             //Chaos Castle 4
+164            19             30         024            101            01             //Chaos Castle 3
+165            19             30         037            104            01             //Chaos Castle 4
+164            19             30         041            096            01             //Chaos Castle 3
+165            19             30         039            087            01             //Chaos Castle 4
+164            19             30         041            076            01             //Chaos Castle 3
+165            19             30         038            084            01             //Chaos Castle 4
+164            19             30         038            096            01             //Chaos Castle 3
+165            19             30         030            095            01             //Chaos Castle 4
+164            19             30         032            078            01             //Chaos Castle 3
+165            19             30         029            086            01             //Chaos Castle 4
+164            19             30         027            104            01             //Chaos Castle 3
+165            19             30         040            104            01             //Chaos Castle 4
+164            19             30         044            102            01             //Chaos Castle 3
+165            19             30         043            098            01             //Chaos Castle 4
+164            19             30         039            093            01             //Chaos Castle 3
+165            19             30         041            084            01             //Chaos Castle 4
+end
+
+

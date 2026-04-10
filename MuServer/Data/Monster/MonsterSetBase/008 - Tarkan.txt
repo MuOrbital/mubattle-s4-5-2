@@ -1,0 +1,223 @@
+//=========================================================================================================================================
+// MONSTERS
+//=========================================================================================================================================
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+061            08             30         007            205            -1             //Beam Knight
+061            08             30         005            214            -1             //Beam Knight
+058            08             30         008            219            -1             //Tantalos
+061            08             30         006            228            -1             //Beam Knight
+059            08             30         011            241            -1             //Zaikan
+058            08             30         018            238            -1             //Tantalos
+062            08             30         146            053            -1             //Mutant
+061            08             30         072            167            -1             //Beam Knight
+061            08             30         083            176            -1             //Beam Knight
+061            08             30         063            173            -1             //Beam Knight
+062            08             30         148            043            -1             //Mutant
+062            08             30         155            040            -1             //Mutant
+062            08             30         134            057            -1             //Mutant
+062            08             30         151            034            -1             //Mutant
+062            08             30         149            028            -1             //Mutant
+062            08             30         141            074            -1             //Mutant
+062            08             30         142            068            -1             //Mutant
+061            08             30         011            234            -1             //Beam Knight
+062            08             30         141            024            -1             //Mutant
+062            08             30         137            020            -1             //Mutant
+062            08             30         132            015            -1             //Mutant
+060            08             30         148            066            -1             //Bloody wolf
+062            08             30         134            082            -1             //Mutant
+062            08             30         135            089            -1             //Mutant
+062            08             30         136            096            -1             //Mutant
+062            08             30         148            091            -1             //Mutant
+062            08             30         157            089            -1             //Mutant
+062            08             30         158            080            -1             //Mutant
+062            08             30         154            073            -1             //Mutant
+062            08             30         162            101            -1             //Mutant
+062            08             30         161            110            -1             //Mutant
+062            08             30         171            116            -1             //Mutant
+062            08             30         180            112            -1             //Mutant
+062            08             30         190            112            -1             //Mutant
+062            08             30         197            108            -1             //Mutant
+062            08             30         205            105            -1             //Mutant
+062            08             30         186            120            -1             //Mutant
+060            08             30         181            123            -1             //Bloody wolf
+062            08             30         173            129            -1             //Mutant
+062            08             30         169            136            -1             //Mutant
+062            08             30         162            141            -1             //Mutant
+062            08             30         159            148            -1             //Mutant
+062            08             30         151            155            -1             //Mutant
+062            08             30         152            147            -1             //Mutant
+062            08             30         152            133            -1             //Mutant
+062            08             30         162            129            -1             //Mutant
+062            08             30         152            125            -1             //Mutant
+062            08             30         152            116            -1             //Mutant
+062            08             30         171            106            -1             //Mutant
+062            08             30         151            101            -1             //Mutant
+062            08             30         142            100            -1             //Mutant
+062            08             30         140            037            -1             //Mutant
+062            08             30         133            065            -1             //Mutant
+060            08             30         134            072            -1             //Bloody wolf
+060            08             30         128            074            -1             //Bloody wolf
+057            08             30         123            073            -1             //Iron Wheel
+060            08             30         115            086            -1             //Bloody wolf
+060            08             30         121            087            -1             //Bloody wolf
+060            08             30         128            098            -1             //Bloody wolf
+060            08             30         121            099            -1             //Bloody wolf
+060            08             30         108            095            -1             //Bloody wolf
+060            08             30         104            087            -1             //Bloody wolf
+060            08             30         107            080            -1             //Bloody wolf
+060            08             30         109            064            -1             //Bloody wolf
+060            08             30         108            055            -1             //Bloody wolf
+060            08             30         118            042            -1             //Bloody wolf
+060            08             30         126            042            -1             //Bloody wolf
+060            08             30         133            044            -1             //Bloody wolf
+060            08             30         125            026            -1             //Bloody wolf
+060            08             30         113            034            -1             //Bloody wolf
+060            08             30         105            033            -1             //Bloody wolf
+060            08             30         108            043            -1             //Bloody wolf
+060            08             30         103            049            -1             //Bloody wolf
+060            08             30         097            046            -1             //Bloody wolf
+060            08             30         088            041            -1             //Bloody wolf
+060            08             30         095            026            -1             //Bloody wolf
+060            08             30         096            036            -1             //Bloody wolf
+060            08             30         096            056            -1             //Bloody wolf
+060            08             30         102            061            -1             //Bloody wolf
+060            08             30         104            070            -1             //Bloody wolf
+060            08             30         096            078            -1             //Bloody wolf
+060            08             30         097            066            -1             //Bloody wolf
+057            08             30         081            063            -1             //Iron Wheel
+057            08             30         070            057            -1             //Iron Wheel
+057            08             30         065            064            -1             //Iron Wheel
+057            08             30         064            071            -1             //Iron Wheel
+057            08             30         056            075            -1             //Iron Wheel
+057            08             30         046            071            -1             //Iron Wheel
+057            08             30         038            071            -1             //Iron Wheel
+057            08             30         035            062            -1             //Iron Wheel
+057            08             30         027            075            -1             //Iron Wheel
+057            08             30         034            078            -1             //Iron Wheel
+057            08             30         025            083            -1             //Iron Wheel
+057            08             30         021            092            -1             //Iron Wheel
+058            08             30         038            087            -1             //Tantalos
+057            08             30         038            098            -1             //Iron Wheel
+057            08             30         048            099            -1             //Iron Wheel
+057            08             30         055            100            -1             //Iron Wheel
+057            08             30         062            091            -1             //Iron Wheel
+057            08             30         070            092            -1             //Iron Wheel
+057            08             30         079            089            -1             //Iron Wheel
+057            08             30         085            091            -1             //Iron Wheel
+060            08             30         091            086            -1             //Bloody wolf
+057            08             30         089            071            -1             //Iron Wheel
+057            08             30         090            050            -1             //Iron Wheel
+058            08             30         069            120            -1             //Tantalos
+058            08             30         061            121            -1             //Tantalos
+058            08             30         054            120            -1             //Tantalos
+058            08             30         043            121            -1             //Tantalos
+058            08             30         035            121            -1             //Tantalos
+058            08             30         024            120            -1             //Tantalos
+058            08             30         018            127            -1             //Tantalos
+058            08             30         025            127            -1             //Tantalos
+058            08             30         032            132            -1             //Tantalos
+058            08             30         029            098            -1             //Tantalos
+058            08             30         042            134            -1             //Tantalos
+058            08             30         035            141            -1             //Tantalos
+058            08             30         026            149            -1             //Tantalos
+058            08             30         026            160            -1             //Tantalos
+058            08             30         033            157            -1             //Tantalos
+058            08             30         040            150            -1             //Tantalos
+058            08             30         052            138            -1             //Tantalos
+058            08             30         061            134            -1             //Tantalos
+060            08             30         074            081            -1             //Bloody wolf
+058            08             30         075            133            -1             //Tantalos
+058            08             30         081            126            -1             //Tantalos
+058            08             30         087            120            -1             //Tantalos
+058            08             30         077            118            -1             //Tantalos
+058            08             30         096            123            -1             //Tantalos
+058            08             30         107            119            -1             //Tantalos
+058            08             30         112            124            -1             //Tantalos
+058            08             30         119            139            -1             //Tantalos
+058            08             30         107            139            -1             //Tantalos
+058            08             30         105            130            -1             //Tantalos
+058            08             30         107            149            -1             //Tantalos
+058            08             30         086            131            -1             //Tantalos
+061            08             30         073            125            -1             //Beam Knight
+058            08             30         076            145            -1             //Tantalos
+058            08             30         069            139            -1             //Tantalos
+058            08             30         060            143            -1             //Tantalos
+058            08             30         052            157            -1             //Tantalos
+058            08             30         052            165            -1             //Tantalos
+058            08             30         045            175            -1             //Tantalos
+058            08             30         033            168            -1             //Tantalos
+058            08             30         035            175            -1             //Tantalos
+058            08             30         042            164            -1             //Tantalos
+058            08             30         064            164            -1             //Tantalos
+061            08             30         131            178            -1             //Beam Knight
+058            08             30         079            156            -1             //Tantalos
+058            08             30         093            137            -1             //Tantalos
+058            08             30         115            154            -1             //Tantalos
+058            08             30         124            152            -1             //Tantalos
+058            08             30         129            141            -1             //Tantalos
+058            08             30         125            129            -1             //Tantalos
+058            08             30         124            161            -1             //Tantalos
+058            08             30         115            168            -1             //Tantalos
+058            08             30         120            177            -1             //Tantalos
+061            08             30         127            171            -1             //Beam Knight
+061            08             30         127            188            -1             //Beam Knight
+061            08             30         121            196            -1             //Beam Knight
+061            08             30         123            208            -1             //Beam Knight
+061            08             30         121            217            -1             //Beam Knight
+061            08             30         106            225            -1             //Beam Knight
+061            08             30         109            217            -1             //Beam Knight
+061            08             30         102            212            -1             //Beam Knight
+061            08             30         098            207            -1             //Beam Knight
+061            08             30         088            208            -1             //Beam Knight
+061            08             30         080            207            -1             //Beam Knight
+061            08             30         078            198            -1             //Beam Knight
+061            08             30         088            189            -1             //Beam Knight
+061            08             30         083            185            -1             //Beam Knight
+058            08             30         098            193            -1             //Tantalos
+061            08             30         073            179            -1             //Beam Knight
+058            08             30         071            184            -1             //Tantalos
+061            08             30         161            188            -1             //Beam Knight
+061            08             30         114            209            -1             //Beam Knight
+061            08             30         153            187            -1             //Beam Knight
+061            08             30         166            190            -1             //Beam Knight
+061            08             30         159            195            -1             //Beam Knight
+061            08             30         172            195            -1             //Beam Knight
+061            08             30         179            194            -1             //Beam Knight
+061            08             30         183            201            -1             //Beam Knight
+061            08             30         177            207            -1             //Beam Knight
+058            08             30         176            214            -1             //Tantalos
+061            08             30         173            221            -1             //Beam Knight
+058            08             30         160            203            -1             //Tantalos
+063            08             30         161            225            -1             //Death Beam Knight
+061            08             30         161            218            -1             //Beam Knight
+061            08             30         157            214            -1             //Beam Knight
+061            08             30         153            209            -1             //Beam Knight
+061            08             30         150            203            -1             //Beam Knight
+061            08             30         167            225            -1             //Beam Knight
+061            08             30         093            150            -1             //Beam Knight
+061            08             30         169            204            -1             //Beam Knight
+061            08             30         044            213            -1             //Beam Knight
+061            08             30         039            210            -1             //Beam Knight
+061            08             30         031            207            -1             //Beam Knight
+058            08             30         024            212            -1             //Tantalos
+058            08             30         027            229            -1             //Tantalos
+061            08             30         031            236            -1             //Beam Knight
+061            08             30         029            245            -1             //Beam Knight
+058            08             30         036            225            -1             //Tantalos
+058            08             30         042            244            -1             //Tantalos
+061            08             30         050            241            -1             //Beam Knight
+061            08             30         050            230            -1             //Beam Knight
+061            08             30         043            222            -1             //Beam Knight
+061            08             30         029            220            -1             //Beam Knight
+061            08             30         015            218            -1             //Beam Knight
+061            08             30         019            205            -1             //Beam Knight
+061            08             30         011            246            -1             //Beam Knight
+061            08             30         006            240            -1             //Beam Knight
+061            08             30         157            224            -1             //Beam Knight
+061            08             30         085            141            -1             //Beam Knight
+058            08             30         022            244            -1             //Tantalos
+058            08             30         052            204            -1             //Tantalos
+058            08             30         165            219            -1             //Tantalos
+057            08             30         114            078            -1             //Iron Wheel
+end

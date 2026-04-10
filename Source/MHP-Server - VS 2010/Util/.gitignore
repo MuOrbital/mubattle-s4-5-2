@@ -1,0 +1,7 @@
+*.obj
+*.pdb
+*.tlog
+*.pch
+*.log
+Release/
+Debug/

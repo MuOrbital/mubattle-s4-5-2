@@ -1,0 +1,29 @@
+//Section       Type    Level   Dur     Skill   Luck    Option  ExcOp	Coment
+7		25	7	255	0	1	1	0	// Light Plate Mask
+7		26	7	255	0	1	1	0	// Adamantine Mask
+7		27	7	255	0	1	1	0	// Dark Steel Mask
+2		8	7	255	1	1	1	0	// Battle Scepter
+2		9	7	255	1	1	1	0	// Master Scepter
+8		25	7	255	0	1	1	0	// Light Plate Armor
+8		26	7	255	0	1	1	0	// Adamantine Armor
+8		27	7	255	0	1	1	0	// Dark Steel Armor
+2		10	7	255	1	1	1	0	// Great Scepter
+2		11	7	255	1	1	1	0	// Lord Scepter
+9		25	7	255	0	1	1	0	// Light Plate Pants
+9		26	7	255	0	1	1	0	// Adamantine Pants
+9		27	7	255	0	1	1	0	// Dark Steel Pants
+10		25	7	255	0	1	1	0	// Light Plate Gloves
+10		26	7	255	0	1	1	0	// Adamantine Gloves
+10		27	7	255	0	1	1	0	// Dark Steel Gloves
+12		21	0	255	0	0	1	0	// Scroll of FireBurst
+12		23	0	255	0	0	1	0	// Scroll of Critical Damage
+11		25	7	255	0	1	1	0	// Light Plate Boots
+11		26	7	255	0	1	1	0	// Adamantine Boots
+11		27	7	255	0	1	1	0	// Dark Steel Boots
+12		24	0	0	0	0	0	0	// Scroll of Electric Spark
+12		22	0	0	0	0	0	0	// Scroll of Summon
+12		35	0	0	0	0	0	0	// Scroll of Fire Scream
+12		48	0	0	0	0	0	0	// Scroll of Chaotic Diseier
+13		4	0	255	0	0	0	0	// Scroll of Chaotic Diseier
+13		5	0	255	0	0	0	0	// Scroll of Chaotic Diseier
+end

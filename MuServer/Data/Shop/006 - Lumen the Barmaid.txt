@@ -1,0 +1,8 @@
+//Section   Type   Level   Dur   Skill   Luck   Option   ExcOp   Coment
+14	    1      0       255   0       0      0        0	 //Small Healing Potion
+14	    2      0       255   0       0      0        0	 //Healing Potion
+14	    3      0       255   0       0      0        0	 //Small Mana Potion
+14	    4      0       255   0       0      0        0	 //Small Mana Potion
+14	    5      0       255   0       0      0        0	 //Mana Potion
+14	    6      0       255   0       0      0        0	 //Small Mana Potion
+end

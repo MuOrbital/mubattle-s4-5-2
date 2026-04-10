@@ -1,0 +1,65 @@
+//=========================================================================================================================================
+// MONSTERS
+//=========================================================================================================================================
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+454            57             30         203            204            -1             //Ice Walker
+454            57             30         196            203            -1             //Ice Walker
+454            57             30         188            203            -1             //Ice Walker
+454            57             30         179            204            -1             //Ice Walker
+455            57             30         171            207            -1             //Giant Mammoth
+455            57             30         174            214            -1             //Giant Mammoth
+455            57             30         164            212            -1             //Giant Mammoth
+456            57             30         168            217            -1             //Ice Giant
+456            57             30         157            217            -1             //Ice Giant
+456            57             30         153            210            -1             //Ice Giant
+456            57             30         172            188            -1             //Ice Giant
+456            57             30         166            187            -1             //Ice Giant
+456            57             30         162            182            -1             //Ice Giant
+457            57             30         149            197            -1             //Coolutin
+457            57             30         153            194            -1             //Coolutin
+457            57             30         143            214            -1             //Coolutin
+458            57             30         120            181            -1             //Iron Knight
+458            57             30         134            184            -1             //Iron Knight
+458            57             30         111            219            -1             //Iron Knight
+458            57             30         101            217            -1             //Iron Knight
+458            57             30         090            213            -1             //Iron Knight
+458            57             30         098            178            -1             //Iron Knight
+458            57             30         123            142            -1             //Iron Knight
+458            57             30         143            135            -1             //Iron Knight
+458            57             30         144            107            -1             //Iron Knight
+458            57             30         127            099            -1             //Iron Knight
+458            57             30         161            135            -1             //Iron Knight
+458            57             30         191            144            -1             //Iron Knight
+458            57             30         189            102            -1             //Iron Knight
+458            57             30         196            104            -1             //Iron Knight
+458            57             30         220            092            -1             //Iron Knight
+458            57             30         233            113            -1             //Iron Knight
+458            57             30         232            140            -1             //Iron Knight
+458            57             30         222            081            -1             //Iron Knight
+458            57             30         203            028            -1             //Iron Knight
+458            57             30         211            033            -1             //Iron Knight
+458            57             30         215            042            -1             //Iron Knight
+458            57             30         203            049            -1             //Iron Knight
+457            57             30         207            026            -1             //Coolutin
+457            57             30         210            039            -1             //Coolutin
+457            57             30         225            089            -1             //Coolutin
+457            57             30         212            095            -1             //Coolutin
+457            57             30         196            120            -1             //Coolutin
+457            57             30         185            140            -1             //Coolutin
+457            57             30         133            099            -1             //Coolutin
+457            57             30         130            135            -1             //Coolutin
+456            57             30         192            110            -1             //Ice Giant
+456            57             30         197            132            -1             //Ice Giant
+456            57             30         202            149            -1             //Ice Giant
+456            57             30         152            136            -1             //Ice Giant
+456            57             30         136            137            -1             //Ice Giant
+456            57             30         136            106            -1             //Ice Giant
+456            57             30         116            148            -1             //Ice Giant
+456            57             30         095            195            -1             //Ice Giant
+455            57             30         142            126            -1             //Giant Mammoth
+455            57             30         223            150            -1             //Giant Mammoth
+454            57             30         204            104            -1             //Ice Walker
+454            57             30         154            129            -1             //Ice Walker
+454            57             30         141            113            -1             //Ice Walker
+end

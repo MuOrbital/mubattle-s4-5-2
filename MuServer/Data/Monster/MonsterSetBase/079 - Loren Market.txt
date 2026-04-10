@@ -1,0 +1,28 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+546            79             00         131            109            03             //Jeweler Raul
+545            79             00         113            116            03             //Christine the General Goods Mer
+547            79             00         123            140            03             //Market Union Member Julia
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+3
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction     Quantity      Value      Comment
+end
+
+
+4
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+

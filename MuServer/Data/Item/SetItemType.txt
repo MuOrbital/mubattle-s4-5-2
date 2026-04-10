@@ -1,0 +1,170 @@
+//Index   StatType   OptionIndex1   OptionIndex2   Comment
+2         0          21             0              //Rapier
+14        0          11             0              //Lighting Sword
+32        0          37             38             //Sacred Glove
+1025      0          1              0              //Morning Star
+2053      1          29             0              //Silver Bow
+2057      1          23             0              //Golden Crossbow
+2560      2          13             0              //Skull Staff
+3072      3          2              0              //Small Shield
+3078      3          17             0              //Skull Shield
+3081      3          5              0              //Plate Shield
+3584      3          4              0              //Bronze Helm
+3585      3          11             12             //Dragon Helm
+3586      3          13             14             //Pad Helm
+3587      3          19             20             //Legendary Helm
+3588      3          16             0              //Bone Helm
+3589      3          1              2              //Leather Helm
+3590      3          5              6              //Scale Helm
+3591      3          17             0              //Sphinx Mask
+3592      3          8              0              //Brass Helm
+3593      3          10             0              //Plate Helm
+3594      3          21             22             //Vine Helm
+3595      3          23             0              //Silk Helm
+3596      3          25             0              //Wind Helm
+3597      3          28             0              //Spirit Helm
+3598      3          0              30             //Guardian Helm
+3610      3          33             0              //Adamantine Mask
+3624      3          35             36             //Red Wing Helm
+3643      3          37             0              //Sacred Fire Helm
+3646      3          39             0              //Scale Helm
+3647      3          40             0              //Silk Helm
+3648      3          41             0              //Sphinx Helm
+3649      3          42             0              //Violent Wind Helm
+3650      3          43             0              //Dark Soul Helm
+3651      3          44             0              //Dragon Helm
+3652      3          45             0              //Guardian Helm
+3653      3          46             0              //Legendary Helm
+3654      3          47             0              //Red Wing Helm
+3656      3          49             0              //Storm Jahad Helm
+4096      3          3              0              //Bronze Armor
+4097      3          0              12             //Dragon Armor
+4098      3          13             0              //Pad Armor
+4099      3          19             20             //Legendary Armor
+4100      3          15             16             //Bone Armor
+4101      3          1              0              //Leather Armor
+4102      3          5              6              //Scale Armor
+4103      3          17             18             //Sphinx Armor
+4104      3          7              0              //Brass Armor
+4105      3          9              10             //Plate Armor
+4106      3          22             0              //Vine Armor
+4107      3          23             0              //Silk Armor
+4108      3          25             0              //Wind Armor
+4109      3          27             0              //Spirit Armor
+4110      3          29             30             //Guardian Armor
+4111      3          31             32             //Storm Crow Armor
+4122      3          33             0              //Adamantine Armor
+4136      3          0              36             //Red Wing Armor
+4155      3          37             38             //Sacred Fire Armor
+4158      3          39             0              //Scale Armor
+4159      3          40             0              //Silk Armor
+4160      3          41             0              //Sphinx Armor
+4161      3          42             0              //Violent Wind Armor
+4162      3          43             0              //Dark Soul Armor
+4163      3          44             0              //Dragon Armor
+4164      3          45             0              //Guardian Armor
+4165      3          46             0              //Legendary Armor
+4166      3          47             0              //Red Wing Armor
+4167      3          48             0              //Atlans Armor
+4168      3          49             0              //Storm Jahad Armor
+4608      3          3              4              //Bronze Pants
+4609      3          0              12             //Dragon Pants
+4610      3          13             14             //Pad Pants
+4611      3          0              20             //Legendary Pants
+4612      3          15             0              //Bone Pants
+4613      3          1              2              //Leather Pants
+4614      3          5              6              //Scale Pants
+4615      3          17             18             //Sphinx Pants
+4616      3          7              8              //Brass Pants
+4617      3          10             0              //Plate Pants
+4618      3          21             22             //Vine Pants
+4619      3          23             24             //Silk Pants
+4620      3          25             26             //Wind Pants
+4621      3          27             28             //Spirit Pants
+4622      3          0              30             //Guardian Pants
+4623      3          31             32             //Storm Crow Pants
+4634      3          33             34             //Adamantine Pants
+4648      3          35             0              //Red Wing Pants
+4667      3          37             38             //Sacred Fire Pants
+4670      3          39             0              //Scale Pants
+4671      3          40             0              //Silk Pants
+4672      3          41             0              //Sphinx Pants
+4673      3          42             0              //Violent Wind Pants
+4674      3          43             0              //Dark Soul Pants
+4675      3          44             0              //Dragon Pants
+4676      3          45             0              //Guardian Pants
+4677      3          46             0              //Legendary Pants
+4678      3          47             0              //Red Wing Pants
+4679      3          48             0              //Atlans Pants
+4680      3          49             0              //Storm Jahad Pants
+5120      3          4              0              //Bronze Gloves
+5121      3          11             0              //Dragon Gloves
+5122      3          13             0              //Pad Gloves
+5123      3          19             0              //Legendary Gloves
+5124      3          16             0              //Bone Gloves
+5125      3          1              0              //Leather Gloves
+5126      3          6              0              //Scale Gloves
+5127      3          17             0              //Sphinx Gloves
+5128      3          7              0              //Brass Gloves
+5129      3          9              0              //Plate Gloves
+5130      3          21             0              //Vine Gloves
+5131      3          23             24             //Silk Gloves
+5132      3          25             0              //Wind Gloves
+5133      3          27             0              //Spirit Gloves
+5134      3          29             0              //Guardian Gloves
+5135      3          0              32             //Storm Crow Gloves
+5146      3          0              34             //Adamantine Gloves
+5160      3          35             36             //Red Wing Gloves
+5182      3          39             0              //Scale Gloves
+5183      3          40             0              //Silk Gloves
+5184      3          41             0              //Sphinx Gloves
+5185      3          42             0              //Violent Wind Gloves
+5186      3          43             0              //Dark Soul Gloves
+5187      3          44             0              //Dragon Gloves
+5188      3          45             0              //Guardian Gloves
+5189      3          46             0              //Legendary Gloves
+5190      3          47             0              //Red Wing Gloves
+5191      3          48             0              //Atlans Gloves
+5632      3          3              0              //Bronze Boots
+5633      3          11             0              //Dragon Boots
+5634      3          14             0              //Pad Boots
+5635      3          0              20             //Legendary Boots
+5636      3          15             16             //Bone Boots
+5637      3          1              2              //Leather Boots
+5638      3          6              0              //Scale Boots
+5639      3          17             18             //Sphinx Boots
+5640      3          7              0              //Brass Boots
+5641      3          9              0              //Plate Boots
+5642      3          21             22             //Vine Boots
+5643      3          24             0              //Silk Boots
+5644      3          25             26             //Wind Boots
+5645      3          28             0              //Spirit Boots
+5646      3          29             30             //Guardian Boots
+5647      3          31             0              //Storm Crow Boots
+5658      3          0              34             //Adamantine Boots
+5672      3          0              36             //Red Wing Boots
+5691      3          38             0              //Sacred Fire Boots
+5694      3          39             0              //Scale Boots
+5695      3          40             0              //Silk Boots
+5696      3          41             0              //Sphinx Boots
+5697      3          42             0              //Violent Wind Boots
+5698      3          43             0              //Dark Soul Boots
+5699      3          44             0              //Dragon Boots
+5700      3          45             0              //Guardian Boots
+5701      3          46             0              //Legendary Boots
+5702      3          47             0              //Red Wing Boots
+5703      3          48             0              //Atlans Boots
+5704      3          49             0              //Storm Jahad Boots
+6664      1          1              0              //Ring of Ice
+6665      3          9              33             //Ring of Poison
+6668      2          5              0              //Pendant of Lighting
+6669      0          7              0              //Pendant of Fire
+6677      2          19             32             //Ring of Fire
+6678      0          21             12             //Ring of Earth
+6679      1          9              0              //Ring of Wind
+6680      2          13             35             //Ring of Magic
+6681      0          13             34             //Pendant of Ice
+6682      1          15             0              //Pendant of Wind
+6683      3          31             0              //Pendant of Water
+6684      *          29             0              //Pendant of Ability
+end

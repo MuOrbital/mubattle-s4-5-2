@@ -1,0 +1,124 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+end
+
+
+3
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction     Quantity      Value      Comment
+end
+
+
+4
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+172            23             30         026            105            05             //Chaos Castle 11
+173            23             30         026            098            05             //Chaos Castle 12
+172            23             30         028            090            05             //Chaos Castle 11
+173            23             30         027            086            05             //Chaos Castle 12
+172            23             30         028            082            05             //Chaos Castle 11
+173            23             30         026            079            05             //Chaos Castle 12
+172            23             30         034            078            05             //Chaos Castle 11
+173            23             30         033            081            05             //Chaos Castle 12
+172            23             30         039            078            05             //Chaos Castle 11
+173            23             30         026            077            05             //Chaos Castle 12
+172            23             30         038            080            05             //Chaos Castle 11
+173            23             30         043            077            05             //Chaos Castle 12
+172            23             30         038            086            05             //Chaos Castle 11
+173            23             30         043            084            05             //Chaos Castle 12
+172            23             30         041            082            05             //Chaos Castle 11
+173            23             30         027            094            05             //Chaos Castle 12
+172            23             30         032            091            05             //Chaos Castle 11
+173            23             30         029            084            05             //Chaos Castle 12
+172            23             30         042            090            05             //Chaos Castle 11
+173            23             30         044            087            05             //Chaos Castle 12
+172            23             30         030            078            05             //Chaos Castle 11
+173            23             30         038            092            05             //Chaos Castle 12
+172            23             30         040            098            05             //Chaos Castle 11
+173            23             30         029            101            05             //Chaos Castle 12
+172            23             30         033            103            05             //Chaos Castle 11
+173            23             30         038            089            05             //Chaos Castle 12
+172            23             30         042            105            05             //Chaos Castle 11
+173            23             30         042            099            05             //Chaos Castle 12
+172            23             30         035            105            05             //Chaos Castle 11
+173            23             30         029            093            05             //Chaos Castle 12
+172            23             30         028            097            05             //Chaos Castle 11
+173            23             30         026            084            05             //Chaos Castle 12
+172            23             30         028            079            05             //Chaos Castle 11
+172            23             30         025            082            05             //Chaos Castle 11
+173            23             30         029            076            05             //Chaos Castle 12
+172            23             30         033            076            05             //Chaos Castle 11
+173            23             30         035            079            05             //Chaos Castle 12
+172            23             30         031            080            05             //Chaos Castle 11
+173            23             30         041            079            05             //Chaos Castle 12
+172            23             30         038            076            05             //Chaos Castle 11
+173            23             30         036            081            05             //Chaos Castle 12
+172            23             30         039            082            05             //Chaos Castle 11
+173            23             30         041            086            05             //Chaos Castle 12
+172            23             30         042            094            05             //Chaos Castle 11
+173            23             30         035            092            05             //Chaos Castle 12
+172            23             30         034            090            05             //Chaos Castle 11
+173            23             30         038            101            05             //Chaos Castle 12
+172            23             30         030            105            05             //Chaos Castle 11
+173            23             30         026            102            05             //Chaos Castle 12
+172            23             30         028            100            05             //Chaos Castle 11
+173            23             30         038            106            05             //Chaos Castle 12
+172            23             30         035            102            05             //Chaos Castle 11
+173            23             30         042            102            05             //Chaos Castle 12
+172            23             30         043            096            05             //Chaos Castle 11
+173            23             30         030            088            05             //Chaos Castle 12
+172            23             30         025            091            05             //Chaos Castle 11
+173            23             30         029            091            05             //Chaos Castle 12
+172            23             30         030            098            05             //Chaos Castle 11
+173            23             30         041            093            05             //Chaos Castle 12
+172            23             30         041            089            05             //Chaos Castle 11
+173            23             30         043            091            05             //Chaos Castle 12
+172            23             30         039            095            05             //Chaos Castle 11
+173            23             30         032            101            05             //Chaos Castle 12
+172            23             30         029            103            05             //Chaos Castle 11
+173            23             30         033            105            05             //Chaos Castle 12
+172            23             30         025            097            05             //Chaos Castle 11
+173            23             30         024            094            05             //Chaos Castle 12
+172            23             30         027            088            05             //Chaos Castle 11
+173            23             30         032            094            05             //Chaos Castle 12
+172            23             30         032            089            05             //Chaos Castle 11
+173            23             30         036            092            05             //Chaos Castle 12
+172            23             30         037            089            05             //Chaos Castle 11
+173            23             30         040            091            05             //Chaos Castle 12
+172            23             30         038            099            05             //Chaos Castle 11
+173            23             30         040            101            05             //Chaos Castle 12
+172            23             30         043            081            05             //Chaos Castle 11
+173            23             30         036            076            05             //Chaos Castle 12
+172            23             30         042            075            05             //Chaos Castle 11
+173            23             30         026            075            05             //Chaos Castle 12
+172            23             30         024            080            05             //Chaos Castle 11
+173            23             30         030            082            05             //Chaos Castle 12
+172            23             30         024            089            05             //Chaos Castle 11
+173            23             30         024            086            05             //Chaos Castle 12
+172            23             30         024            101            05             //Chaos Castle 11
+173            23             30         037            104            05             //Chaos Castle 12
+172            23             30         041            096            05             //Chaos Castle 11
+173            23             30         039            087            05             //Chaos Castle 12
+172            23             30         041            076            05             //Chaos Castle 11
+173            23             30         038            084            05             //Chaos Castle 12
+172            23             30         038            096            05             //Chaos Castle 11
+173            23             30         030            095            05             //Chaos Castle 12
+172            23             30         032            078            05             //Chaos Castle 11
+173            23             30         029            086            05             //Chaos Castle 12
+172            23             30         027            104            05             //Chaos Castle 11
+173            23             30         040            104            05             //Chaos Castle 12
+172            23             30         044            102            05             //Chaos Castle 11
+173            23             30         043            098            05             //Chaos Castle 12
+172            23             30         039            093            05             //Chaos Castle 11
+173            23             30         041            084            05             //Chaos Castle 12
+end
+
+

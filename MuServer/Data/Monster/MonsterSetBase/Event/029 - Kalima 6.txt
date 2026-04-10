@@ -1,0 +1,83 @@
+0
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+259            29             00         007            019            02             //Oracle Layla
+567            29             00         010            028            02             //Priestess Veina
+end
+
+
+1
+//Monster      MapNumber      Range      BeginPosX      BeginPosY      EndPosX      EndPosY      Direction      Quantity      Comment
+end
+
+
+2
+//Monster      MapNumber      Range      PositionX      PositionY      Direction      Comment
+271            29             30         030            075            7             //Aegis
+271            29             30         035            021            4             //Aegis
+271            29             30         028            017            2             //Aegis
+271            29             30         036            011            4             //Aegis
+271            29             30         051            011            4             //Aegis
+271            29             30         042            012            0             //Aegis
+271            29             30         045            022            1             //Aegis
+271            29             30         052            024            2             //Aegis
+271            29             30         053            017            3             //Aegis
+271            29             30         060            009            6             //Aegis
+272            29             30         067            022            4             //Rogue Centurion
+271            29             30         060            022            0             //Aegis
+272            29             30         069            009            6             //Rogue Centurion
+272            29             30         074            014            5             //Rogue Centurion
+272            29             30         082            008            6             //Rogue Centurion
+272            29             30         081            019            6             //Rogue Centurion
+272            29             30         086            013            2             //Rogue Centurion
+272            29             30         092            006            3             //Rogue Centurion
+272            29             30         096            016            5             //Rogue Centurion
+272            29             30         099            009            1             //Rogue Centurion
+272            29             30         109            019            5             //Rogue Centurion
+270            29             30         110            009            6             //Blood Soldier
+270            29             30         118            017            2             //Blood Soldier
+270            29             30         110            035            5             //Blood Soldier
+270            29             30         121            027            5             //Blood Soldier
+270            29             30         119            035            6             //Blood Soldier
+270            29             30         114            044            6             //Blood Soldier
+268            29             30         120            050            2             //Death Angel
+268            29             30         105            054            4             //Death Angel
+268            29             30         119            057            4             //Death Angel
+268            29             30         110            065            7             //Death Angel
+268            29             30         121            067            5             //Death Angel
+270            29             30         108            028            0             //Blood Soldier
+268            29             30         111            072            1             //Death Angel
+268            29             30         105            086            5             //Death Angel
+273            29             30         118            084            6             //Necron
+268            29             30         118            095            6             //Death Angel
+273            29             30         104            101            3             //Necron
+273            29             30         115            106            1             //Necron
+273            29             30         093            096            6             //Necron
+273            29             30         093            084            6             //Necron
+273            29             30         082            085            5             //Necron
+273            29             30         082            077            1             //Necron
+273            29             30         074            076            4             //Necron
+269            29             30         087            090            6             //Death Centurion
+269            29             30         068            077            5             //Death Centurion
+269            29             30         063            072            2             //Death Centurion
+269            29             30         058            078            7             //Death Centurion
+268            29             30         120            075            2             //Death Angel
+269            29             30         057            071            6             //Death Centurion
+274            29             30         032            050            0             //Schriker
+274            29             30         042            051            0             //Schriker
+274            29             30         038            058            5             //Schriker
+274            29             30         029            065            6             //Schriker
+274            29             30         046            066            0             //Schriker
+274            29             30         042            097            0             //Schriker
+274            29             30         037            109            1             //Schriker
+274            29             30         047            107            1             //Schriker
+274            29             30         053            093            2             //Schriker
+274            29             30         035            087            0             //Schriker
+274            29             30         032            077            5             //Schriker
+274            29             30         041            078            0             //Schriker
+274            29             30         037            067            6             //Schriker
+274            29             30         046            086            0             //Schriker
+274            29             30         023            085            0             //Schriker
+274            29             30         023            070            5             //Schriker
+338            29             30         026            076            7             //Illusion of Kundun
+end
+
