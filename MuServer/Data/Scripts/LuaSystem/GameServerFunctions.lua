@@ -235,7 +235,6 @@ function GameServerFunctions.NpcTalk(callback)
 end
 
 -- Quando o player vende um item no NPC
--- Retorno 1 impede a venda do item
 local PlayerSellItem_Handles = {}
 function PlayerSellItem(aIndex, Position)
     for i = 1, #PlayerSellItem_Handles do
@@ -247,6 +246,23 @@ function PlayerSellItem(aIndex, Position)
 end
 function GameServerFunctions.PlayerSellItem(callback)
     table.insert(PlayerSellItem_Handles, { callback = callback })
+end
+
+-- ====================== PLAYER BUY ITEM (Compra no NPC) ======================
+local PlayerBuyItem_Handles = {}
+
+function PlayerBuyItem(aIndex, ShopIndex, Slot)
+    for i = 1, #PlayerBuyItem_Handles do
+        local result = PlayerBuyItem_Handles[i].callback(aIndex, ShopIndex, Slot)
+        if result == 1 then
+            return 1
+        end
+    end
+    return 0
+end
+
+function GameServerFunctions.PlayerBuyItem(callback)
+    table.insert(PlayerBuyItem_Handles, { callback = callback })
 end
 
 -- Quando o player repara um item
@@ -279,14 +295,18 @@ function GameServerFunctions.PlayerCanMove(callback)
     table.insert(PlayerCanMove_Handles, { callback = callback })
 end
 
--- Quando o player muda o item de lugar
 local PlayerMoveItem_Handles = {}
+
 function PlayerMoveItem(aIndex, SourceSlot, TargetSlot, Type)
     for i = 1, #PlayerMoveItem_Handles do
-        PlayerMoveItem_Handles[i].callback(aIndex, SourceSlot, TargetSlot, Type)
+        local result = PlayerMoveItem_Handles[i].callback(aIndex, SourceSlot, TargetSlot, Type)
+        if result == 1 then
+            return 1
+        end
     end
     return 0
 end
+
 function GameServerFunctions.PlayerMoveItem(callback)
     table.insert(PlayerMoveItem_Handles, { callback = callback })
 end
@@ -447,8 +467,9 @@ function GameServerProtocol(aIndex, Packet, PacketName)
 
 	ClearPacket(PacketName)
 end
+
 function GameServerFunctions.GameServerProtocol(callback)
-    table.insert(GameServerProtocol_Handles, { callback = callback })
+	table.insert(GameServerProtocol_Handles, { callback = callback })
 end
 
 -- Recebe o HWID do player quando ele loga
@@ -703,9 +724,6 @@ function AutoResetPlayerProc(aIndex)
 end
 function GameServerFunctions.AutoResetPlayerProc(callback)
     table.insert(AutoResetPlayerProc_Handles, { callback = callback })
-end
-
-function CloseLua()
 end
 
 return GameServerFunctions

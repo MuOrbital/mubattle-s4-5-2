@@ -3676,44 +3676,43 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 		}
 	}
 
-	// ====================== BLOQUEIO LUA (RETORNA 1 = BLOQUEIA) ======================
 	int luaResult = 0;
 
-	if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 0) // Inventory -> Inventory
+	if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 0)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 0);
-	else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 1) // Inventory -> Trade
+	else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 1)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 6);
-	else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 0) // Trade -> Inventory
+	else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 0)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 5);
-	else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 1) // Trade -> Trade
+	else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 1)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 4);
-	else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 2) // Inventory -> Warehouse
+	else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 2)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 1);
-	else if (lpMsg->SourceFlag == 2 && lpMsg->TargetFlag == 0) // Warehouse -> Inventory
+	else if (lpMsg->SourceFlag == 2 && lpMsg->TargetFlag == 0)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 2);
-	else if (lpMsg->SourceFlag == 2 && lpMsg->TargetFlag == 2) // Warehouse -> Warehouse
+	else if (lpMsg->SourceFlag == 2 && lpMsg->TargetFlag == 2)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 3);
-	else if (lpMsg->SourceFlag == 0 && (lpMsg->TargetFlag == 3 || (lpMsg->TargetFlag >= 5 && lpMsg->TargetFlag <= 20))) // Inventory -> Chaos Box
+	else if (lpMsg->SourceFlag == 0 && (lpMsg->TargetFlag == 3 || (lpMsg->TargetFlag >= 5 && lpMsg->TargetFlag <= 20)))
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 7);
-	else if ((lpMsg->SourceFlag == 3 || (lpMsg->SourceFlag >= 5 && lpMsg->SourceFlag <= 20)) && lpMsg->TargetFlag == 0) // Chaos Box -> Inventory
+	else if ((lpMsg->SourceFlag == 3 || (lpMsg->SourceFlag >= 5 && lpMsg->SourceFlag <= 20)) && lpMsg->TargetFlag == 0)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 8);
 	else if ((lpMsg->SourceFlag == 3 || (lpMsg->SourceFlag >= 5 && lpMsg->SourceFlag <= 20)) && (lpMsg->TargetFlag == 3 || (lpMsg->TargetFlag >= 5 && lpMsg->TargetFlag <= 20))) // Chaos Box -> Chaos Box
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 9);
-	else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 4) // Inventory -> Personal Shop
+	else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 4)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 10);
-	else if (lpMsg->SourceFlag == 4 && lpMsg->TargetFlag == 0) // Personal Shop -> Inventory
+	else if (lpMsg->SourceFlag == 4 && lpMsg->TargetFlag == 0)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 11);
-	else if (lpMsg->SourceFlag == 4 && lpMsg->TargetFlag == 4) // Personal Shop -> Personal Shop
+	else if (lpMsg->SourceFlag == 4 && lpMsg->TargetFlag == 4)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 12);
-	else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 21) // Trade -> Event Inventory
+	else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 21)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 13);
-	else if (lpMsg->SourceFlag == 21 && lpMsg->TargetFlag == 21) // Event Inventory -> Event Inventory
+	else if (lpMsg->SourceFlag == 21 && lpMsg->TargetFlag == 21)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 14);
-	else if (lpMsg->SourceFlag == 22 && lpMsg->TargetFlag == 22) // Muun Inventory -> Muun Inventory
+	else if (lpMsg->SourceFlag == 22 && lpMsg->TargetFlag == 22)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 15);
-	else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 40) // Inventory -> Chaos Genesis
+	else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 40)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 9);
-	else if (lpMsg->SourceFlag == 40 && lpMsg->TargetFlag == 0) // Chaos Genesis -> Inventory
+	else if (lpMsg->SourceFlag == 40 && lpMsg->TargetFlag == 0)
 		luaResult = gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 10);
 
 	if (luaResult == 1)
@@ -3722,56 +3721,56 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 	}
 	else
 	{
-		if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 0) // Inventory -> Inventory
+		if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 0)
 		{
 			if ((pMsg.result = this->MoveItemToInventoryFromInventory(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->Inventory[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 1) // Inventory -> Trade
+		else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 1)
 		{
 			if ((pMsg.result = this->MoveItemToTradeFromInventory(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->Trade[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 2) // Inventory -> Warehouse
+		else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 2)
 		{
 			if ((pMsg.result = this->MoveItemToWarehouseFromInventory(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->Warehouse[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 0 && (lpMsg->TargetFlag == 3 || (lpMsg->TargetFlag >= 5 && lpMsg->TargetFlag <= 20))) // Inventory -> Chaos Box
+		else if (lpMsg->SourceFlag == 0 && (lpMsg->TargetFlag == 3 || (lpMsg->TargetFlag >= 5 && lpMsg->TargetFlag <= 20)))
 		{
 			if ((pMsg.result = this->MoveItemToChaosBoxFromInventory(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->ChaosBox[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 4) // Inventory -> Personal Shop
+		else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 4)
 		{
 			if ((pMsg.result = this->MoveItemToPersonalShopFromInventory(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->Inventory[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 0) // Trade -> Inventory
+		else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 0)
 		{
 			if ((pMsg.result = this->MoveItemToInventoryFromTrade(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->Inventory[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 1) // Trade -> Trade
+		else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 1)
 		{
 			if ((pMsg.result = this->MoveItemToTradeFromTrade(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->Trade[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 21) // Trade -> Event Inventory
+		else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 21)
 		{
 			if ((pMsg.result = this->MoveItemToEventInventoryFromTrade(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
@@ -3780,21 +3779,21 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 #endif
 			}
 		}
-		else if (lpMsg->SourceFlag == 2 && lpMsg->TargetFlag == 0) // Warehouse -> Inventory
+		else if (lpMsg->SourceFlag == 2 && lpMsg->TargetFlag == 0)
 		{
 			if ((pMsg.result = this->MoveItemToInventoryFromWarehouse(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->Inventory[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 2 && lpMsg->TargetFlag == 2) // Warehouse -> Warehouse
+		else if (lpMsg->SourceFlag == 2 && lpMsg->TargetFlag == 2)
 		{
 			if ((pMsg.result = this->MoveItemToWarehouseFromWarehouse(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->Warehouse[lpMsg->TargetSlot]);
 			}
 		}
-		else if ((lpMsg->SourceFlag == 3 || (lpMsg->SourceFlag >= 5 && lpMsg->SourceFlag <= 20)) && lpMsg->TargetFlag == 0) // Chaos Box -> Inventory
+		else if ((lpMsg->SourceFlag == 3 || (lpMsg->SourceFlag >= 5 && lpMsg->SourceFlag <= 20)) && lpMsg->TargetFlag == 0)
 		{
 			if ((pMsg.result = this->MoveItemToInventoryFromChaosBox(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
@@ -3808,28 +3807,28 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->ChaosBox[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 4 && lpMsg->TargetFlag == 0) // Personal Shop -> Inventory
+		else if (lpMsg->SourceFlag == 4 && lpMsg->TargetFlag == 0)
 		{
 			if ((pMsg.result = this->MoveItemToInventoryFromPersonalShop(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->Inventory[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 4 && lpMsg->TargetFlag == 4) // Personal Shop -> Personal Shop
+		else if (lpMsg->SourceFlag == 4 && lpMsg->TargetFlag == 4)
 		{
 			if ((pMsg.result = this->MoveItemToPersonalShopFromPersonalShop(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->Inventory[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 21 && lpMsg->TargetFlag == 1) // Event Inventory -> Trade
+		else if (lpMsg->SourceFlag == 21 && lpMsg->TargetFlag == 1)
 		{
 			if ((pMsg.result = this->MoveItemToTradeFromEventInventory(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->Trade[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 21 && lpMsg->TargetFlag == 21) // Event Inventory -> Event Inventory
+		else if (lpMsg->SourceFlag == 21 && lpMsg->TargetFlag == 21)
 		{
 			if ((pMsg.result = this->MoveItemToEventInventoryFromEventInventory(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
@@ -3838,7 +3837,7 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 #endif
 			}
 		}
-		else if (lpMsg->SourceFlag == 22 && lpMsg->TargetFlag == 22) // Muun Inventory -> Muun Inventory
+		else if (lpMsg->SourceFlag == 22 && lpMsg->TargetFlag == 22)
 		{
 			if ((pMsg.result = this->MoveItemToMuunInventoryFromMuunInventory(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
@@ -3848,7 +3847,7 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 			}
 		}
 #ifdef CHAOS_MACHINE_GENESIS
-		else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 40) // Inventory -> Chaos Box Genesis
+		else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 40)
 		{
 			if ((pMsg.result = this->MoveItemToChaosBoxGenesisFromInventory(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
@@ -3856,7 +3855,7 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 				this->ItemByteConvert(pMsg.ItemInfo, lpObj->ChaosBoxGenesis[lpMsg->TargetSlot]);
 			}
 		}
-		else if (lpMsg->SourceFlag == 40 && lpMsg->TargetFlag == 0) // Chaos Box Genesis -> Inventory
+		else if (lpMsg->SourceFlag == 40 && lpMsg->TargetFlag == 0)
 		{
 			if ((pMsg.result = this->MoveItemToInventoryFromChaosBoxGenesis(lpObj, lpMsg->SourceSlot, lpMsg->TargetSlot, lpMsg->TargetFlag)) != 0xFF)
 			{
@@ -3866,13 +3865,12 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 		}
 #endif
 	}
-	// =============================================================================
 
 	if (pMsg.result != 0xFF)
 	{
 		if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 0)
 		{
-			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 0); //Inventory -> Inventory
+			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 0);
 			//gDeathSystem.SendInformation(lpObj, 0);
 		}
 		else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 1) //Trade Trade
@@ -3883,7 +3881,7 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 		}
 		else if (lpMsg->SourceFlag == 1 && lpMsg->TargetFlag == 0)
 		{
-			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 5); //Trade > Inventory
+			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 5);
 			//gDeathSystem.SendInformation(lpObj, 2);
 			//gDeathSystem.SendInformation(lpObj, 0);
 			//
@@ -3891,7 +3889,7 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 		}
 		else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 1)
 		{
-			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 6); //Inventory>Trade
+			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 6);
 			//gDeathSystem.SendInformation(lpObj, 2);
 			//gDeathSystem.SendInformation(lpObj, 0);
 			//
@@ -3899,13 +3897,13 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 		}
 		else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 2)
 		{
-			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 1); //Inventory > Bau
+			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 1);
 			//gDeathSystem.SendInformation(lpObj, 1);
 			//gDeathSystem.SendInformation(lpObj, 0);
 		}
 		else if (lpMsg->SourceFlag == 2 && lpMsg->TargetFlag == 0)
 		{
-			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 2); //Bau > Inventory
+			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 2);
 			//gDeathSystem.SendInformation(lpObj, 1);
 			//gDeathSystem.SendInformation(lpObj, 0);
 		}
@@ -3932,13 +3930,13 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 		*/
 		else if (lpMsg->SourceFlag == 0 && lpMsg->TargetFlag == 40)
 		{
-			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 9); //Chaos box genesis > Inventory
+			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 9);
 			//gDeathSystem.SendInformation(lpObj, 8);
 			//gDeathSystem.SendInformation(lpObj, 0);
 		}
 		else if (lpMsg->SourceFlag == 40 && lpMsg->TargetFlag == 0)
 		{
-			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 10); //Chaos box genesis > Inventory
+			gLuaGameServer.PlayerMoveItem(aIndex, lpMsg->SourceSlot, lpMsg->TargetSlot, 10);
 			//gDeathSystem.SendInformation(lpObj, 8);
 			//gDeathSystem.SendInformation(lpObj, 0);
 		}
@@ -3947,17 +3945,17 @@ void CItemManager::CGItemMoveRecv(PMSG_ITEM_MOVE_RECV* lpMsg, int aIndex) // OK
 			//gPersonalShop.GCPShopItemPrinceListSend(aIndex, aIndex);
 			//gDeathSystem.SendInformation(lpObj, 0);
 		}
-		else if (lpMsg->SourceFlag == 0 && (lpMsg->TargetFlag == 3 || (lpMsg->TargetFlag >= 5 && lpMsg->TargetFlag <= 20))) // Inventory -> Chaos Box
+		else if (lpMsg->SourceFlag == 0 && (lpMsg->TargetFlag == 3 || (lpMsg->TargetFlag >= 5 && lpMsg->TargetFlag <= 20)))
 		{
 			//gDeathSystem.SendInformation(lpObj, 0);
 			//gDeathSystem.SendInformation(lpObj, 3);
 		}
-		else if ((lpMsg->SourceFlag == 3 || (lpMsg->SourceFlag >= 5 && lpMsg->SourceFlag <= 20)) && lpMsg->TargetFlag == 0) // Chaos Box -> Inventory
+		else if ((lpMsg->SourceFlag == 3 || (lpMsg->SourceFlag >= 5 && lpMsg->SourceFlag <= 20)) && lpMsg->TargetFlag == 0)
 		{
 			//gDeathSystem.SendInformation(lpObj, 3);
 			//gDeathSystem.SendInformation(lpObj, 0);
 		}
-		else if ((lpMsg->SourceFlag == 3 || (lpMsg->SourceFlag >= 5 && lpMsg->SourceFlag <= 20)) && (lpMsg->TargetFlag == 3 || (lpMsg->TargetFlag >= 5 && lpMsg->TargetFlag <= 20))) // Chaos Box -> Chaos Box
+		else if ((lpMsg->SourceFlag == 3 || (lpMsg->SourceFlag >= 5 && lpMsg->SourceFlag <= 20)) && (lpMsg->TargetFlag == 3 || (lpMsg->TargetFlag >= 5 && lpMsg->TargetFlag <= 20)))
 		{
 			//gDeathSystem.SendInformation(lpObj, 3);
 		}
@@ -4312,6 +4310,12 @@ void CItemManager::CGItemBuyRecv(PMSG_ITEM_BUY_RECV* lpMsg,int aIndex) // OK
 		return;
 	}
 
+	if (gLuaGameServer.PlayerBuyItem(aIndex, lpObj->TargetShopNumber, lpMsg->slot) == 1)
+	{
+		DataSend(aIndex, (BYTE*)&pMsg, pMsg.header.size);
+		return;
+	}
+
 	CItem item;
 
 	if(gShopManager.GetItemByIndex(lpObj->TargetShopNumber,&item,lpMsg->slot) == 0)
@@ -4433,7 +4437,11 @@ void CItemManager::CGItemSellRecv(PMSG_ITEM_SELL_RECV* lpMsg,int aIndex) // OK
 		DataSend(aIndex,(BYTE*)&pMsg,pMsg.header.size);
 		return;
 	}
-
+	if (gLuaGameServer.PlayerSellItem(aIndex, lpMsg->slot) == 1)
+	{
+		DataSend(aIndex, (BYTE*)&pMsg, pMsg.header.size);
+		return;
+	}
 	CItem* lpItem = &lpObj->Inventory[lpMsg->slot]; 
 
 	if(lpItem->IsItem() == 0)

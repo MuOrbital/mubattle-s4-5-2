@@ -862,6 +862,36 @@ int CLuaGameServer::PlayerSellItem(int aIndex, int Position)
 	return result;
 }
 
+int CLuaGameServer::PlayerBuyItem(int aIndex, int ShopIndex, int Slot)
+{
+	if (this->m_Reloading)
+	{
+		return 0;
+	}
+
+	CLocker lock(gSocketManager.m_critical);
+
+	auto L = LuaManager.getMyLua();
+	if (L == nullptr)
+	{
+		return 0;
+	}
+
+	lua_getglobal(L, "PlayerBuyItem");
+	lua_pushnumber(L, aIndex);
+	lua_pushnumber(L, ShopIndex);
+	lua_pushnumber(L, Slot);
+
+	int nStatus = lua_pcall(L, 3, 1, 0);
+
+	this->ProcessErrorLog(L, "PlayerBuyItem", nStatus);
+
+	int result = (int)lua_tointeger(L, -1);
+	lua_pop(L, 1);
+
+	return result;
+}
+
 int CLuaGameServer::CharacterMove(int aIndex, int map, int x, int y)
 {
 	if (this->m_Reloading)
@@ -1564,6 +1594,7 @@ int CLuaGameServer::PlayerOpenShop(int aIndex)
 
 	return result;
 }
+
 
 int CLuaGameServer::PlayerOpenPersonalShop(int aIndex)
 {

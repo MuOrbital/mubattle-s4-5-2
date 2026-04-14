@@ -310,11 +310,6 @@ void CCustomStore::OpenCustomStore(LPOBJ lpObj,int type) // OK
 	{
 		return;
 	}
-	if (gLuaGameServer.PlayerOpenPersonalShop(lpObj->Index) == 1)
-	{
-		gPersonalShop.GCPShopOpenSend(lpObj->Index, 0);
-		return;
-	}
 	if(lpObj->PShopOpen != 0)
 	{
 		gPersonalShop.GCPShopOpenSend(lpObj->Index,0);

@@ -364,12 +364,6 @@ void CPersonalShop::CGPShopOpenRecv(PMSG_PSHOP_OPEN_RECV* lpMsg,int aIndex) // O
 
 	LPOBJ lpObj = &gObj[aIndex];
 
-	if (gLuaGameServer.PlayerOpenPersonalShop(aIndex) == 1)
-	{
-		this->GCPShopOpenSend(aIndex, 0);
-		return;
-	}
-
 	if(gObjIsConnectedGP(aIndex) == 0)
 	{
 		return;

@@ -48,6 +48,7 @@ public:
 	int PlayerSendTradeX(int aIndex, int TargetIndex);
 	void GuildWarProc(std::string Guild1, int GuildPoints1, std::string Guild2, int GuildPoints2);
 	int PlayerSellItem(int aIndex, int Position);
+	int PlayerBuyItem(int aIndex, int ShopIndex, int Slot);
 	int CharacterMove(int aIndex, int map, int x, int y);
 	int PlayerRingEquiped(int aIndex);
 	int PlayerRepairItem(int aIndex, int Position);
