@@ -2458,7 +2458,7 @@ float GetFpsFromConfig()
 
 	std::ifstream file(szIniFilePath);
 	std::string line;
-	float fps = 1280.0f;
+	float fps = 64.0f;
 
 	if (file.is_open()) {
 		while (std::getline(file, line)) {
@@ -2467,12 +2467,12 @@ float GetFpsFromConfig()
 				if (pos != std::string::npos) {
 					try {
 						fps = std::stof(line.substr(pos + 1));
-						if (fps > 1280.0f) {
-							fps = 1280.0f;
+						if (fps > 64.0f) {
+							fps = 64.0f;
 						}
 					}
 					catch (...) {
-						fps = 1280.0f;
+						fps = 64.0f;
 					}
 					break;
 				}

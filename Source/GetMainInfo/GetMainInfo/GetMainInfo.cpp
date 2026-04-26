@@ -25,7 +25,13 @@ struct MAIN_FILE_INFO
 	char ClientSerial[17];
 	char WindowName[32];
 	char ScreenShotPath[50];
+	int m_OpenLauncher;
+	char m_LauncherName[260];
 	int DebugConsole;
+	int m_MaxInstance;
+	int m_RequireAdmin;
+	int m_RequireAdminMessage;
+	int m_BlockVirtualMachine;
 
 	//PluginSystem
 	int m_AntiBypassDLL;
@@ -50,6 +56,7 @@ struct MAIN_FILE_INFO
 	DWORD m_CheckWindowsVersion;
 	DWORD m_MinMemoryRAM;
 	DWORD m_MinCPUCore;
+	DWORD m_MinVideoMemory;
 
 	//Interface
 	int m_DisableClassSUM;
@@ -132,7 +139,16 @@ void GerateConfig()// OK
 	GetPrivateProfileString("MainInfo", "ClientSerial", "", info.ClientSerial, sizeof(info.ClientSerial), ".\\MainInfo.ini");
 	GetPrivateProfileString("MainInfo", "WindowName", "", info.WindowName, sizeof(info.WindowName), ".\\MainInfo.ini");
 	GetPrivateProfileString("MainInfo", "ScreenShotPath", "", info.ScreenShotPath, sizeof(info.ScreenShotPath), ".\\MainInfo.ini");
+
+	info.m_OpenLauncher = GetPrivateProfileInt("MainInfo", "OpenLauncher", 1, ".\\MainInfo.ini");
+	GetPrivateProfileString("MainInfo", "LauncherName", "Launcher.exe", info.m_LauncherName, sizeof(info.m_LauncherName), ".\\MainInfo.ini");
+
 	info.DebugConsole = GetPrivateProfileInt("MainInfo", "DebugConsole", 1, ".\\MainInfo.ini");
+	info.m_MaxInstance = GetPrivateProfileInt("MainInfo", "MaxInstance", 2, ".\\MainInfo.ini");
+	info.m_RequireAdmin = GetPrivateProfileInt("MainInfo", "RequireAdmin", 1, ".\\MainInfo.ini");
+	info.m_RequireAdminMessage = GetPrivateProfileInt("MainInfo", "RequireAdminMessage", 1, ".\\MainInfo.ini");
+	info.m_BlockVirtualMachine = GetPrivateProfileInt("MainInfo", "BlockVirtualMachine", 1, ".\\MainInfo.ini");
+
 	//PluginSystem
 	GetPrivateProfileString("PluginSystem", "PluginName1", "", info.PluginName1, sizeof(info.PluginName1), ".\\MainInfo.ini");
 	GetPrivateProfileString("PluginSystem", "PluginName2", "", info.PluginName2, sizeof(info.PluginName2), ".\\MainInfo.ini");
@@ -149,6 +165,7 @@ void GerateConfig()// OK
 	info.m_CheckWindowsVersion = GetPrivateProfileInt("SystemRequirements", "CheckWindowsVersion", 7, ".\\MainInfo.ini");
 	info.m_MinMemoryRAM = GetPrivateProfileInt("SystemRequirements", "MinMemoryRAMCheck", 2, ".\\MainInfo.ini");
 	info.m_MinCPUCore = GetPrivateProfileInt("SystemRequirements", "MinCPUCoreCheck", 2, ".\\MainInfo.ini");
+	info.m_MinVideoMemory = GetPrivateProfileInt("SystemRequirements", "MinVideoMemory", 2, ".\\MainInfo.ini");
 
 	//Interface
 	info.m_DisableClassSUM = GetPrivateProfileInt("Interface", "DisableClassSUM", 0, ".\\MainInfo.ini");

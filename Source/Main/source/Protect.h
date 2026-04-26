@@ -12,7 +12,13 @@ struct MAIN_FILE_INFO
 	char ClientSerial[17];
 	char WindowName[32];
 	char ScreenShotPath[50];
+	int m_OpenLauncher;
+	char m_LauncherName[260];
 	int DebugConsole;
+	int m_MaxInstance;
+	int m_RequireAdmin;
+	int m_RequireAdminMessage;
+	int m_BlockVirtualMachine;
 
 	//PluginSystem
 	int m_AntiBypassDLL;
@@ -37,6 +43,7 @@ struct MAIN_FILE_INFO
 	DWORD m_CheckWindowsVersion;
 	DWORD m_MinMemoryRAM;
 	DWORD m_MinCPUCore;
+	DWORD m_MinVideoMemory;
 
 	//Interface
 	int m_DisableClassSUM;

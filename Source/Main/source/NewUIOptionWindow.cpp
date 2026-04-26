@@ -486,7 +486,6 @@ bool SEASON3B::CNewUIOptionWindow::UpdateMouseEvent()
 			if (!m_Fps30) {
 				m_Fps30 = true;
 				m_Fps60 = false;
-				m_Fps120 = false;
 				UpdateFpsLimitInIni(32);
 			}
 		}
@@ -495,17 +494,7 @@ bool SEASON3B::CNewUIOptionWindow::UpdateMouseEvent()
 			if (!m_Fps60) {
 				m_Fps30 = false;
 				m_Fps60 = true;
-				m_Fps120 = false;
 				UpdateFpsLimitInIni(64);
-			}
-		}
-		if (SEASON3B::IsPress(VK_LBUTTON) && CheckMouseIn(m_Pos.x + 130, m_Pos.y + 177 + m_NewY, 15, 15))
-		{
-			if (!m_Fps120) {
-				m_Fps30 = false;
-				m_Fps60 = false;
-				m_Fps120 = true;
-				UpdateFpsLimitInIni(128);
 			}
 		}
 	}
@@ -698,7 +687,7 @@ void SEASON3B::CNewUIOptionWindow::RenderContents()
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 103 + m_NewY, m_Equipments ? "Sets Disable" : "Sets Enable");
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 119 + m_NewY, m_Object ? "Objects Disable" : "Objects Enable");
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 135 + m_NewY, m_Shadows ? "Sombras Disable" : "Sombras Enable");
-		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 151 + m_NewY, m_WingsLv2 ? "Wings Lvl1 Enable" : "Wings Lvl1 Disable");
+		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 151 + m_NewY, m_WingsLv2 ? "Default Item Enable" : "Default Item Disable");
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 167 + m_NewY, m_Monsters ? "Monsters Disable" : "Monsters Enable");
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 183 + m_NewY, m_Players ? "Players Disable" : "Players Enable");
 		g_pRenderText->RenderText(m_Pos.x + 130, m_Pos.y + 23 + m_NewY, m_FogSystem ? "Fog Enable" : "Fog Disable");
@@ -721,7 +710,6 @@ void SEASON3B::CNewUIOptionWindow::RenderContents()
 
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 179 + m_NewY, "30 FPS");
 		g_pRenderText->RenderText(m_Pos.x + 88, m_Pos.y + 179 + m_NewY, "60 FPS");
-		g_pRenderText->RenderText(m_Pos.x + 148, m_Pos.y + 179 + m_NewY, "120 FPS");
 	}
 
 	char nameWindow[128];
@@ -971,14 +959,6 @@ void SEASON3B::CNewUIOptionWindow::RenderButtons()
 		else
 		{
 			RenderImage(IMAGE_OPTION_BTN_CHECK, m_Pos.x + 70, m_Pos.y + 177 + m_NewY, 15, 15, 0, 15.f);
-		}
-		if (m_Fps120)
-		{
-			RenderImage(IMAGE_OPTION_BTN_CHECK, m_Pos.x + 130, m_Pos.y + 177 + m_NewY, 15, 15, 0, 0);
-		}
-		else
-		{
-			RenderImage(IMAGE_OPTION_BTN_CHECK, m_Pos.x + 130, m_Pos.y + 177 + m_NewY, 15, 15, 0, 15.f);
 		}
 	}
 }

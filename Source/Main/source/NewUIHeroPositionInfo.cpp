@@ -152,26 +152,32 @@ void ShowInfoTitleWindow()
 
 bool CNewUIHeroPositionInfo::Render()
 {
-	unicode::t_char szText[256] = {NULL, };
+	unicode::t_char szText[256] = { 0 };
 	ShowInfoTitleWindow();
-	EnableAlphaTest();
-	glColor4f(1.f, 1.f, 1.f, 1.f);
-	
-	g_pRenderText->SetFont( g_hFont );
-	g_pRenderText->SetTextColor( 255, 255, 255, 255 );
-	g_pRenderText->SetBgColor( 0, 0, 0, 0 );
 
-	#ifdef HELPER_ACTIVATE
-	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW, m_Pos.x, m_Pos.y,	float(HERO_POSITION_INFO_BASEA_WINDOW_WIDTH), float(HERO_POSITION_INFO_BASE_WINDOW_HEIGHT));
-	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW + 1, m_Pos.x+HERO_POSITION_INFO_BASEA_WINDOW_WIDTH, m_Pos.y, float(WidenX), float(HERO_POSITION_INFO_BASE_WINDOW_HEIGHT),0.1f,0.f,22.4f/32.f,25.f/32.f);
-	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW+2, m_Pos.x+HERO_POSITION_INFO_BASEA_WINDOW_WIDTH+WidenX, m_Pos.y, float(HERO_POSITION_INFO_BASEC_WINDOW_WIDTH), float(HERO_POSITION_INFO_BASE_WINDOW_HEIGHT));
-	unicode::_sprintf(szText, "%s (%d , %d)", gMapManager.GetMapName(gMapManager.WorldActive), m_CurHeroPosition.x, m_CurHeroPosition.y);
-	g_pRenderText->RenderText(m_Pos.x + 10, m_Pos.y + 5, szText, WidenX + 20, 13 - 4, RT3_SORT_CENTER);
-	#else
-	RenderImage(IMAGE_HERO_POSITION_INFO_BASE_WINDOW, m_Pos.x, m_Pos.y, float(HERO_POSITION_INFO_BASE_WINDOW_WIDTH), float(HERO_POSITION_INFO_BASE_WINDOW_HEIGHT));
-	unicode::_sprintf(szText, "%d %d", m_CurHeroPosition.x, m_CurHeroPosition.y);
-	g_pRenderText->RenderText(m_Pos.x + 16, m_Pos.y + 4, szText, 50 - 16, 13 - 4, RT3_SORT_CENTER);
-	#endif
+	EnableAlphaTest();
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+	float img_x = (float)m_Pos.x + 1.0f;
+	float img_y = (float)m_Pos.y - 17.0f;
+	float img_w = (float)HERO_POSITION_INFO_BASE_WINDOW_WIDTH + 135.0f;
+	float img_h = (float)HERO_POSITION_INFO_BASE_WINDOW_HEIGHT + 65.0f;
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f(1.0f, 1.0f, 1.0f, 0.85f);
+
+	RenderBitmap(IMAGE_HERO_POSITION_INFO_CORD, img_x, img_y, img_w, img_h, 0.0f, 0.0f, 1.0f, 1.0f);
+
+	glDisable(GL_BLEND);
+
+	unicode::_sprintf(szText, "%d - %d | FPS: %.f",
+		m_CurHeroPosition.x, m_CurHeroPosition.y, FPS_AVG);
+
+	g_pRenderText->SetFont(g_hFont);
+	g_pRenderText->SetTextColor(255, 255, 0, 255);
+	g_pRenderText->SetBgColor(0, 0, 0, 0);
+	g_pRenderText->RenderText(m_Pos.x + 19, m_Pos.y + 7, szText, 75, 12, RT3_SORT_CENTER);
 
 	DisableAlphaBlend();
 	return true;
@@ -204,22 +210,13 @@ void CNewUIHeroPositionInfo::SetCurHeroPosition( int x, int y )
 
 void CNewUIHeroPositionInfo::LoadImages()
 {
-	#ifdef HELPER_ACTIVATE
-	LoadBitmap("Interface\\Minimap_positionA.tga", IMAGE_HERO_POSITION_INFO_BASE_WINDOW, GL_LINEAR);
-	LoadBitmap("Interface\\Minimap_positionB.tga", IMAGE_HERO_POSITION_INFO_BASE_WINDOW+1, GL_LINEAR);
-	LoadBitmap("Interface\\Minimap_positionC.tga", IMAGE_HERO_POSITION_INFO_BASE_WINDOW+2, GL_LINEAR);
-	#else
-	LoadBitmap("Interface\\newui_position02.tga", IMAGE_HERO_POSITION_INFO_BASE_WINDOW, GL_LINEAR);
-	#endif
+	// Carrega apenas a nova imagem com suporte a alpha
+	LoadBitmap("Interface\\newui_new_btn_cord.tga", IMAGE_HERO_POSITION_INFO_CORD, GL_LINEAR);
 }
 
 void CNewUIHeroPositionInfo::UnloadImages()
 {
-	DeleteBitmap(IMAGE_HERO_POSITION_INFO_BASE_WINDOW);
-	#if HELPER_ACTIVATE
-	DeleteBitmap(IMAGE_HERO_POSITION_INFO_BASE_WINDOW+1);
-	DeleteBitmap(IMAGE_HERO_POSITION_INFO_BASE_WINDOW+2);
-	#endif
+	DeleteBitmap(IMAGE_HERO_POSITION_INFO_CORD);
 }
 
 

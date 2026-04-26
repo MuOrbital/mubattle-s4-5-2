@@ -1,0 +1,386 @@
+﻿<Window x:Class="Update.exe.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Update Generator"
+        Height="600" Width="700"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True"
+        FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <Style x:Key="WindowButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#33FFFFFF"/>
+                                <Setter TargetName="bd" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#FF0078D7" BlurRadius="10" ShadowDepth="0" Opacity="0.5"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#FF0078D7"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#FF0080E0"/>
+                                <Setter TargetName="bd" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#FF0078D7" BlurRadius="15" ShadowDepth="0" Opacity="0.5"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#FF0060B0"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Background" Value="#404040"/>
+                                <Setter Property="Foreground" Value="#808080"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#FF0078D7"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#FF0080E0"/>
+                                <Setter TargetName="bd" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#FF0078D7" BlurRadius="20" ShadowDepth="0" Opacity="0.6"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#FF0060B0"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Background" Value="#404040"/>
+                                <Setter Property="Foreground" Value="#808080"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernGroupBoxStyle" TargetType="GroupBox">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#333333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupBox">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="0" 
+                                    Background="#2A2A2A"
+                                    BorderBrush="#333333"
+                                    BorderThickness="1"
+                                    CornerRadius="6,6,0,0"
+                                    Padding="12,6">
+                                <ContentPresenter ContentSource="Header"
+                                                RecognizesAccessKey="True"
+                                                TextElement.Foreground="#CCCCCC"
+                                                TextElement.FontSize="13"
+                                                TextElement.FontWeight="SemiBold"/>
+                            </Border>
+                            <Border Grid.Row="1"
+                                    Background="#1E1E1E"
+                                    BorderBrush="#333333"
+                                    BorderThickness="1"
+                                    CornerRadius="0,0,6,6"
+                                    Padding="15">
+                                <ContentPresenter/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="#1A1A1A"/>
+            <Setter Property="BorderBrush" Value="#333333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#D4D4D4"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer Focusable="False" Padding="5">
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Foreground" Value="#D4D4D4"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Padding" Value="8,4"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border x:Name="Border"
+                                            Background="{TemplateBinding Background}"
+                                            Padding="{TemplateBinding Padding}"
+                                            CornerRadius="4">
+                                        <ContentPresenter/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="#2A2A2A"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="#FF0078D7"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="VersionBadgeStyle" TargetType="Border">
+            <Setter Property="Background" Value="#2A2A2A"/>
+            <Setter Property="BorderBrush" Value="#404040"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="12,6"/>
+        </Style>
+    </Window.Resources>
+
+    <Border CornerRadius="10" Background="#0A0A0A">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" BlurRadius="20" ShadowDepth="0" Opacity="0.5"/>
+        </Border.Effect>
+
+        <Grid>
+            <Rectangle>
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#FF1E1E1E" Offset="0"/>
+                        <GradientStop Color="#FF252525" Offset="0.5"/>
+                        <GradientStop Color="#FF2A2A2A" Offset="1"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+
+            <Rectangle x:Name="DragArea" 
+                       Height="36" 
+                       VerticalAlignment="Top" 
+                       Fill="Transparent"
+                       MouseLeftButtonDown="DragArea_MouseLeftButtonDown"/>
+
+            <Button x:Name="btnClose"
+                    Style="{StaticResource WindowButtonStyle}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="0,2,10,0"
+                    Click="btnClose_Click">
+                <TextBlock Text="✕" FontSize="18" Foreground="#CCCCCC"/>
+            </Button>
+
+            <Grid Margin="30,35,30,30">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Margin="0,0,0,25">
+                    <TextBlock Text="🔄 Update Generator"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               TextAlignment="Center">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#FF0078D7" BlurRadius="15" ShadowDepth="0" Opacity="0.6"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock Text="Crie pacotes de atualização para seu software"
+                               FontSize="13"
+                               Foreground="#888888"
+                               TextAlignment="Center"
+                               Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <Grid Grid.Row="1" Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="btnProcurar" 
+                            Grid.Column="0"
+                            Content="📁 Selecionar Pasta Files"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Padding="20,0"
+                            Click="btnProcurar_Click"/>
+
+                    <Border Grid.Column="1"
+                            Background="#1A1A1A"
+                            BorderBrush="#333333"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Margin="10,0,0,0"
+                            Height="40">
+                        <Grid>
+                            <TextBlock x:Name="txtPastaSelecionada" 
+                                       Text="Nenhuma pasta selecionada"
+                                       Foreground="#888888"
+                                       VerticalAlignment="Center"
+                                       Margin="12,0"
+                                       FontSize="13"
+                                       FontStyle="Italic"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <GroupBox Grid.Row="2" 
+                          Header="📦 ARQUIVOS ENCONTRADOS"
+                          Style="{StaticResource ModernGroupBoxStyle}"
+                          Margin="0,0,0,20">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" 
+                                    Style="{StaticResource VersionBadgeStyle}"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,10,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="📌 Versão atual: " 
+                                               Foreground="#888888"
+                                               FontSize="12"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtVersaoAtual" 
+                                               Text="0"
+                                               Foreground="#FF0078D7"
+                                               FontSize="16"
+                                               FontWeight="Bold"
+                                               FontFamily="Consolas"
+                                               Margin="5,0,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Grid.Column="1" 
+                                       Text="→" 
+                                       Foreground="#404040"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Center"/>
+
+                            <Border Grid.Column="2" 
+                                    Style="{StaticResource VersionBadgeStyle}"
+                                    HorizontalAlignment="Left"
+                                    Margin="10,0,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="✨ Nova versão: " 
+                                               Foreground="#888888"
+                                               FontSize="12"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtNovaVersao" 
+                                               Text="001"
+                                               Foreground="#00C853"
+                                               FontSize="16"
+                                               FontWeight="Bold"
+                                               FontFamily="Consolas"
+                                               Margin="5,0,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <ListBox x:Name="lstArquivos" 
+                                 Grid.Row="1" 
+                                 Style="{StaticResource ModernListBoxStyle}"
+                                 Height="200"/>
+                    </Grid>
+                </GroupBox>
+
+                <Button x:Name="btnGerar" 
+                        Grid.Row="3" 
+                        Content="🚀 GERAR PACOTE DE UPDATE"
+                        Style="{StaticResource ActionButtonStyle}"
+                        IsEnabled="False"
+                        Click="btnGerar_Click"
+                        Width="300"
+                        HorizontalAlignment="Center"/>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

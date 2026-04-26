@@ -75,6 +75,10 @@
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+
+#include <psapi.h>
+#pragma comment(lib, "psapi.lib")
+
 #pragma comment(lib,"ws2_32.lib")
 #include <CustomSetEffect.h>
 #include <DisableExcellent.h>
@@ -135,6 +139,8 @@ BOOL g_bUseWindowMode = TRUE;
 int g_bBorderless = 0;
 #endif
 char Mp3FileName[256];
+
+
 
 void StopMp3(char* Name, BOOL bEnforce)
 {
@@ -278,6 +284,7 @@ BOOL GetFileNameOfFilePath(char* lpszFile, char* lpszPath)
 }
 
 HANDLE g_hMainExe = INVALID_HANDLE_VALUE;
+HANDLE g_hLimitSemaphore = NULL;
 
 BOOL OpenMainExe(void)
 {
@@ -489,6 +496,13 @@ void DestroyWindow()
 	HWND shWnd = FindWindow(NULL, "MuPlayer");
 	if (shWnd)
 		SendMessage(shWnd, WM_DESTROY, 0, 0);
+
+	if (g_hLimitSemaphore)
+	{
+		ReleaseSemaphore(g_hLimitSemaphore, 1, NULL);
+		CloseHandle(g_hLimitSemaphore);
+		g_hLimitSemaphore = NULL;
+	}
 }
 void DestroySound()
 {
@@ -736,16 +750,11 @@ LONG FAR PASCAL WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_ACTIVATE:
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
-#ifdef ACTIVE_FOCUS_OUT
-			if (g_bUseWindowMode == FALSE)
-#endif	// ACTIVE_FOCUS_OUT
-				g_bWndActive = false;
 #if defined USER_WINDOW_MODE || (defined WINDOWMODE)
 			if (g_bUseWindowMode == TRUE)
 			{
 				MouseLButton = false;
 				MouseLButtonPop = false;
-				//MouseLButtonPush = false;
 				MouseRButton = false;
 				MouseRButtonPop = false;
 				MouseRButtonPush = false;
@@ -1546,36 +1555,176 @@ bool ExceptionCallback(_EXCEPTION_POINTERS* pExceptionInfo)
 	return EXCEPTION_CONTINUE_SEARCH;
 }
 
-//bool IsRunningAsAdmin()
-//{
-//	BOOL isAdmin = FALSE;
-//	PSID adminGroup;
-//	SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
-//	if (AllocateAndInitializeSid(&NtAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &adminGroup)) {
-//		CheckTokenMembership(NULL, adminGroup, &isAdmin);
-//		FreeSid(adminGroup);
-//	}
-//	return isAdmin;
-//}
-//
-//void RestartAsAdmin()
-//{
-//	char szPath[MAX_PATH];
-//	if (GetModuleFileNameA(NULL, szPath, MAX_PATH)) {
-//		SHELLEXECUTEINFO execInfo = { 0 };
-//		execInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-//		execInfo.fMask = SEE_MASK_FLAG_DDEWAIT | SEE_MASK_FLAG_NO_UI;
-//		execInfo.hwnd = NULL;
-//		execInfo.lpVerb = "runas";
-//		execInfo.lpFile = szPath;
-//		execInfo.nShow = SW_SHOWNORMAL;
-//
-//		if (!ShellExecuteEx(&execInfo)) {
-//			MessageBox(NULL, "Falha ao iniciar o programa como Administrador.", "Erro", MB_OK | MB_ICONERROR);
-//		}
-//		ExitProcess(0);
-//	}
-//}
+DWORD GetParentProcessId(DWORD processId)
+{
+	DWORD parentPid = 0;
+
+	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (hSnapshot == INVALID_HANDLE_VALUE)
+	{
+		return 0;
+	}
+
+	PROCESSENTRY32 pe;
+	ZeroMemory(&pe, sizeof(pe));
+	pe.dwSize = sizeof(pe);
+
+	if (Process32First(hSnapshot, &pe))
+	{
+		do
+		{
+			if (pe.th32ProcessID == processId)
+			{
+				parentPid = pe.th32ParentProcessID;
+				break;
+			}
+		} while (Process32Next(hSnapshot, &pe));
+	}
+
+	CloseHandle(hSnapshot);
+	return parentPid;
+}
+
+bool GetProcessFileNameByPid(DWORD processId, char* outName, DWORD outSize)
+{
+	if (outName == NULL || outSize == 0)
+	{
+		return false;
+	}
+
+	outName[0] = '\0';
+
+	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processId);
+	if (hProcess == NULL)
+	{
+		return false;
+	}
+
+	char fullPath[MAX_PATH] = { 0 };
+
+	if (GetModuleFileNameExA(hProcess, NULL, fullPath, MAX_PATH) == 0)
+	{
+		CloseHandle(hProcess);
+		return false;
+	}
+
+	CloseHandle(hProcess);
+
+	char* lastSlash = strrchr(fullPath, '\\');
+	if (lastSlash != NULL)
+	{
+		strcpy_s(outName, outSize, lastSlash + 1);
+	}
+	else
+	{
+		strcpy_s(outName, outSize, fullPath);
+	}
+
+	return true;
+}
+
+bool WasStartedByLauncher()
+{
+	DWORD currentPid = GetCurrentProcessId();
+	DWORD parentPid = GetParentProcessId(currentPid);
+
+	if (parentPid == 0)
+	{
+		return false;
+	}
+
+	char parentExeName[MAX_PATH] = { 0 };
+
+	if (!GetProcessFileNameByPid(parentPid, parentExeName, sizeof(parentExeName)))
+	{
+		return false;
+	}
+
+	if (_stricmp(parentExeName, gProtect->m_MainInfo.m_LauncherName) == 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool IsLauncherAlreadyRunning()
+{
+	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (hSnapshot == INVALID_HANDLE_VALUE)
+	{
+		return false;
+	}
+
+	PROCESSENTRY32 pe;
+	ZeroMemory(&pe, sizeof(pe));
+	pe.dwSize = sizeof(pe);
+
+	if (Process32First(hSnapshot, &pe))
+	{
+		do
+		{
+			if (_stricmp(pe.szExeFile, gProtect->m_MainInfo.m_LauncherName) == 0)
+			{
+				CloseHandle(hSnapshot);
+				return true;
+			}
+		} while (Process32Next(hSnapshot, &pe));
+	}
+
+	CloseHandle(hSnapshot);
+	return false;
+}
+
+void RunLauncherFromSameFolder()
+{
+	char szCurrentPath[MAX_PATH] = { 0 };
+	char szLauncherPath[MAX_PATH] = { 0 };
+
+	GetModuleFileNameA(NULL, szCurrentPath, MAX_PATH);
+
+	strcpy_s(szLauncherPath, szCurrentPath);
+
+	char* lastSlash = strrchr(szLauncherPath, '\\');
+	if (lastSlash != NULL)
+	{
+		*(lastSlash + 1) = '\0';
+		strcat_s(szLauncherPath, gProtect->m_MainInfo.m_LauncherName);
+	}
+
+	ShellExecuteA(NULL, "open", szLauncherPath, NULL, NULL, SW_SHOWNORMAL);
+}
+
+bool IsRunningAsAdmin()
+{
+	BOOL isAdmin = FALSE;
+	PSID adminGroup;
+	SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
+	if (AllocateAndInitializeSid(&NtAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &adminGroup)) {
+		CheckTokenMembership(NULL, adminGroup, &isAdmin);
+		FreeSid(adminGroup);
+	}
+	return isAdmin;
+}
+
+void RestartAsAdmin()
+{
+	char szPath[MAX_PATH];
+	if (GetModuleFileNameA(NULL, szPath, MAX_PATH)) {
+		SHELLEXECUTEINFO execInfo = { 0 };
+		execInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+		execInfo.fMask = SEE_MASK_FLAG_DDEWAIT | SEE_MASK_FLAG_NO_UI;
+		execInfo.hwnd = NULL;
+		execInfo.lpVerb = "runas";
+		execInfo.lpFile = szPath;
+		execInfo.nShow = SW_SHOWNORMAL;
+
+		if (!ShellExecuteEx(&execInfo)) {
+			MessageBox(NULL, "Falha ao iniciar o programa como Administrador.", "Erro", MB_OK | MB_ICONERROR);
+		}
+		ExitProcess(0);
+	}
+}
 
 typedef LONG(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 bool GetWindowsVersion(DWORD& majorVersion, DWORD& minorVersion, DWORD& buildNumber) {
@@ -1596,11 +1745,105 @@ bool GetWindowsVersion(DWORD& majorVersion, DWORD& minorVersion, DWORD& buildNum
 	return false;
 }
 
+bool IsRunningInVM()
+{
+	int cpuInfo[4] = { 0 };
+
+	bool hypervisorPresent = false;
+	char hypervisorVendor[13] = { 0 };
+
+	__cpuid(cpuInfo, 1);
+
+	if (cpuInfo[2] & (1 << 31))
+	{
+		hypervisorPresent = true;
+	}
+
+	__cpuid(cpuInfo, 0x40000000);
+	memcpy(hypervisorVendor + 0, &cpuInfo[1], 4);
+	memcpy(hypervisorVendor + 4, &cpuInfo[2], 4);
+	memcpy(hypervisorVendor + 8, &cpuInfo[3], 4);
+
+	if (strstr(hypervisorVendor, "VMware") ||
+		strstr(hypervisorVendor, "VBox") ||
+		strstr(hypervisorVendor, "KVM") ||
+		strstr(hypervisorVendor, "Xen"))
+	{
+		return true;
+	}
+
+	if (strstr(hypervisorVendor, "Microsoft Hv") || hypervisorPresent)
+	{
+		HKEY hKey;
+		char manufacturer[256] = { 0 };
+		char productName[256] = { 0 };
+		DWORD size = 0;
+
+		if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, "HARDWARE\\DESCRIPTION\\System\\BIOS", 0, KEY_READ, &hKey) == ERROR_SUCCESS)
+		{
+			size = sizeof(manufacturer);
+			RegQueryValueExA(hKey, "SystemManufacturer", NULL, NULL, (LPBYTE)manufacturer, &size);
+
+			size = sizeof(productName);
+			RegQueryValueExA(hKey, "SystemProductName", NULL, NULL, (LPBYTE)productName, &size);
+
+			RegCloseKey(hKey);
+
+			if (_stricmp(manufacturer, "Microsoft Corporation") == 0 &&
+				_stricmp(productName, "Virtual Machine") == 0)
+			{
+				return true;
+			}
+
+			if (strstr(manufacturer, "VMware") ||
+				strstr(manufacturer, "VirtualBox") ||
+				strstr(manufacturer, "Xen") ||
+				strstr(manufacturer, "QEMU") ||
+				strstr(manufacturer, "KVM") ||
+				strstr(productName, "Virtual") ||
+				strstr(productName, "VMware") ||
+				strstr(productName, "VirtualBox") ||
+				strstr(productName, "KVM") ||
+				strstr(productName, "QEMU") ||
+				strstr(productName, "HVM domU"))
+			{
+				return true;
+			}
+		}
+	}
+
+	if (GetFileAttributesA("C:\\Windows\\System32\\drivers\\VBoxMouse.sys") != INVALID_FILE_ATTRIBUTES ||
+		GetFileAttributesA("C:\\Windows\\System32\\drivers\\VBoxGuest.sys") != INVALID_FILE_ATTRIBUTES ||
+		GetFileAttributesA("C:\\Windows\\System32\\drivers\\VBoxSF.sys") != INVALID_FILE_ATTRIBUTES ||
+		GetFileAttributesA("C:\\Windows\\System32\\drivers\\vmmouse.sys") != INVALID_FILE_ATTRIBUTES ||
+		GetFileAttributesA("C:\\Windows\\System32\\drivers\\vmhgfs.sys") != INVALID_FILE_ATTRIBUTES)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool IsWindowsServer()
+{
+	OSVERSIONINFOEXA osvi;
+	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEXA));
+	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXA);
+
+	if (!GetVersionExA((OSVERSIONINFOA*)&osvi))
+	{
+		return false;
+	}
+
+	return (osvi.wProductType != VER_NT_WORKSTATION);
+}
+
 bool CheckSystemRequirements()
 {
 	if (gProtect->m_MainInfo.m_CheckRequeriments != 0)
 	{
 		DWORD majorVersion, minorVersion, buildNumber;
+
 		if (!GetWindowsVersion(majorVersion, minorVersion, buildNumber)) {
 			return false;
 		}
@@ -1608,24 +1851,36 @@ bool CheckSystemRequirements()
 		if (majorVersion < gProtect->m_MainInfo.m_CheckWindowsVersion) {
 			char msg[256];
 			wsprintf(msg, "Your operating system is not compatible with the game. Minimum requirement: Windows %d or higher.", gProtect->m_MainInfo.m_CheckWindowsVersion);
-			MessageBox(NULL, msg, "Compatibility Error", MB_OK | MB_ICONERROR);		return false;
+			MessageBox(NULL, msg, "Compatibility Error", MB_OK | MB_ICONERROR);
+			return false;
+		}
+
+		if (IsWindowsServer()) {
+			MessageBox(NULL, "Windows Server editions are not supported by the game.", "Compatibility Error", MB_OK | MB_ICONERROR);
+			return false;
 		}
 
 		MEMORYSTATUSEX memInfo;
 		memInfo.dwLength = sizeof(MEMORYSTATUSEX);
 		GlobalMemoryStatusEx(&memInfo);
+
 		DWORDLONG totalPhysMem = memInfo.ullTotalPhys;
 
-		if (totalPhysMem < (DWORDLONG)gProtect->m_MainInfo.m_MinMemoryRAM * 1024ULL * 1024ULL * 1024ULL) {
+		if (totalPhysMem < (DWORDLONG)(gProtect->m_MainInfo.m_MinMemoryRAM - 1) * 1024ULL * 1024ULL * 1024ULL)
+		{
 			char ramMsg[256];
-			wsprintf(ramMsg, "Your system does not meet the minimum requirements to run the game. Minimum Requirement %d GB RAM.", gProtect->m_MainInfo.m_MinMemoryRAM + 1);
-			MessageBox(NULL, ramMsg, "Minimum Requirements Error", MB_OK | MB_ICONERROR);		return false;
+			wsprintf(ramMsg, "Your system does not meet the minimum requirements to run the game. Minimum Requirement %d GB RAM.", gProtect->m_MainInfo.m_MinMemoryRAM);
+			MessageBox(NULL, ramMsg, "Minimum Requirements Error", MB_OK | MB_ICONERROR);
+			return false;
 		}
 
 		SYSTEM_INFO sysInfo;
 		GetSystemInfo(&sysInfo);
+
 		if (sysInfo.dwNumberOfProcessors < gProtect->m_MainInfo.m_MinCPUCore) {
+
 			const char* coreType;
+
 			switch (gProtect->m_MainInfo.m_MinCPUCore) {
 			case 1: coreType = "1 core"; break;
 			case 2: coreType = "dual-core"; break;
@@ -1650,32 +1905,61 @@ bool CheckSystemRequirements()
 			return false;
 		}
 
-		//bool gpuValid = false;
-		//IDXGIFactory* factory = nullptr;
-		//IDXGIAdapter* adapter = nullptr;
-		//HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
-		//if (SUCCEEDED(hr) && factory != nullptr) {
-		//	for (UINT i = 0; factory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND; ++i) {
-		//		DXGI_ADAPTER_DESC desc;
-		//		HRESULT adapterHr = adapter->GetDesc(&desc);
-		//		if (SUCCEEDED(adapterHr)) {
-		//			if (desc.DedicatedVideoMemory > 2ULL * 1024 * 1024 * 1024) {
-		//				gpuValid = true;
-		//			}
-		//		}
-		//		adapter->Release();
-		//	}
-		//	factory->Release();
-		//}
-		//else {
-		//	gpuValid = true;
-		//}
+		bool gpuValid = false;
 
-		//if (!gpuValid) {
-		//	MessageBox(NULL, "Your system does not meet the minimum requirements to run the game. 2GB or more of VRAM is required.", "Minimum Requirements Error", MB_OK | MB_ICONERROR);
-		//	return false;
-		//}
+		if (gProtect->m_MainInfo.m_MinVideoMemory == 0)
+		{
+			gpuValid = true;
+		}
+		else
+		{
+			IDXGIFactory* factory = nullptr;
+			IDXGIAdapter* adapter = nullptr;
+
+			HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
+
+			if (SUCCEEDED(hr) && factory != nullptr) {
+
+				for (UINT i = 0; factory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND; ++i) {
+
+					DXGI_ADAPTER_DESC desc;
+
+					HRESULT adapterHr = adapter->GetDesc(&desc);
+
+					if (SUCCEEDED(adapterHr)) {
+
+						DWORDLONG requiredVRAM = (DWORDLONG)(gProtect->m_MainInfo.m_MinVideoMemory - 1) * 1024ULL * 1024ULL * 1024ULL;
+
+						DWORDLONG totalVideoMemory = desc.DedicatedVideoMemory;
+
+						if (totalVideoMemory == 0)
+						{
+							totalVideoMemory = desc.SharedSystemMemory;
+						}
+
+						if (totalVideoMemory >= requiredVRAM) {
+							gpuValid = true;
+						}
+					}
+
+					adapter->Release();
+				}
+
+				factory->Release();
+			}
+			else {
+				gpuValid = true;
+			}
+		}
+
+		if (!gpuValid) {
+			char gpuMsg[256];
+			wsprintf(gpuMsg, "Your system does not meet the minimum requirements to run the game. %d GB or more of VRAM is required.", gProtect->m_MainInfo.m_MinVideoMemory);
+			MessageBox(NULL, gpuMsg, "Minimum Requirements Error", MB_OK | MB_ICONERROR);
+			return false;
+		}
 	}
+
 	return true;
 }
 
@@ -1746,12 +2030,6 @@ bool GetLocalComputerHardwareId(char* outHardwareId, int bufferSize)
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int nCmdShow)
 {
-	//	if (!IsRunningAsAdmin())
-	//	{
-	//		RestartAsAdmin();
-	//		return 0;
-	//	}
-
 	MSG msg;
 
 	gController.Instance = hInstance;
@@ -1766,6 +2044,88 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 		delete gProtect;
 		gProtect = nullptr;
 		ExitProcess(0);
+	}
+
+	if (gProtect->m_MainInfo.m_OpenLauncher != 0)
+	{
+		if (!WasStartedByLauncher())
+		{
+			if (!IsLauncherAlreadyRunning())
+			{
+				RunLauncherFromSameFolder();
+
+				delete gProtect;
+				gProtect = nullptr;
+				return 0;
+			}
+		}
+	}
+
+	if (gProtect->m_MainInfo.m_RequireAdmin != 0)
+	{
+		if (!IsRunningAsAdmin())
+		{
+			if (gProtect->m_MainInfo.m_RequireAdminMessage != 0)
+			{
+				int resposta = MessageBoxA(NULL,
+					"Este jogo requer execução de Administrador.\n\n"
+					"Deseja reiniciar e executar como administrador?",
+					"Requer Execução como Administrador",
+					MB_YESNO | MB_ICONQUESTION);
+
+				if (resposta == IDYES)
+				{
+					RestartAsAdmin();
+				}
+			}
+			else
+			{
+				RestartAsAdmin();
+			}
+
+			delete gProtect;
+			gProtect = nullptr;
+			return 0;
+		}
+	}
+
+	if (IsRunningInVM())
+	{
+		if (gProtect->m_MainInfo.m_BlockVirtualMachine != 0)
+		{
+			MessageBox(NULL, "The game cannot be run inside a virtual machine.", "Security Error", MB_OK | MB_ICONERROR);
+			return false;
+		}
+	}
+
+	DWORD MaxInstances = gProtect->m_MainInfo.m_MaxInstance;
+
+	if (MaxInstances == 0 || MaxInstances > 250)
+		MaxInstances = 2;
+
+	const char* SEMAPHORE_NAME = "Global\\MuOnlineClientLimit_v2026";
+
+	g_hLimitSemaphore = CreateSemaphoreA(NULL, MaxInstances, MaxInstances, SEMAPHORE_NAME);
+
+	if (g_hLimitSemaphore == NULL)
+	{
+		MessageBoxA(NULL, "Erro ao criar limitador de instâncias.", "Erro Fatal", MB_OK | MB_ICONERROR);
+		return 0;
+	}
+
+	if (WaitForSingleObject(g_hLimitSemaphore, 0) != WAIT_OBJECT_0)
+	{
+		char msg[256];
+		wsprintfA(msg,
+			"Você já atingiu o limite máximo de clientes abertos!\n\n"
+			"Máximo permitido: %d clientes simultâneos.",
+			MaxInstances);
+
+		MessageBoxA(NULL, msg, "Limite de Instâncias", MB_OK | MB_ICONWARNING);
+
+		CloseHandle(g_hLimitSemaphore);
+		g_hLimitSemaphore = NULL;
+		return 0;
 	}
 
 	//if (GetFileAttributesA("Data\\Local\\hw.id") == INVALID_FILE_ATTRIBUTES)
@@ -2199,7 +2559,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 			if (g_bInTray)
 			{
 				DWORD currentTime = GetTickCount();
-
 				if (currentTime - g_dwLastTrayFrameTime >= 5000)
 				{
 					g_dwLastTrayFrameTime = currentTime;
@@ -2207,12 +2566,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 
 #if (defined WINDOWMODE)
 					if (g_bUseWindowMode == TRUE)
+					{
 						Scene(g_hDC);
-					else if (g_bWndActive)
+					}
+					else
+					{
 						Scene(g_hDC);
+					}
 #else
-					if (g_bWndActive)
-						Scene(g_hDC);
+					Scene(g_hDC);
 #endif
 				}
 				else
@@ -2232,10 +2594,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 					Scene(g_hDC);
 				}
 #ifndef FOR_WORK
-				else if (g_bUseWindowMode == FALSE)
-				{
-					// seu código antigo de minimized (deixe como estava)
-				}
+
 #endif
 #else
 				if (g_bWndActive)

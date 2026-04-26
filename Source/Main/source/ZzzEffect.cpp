@@ -4901,7 +4901,7 @@ void CreateEffect(int Type, vec3_t Position, vec3_t Angle, vec3_t Light, int Sub
 				if (o->SubType == 0)
 				{
 					o->LifeTime = 30;
-					o->Scale = 1.8f;
+					o->Scale = 3.8f;
 				}
 			}
 			break;

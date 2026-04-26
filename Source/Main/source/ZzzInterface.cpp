@@ -7670,7 +7670,7 @@ void MoveHero()
 							int iTerrainIndex = TERRAIN_INDEX((int)SelectXF, (int)SelectYF);
 							if ((TerrainWall[iTerrainIndex] & TW_NOMOVE) != TW_NOMOVE)
 							{
-								CreateEffect(MODEL_MOVE_TARGETPOSITION_EFFECT, vPos, pHeroObj->Angle, vLight, 0, pHeroObj, -1, 0, 0, 0, 0.6f);
+								CreateEffect(MODEL_MOVE_TARGETPOSITION_EFFECT, vPos, pHeroObj->Angle, vLight, 0, pHeroObj, -1, 0, 0, 0, 1.1f);
 							}
 						}
 						else

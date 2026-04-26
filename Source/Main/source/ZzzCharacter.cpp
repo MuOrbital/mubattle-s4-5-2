@@ -2500,6 +2500,8 @@ bool AttackStage(CHARACTER* c, OBJECT* o)
 
 	if (c->Skill == AT_SKILL_BLAST_FREEZE ||
 		c->Skill == AT_SKILL_BLAST_POISON ||
+		c->Skill == AT_SKILL_FLAME_STRIKE ||
+		c->Skill == AT_SKILL_EVIL ||
 		c->Skill == AT_SKILL_WHEEL
 		)
 	{
@@ -9628,18 +9630,89 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
 		else
 #endif// GUILD_WAR_EVENT
 		{
+			bool bWingsLv2 = g_pOption->m_WingsLv2;
+
+			if (o->Kind != KIND_PLAYER)
+				bWingsLv2 = false;
+
 			for (int i = MAX_BODYPART - 1; i >= 0; i--)
 			{
 				PART_t* p = &c->BodyPart[i];
 				if (p->Type != -1)
 				{
 					int Type = p->Type;
+					int RenderLevel = p->Level << 3; 
+					int RenderOption = p->Option1;
+
+					if (bWingsLv2)
+					{
+						if (gCharacterManager.GetBaseClass(c->Class) == CLASS_WIZARD)
+						{
+							if (i == BODYPART_HELM) Type = MODEL_HELM + 2;
+							if (i == BODYPART_ARMOR) Type = MODEL_ARMOR + 2;
+							if (i == BODYPART_PANTS) Type = MODEL_PANTS + 2;
+							if (i == BODYPART_GLOVES) Type = MODEL_GLOVES + 2;
+							if (i == BODYPART_BOOTS) Type = MODEL_BOOTS + 2;
+						}
+						else if (gCharacterManager.GetBaseClass(c->Class) == CLASS_KNIGHT)
+						{
+							if (i == BODYPART_HELM) Type = MODEL_HELM + 0;
+							if (i == BODYPART_ARMOR) Type = MODEL_ARMOR + 0;
+							if (i == BODYPART_PANTS) Type = MODEL_PANTS + 0;
+							if (i == BODYPART_GLOVES) Type = MODEL_GLOVES + 0;
+							if (i == BODYPART_BOOTS) Type = MODEL_BOOTS + 0;
+						}
+						else if (gCharacterManager.GetBaseClass(c->Class) == CLASS_ELF)
+						{
+							if (i == BODYPART_HELM) Type = MODEL_HELM + 12;
+							if (i == BODYPART_ARMOR) Type = MODEL_ARMOR + 12;
+							if (i == BODYPART_PANTS) Type = MODEL_PANTS + 12;
+							if (i == BODYPART_GLOVES) Type = MODEL_GLOVES + 12;
+							if (i == BODYPART_BOOTS) Type = MODEL_BOOTS + 12;
+						}
+						else if (gCharacterManager.GetBaseClass(c->Class) == CLASS_DARK)
+						{
+							if (i == BODYPART_HELM) Type = MODEL_BODY_HELM + 3;
+							if (i == BODYPART_ARMOR) Type = MODEL_ARMOR + 15;
+							if (i == BODYPART_PANTS) Type = MODEL_PANTS + 15;
+							if (i == BODYPART_GLOVES) Type = MODEL_GLOVES + 15;
+							if (i == BODYPART_BOOTS) Type = MODEL_BOOTS + 15;
+						}
+						else if (gCharacterManager.GetBaseClass(c->Class) == CLASS_DARK_LORD)
+						{
+							if (i == BODYPART_HELM) Type = MODEL_HELM + 25;
+							if (i == BODYPART_ARMOR) Type = MODEL_ARMOR + 25;
+							if (i == BODYPART_PANTS) Type = MODEL_PANTS + 25;
+							if (i == BODYPART_GLOVES) Type = MODEL_GLOVES + 25;
+							if (i == BODYPART_BOOTS) Type = MODEL_BOOTS + 25;
+						}
+						else if (gCharacterManager.GetBaseClass(c->Class) == CLASS_SUMMONER)
+						{
+							if (i == BODYPART_HELM) Type = MODEL_HELM + 40;
+							if (i == BODYPART_ARMOR) Type = MODEL_ARMOR + 40;
+							if (i == BODYPART_PANTS) Type = MODEL_PANTS + 40;
+							if (i == BODYPART_GLOVES) Type = MODEL_GLOVES + 40;
+							if (i == BODYPART_BOOTS) Type = MODEL_BOOTS + 40;
+						}
+#ifdef PBG_ADD_NEWCHAR_MONK_ITEM
+						else if (gCharacterManager.GetBaseClass(c->Class) == CLASS_RAGEFIGHTER)
+						{
+							if (i == BODYPART_HELM) Type = MODEL_HELM + 1;
+							if (i == BODYPART_ARMOR) Type = MODEL_ARMOR + 1;
+							if (i == BODYPART_PANTS) Type = MODEL_PANTS + 1;
+							if (i == BODYPART_GLOVES) Type = MODEL_GLOVES + 1;
+							if (i == BODYPART_BOOTS) Type = MODEL_BOOTS + 1;
+						}
+#endif //PBG_ADD_NEWCHAR_MONK_ITEM
+
+						RenderLevel = 13 << 3;
+						RenderOption = 1;
+					}
 
 					if (CLASS_SUMMONER == gCharacterManager.GetBaseClass(c->Class))
 					{
 						int nItemType = (Type - MODEL_ITEM) / MAX_ITEM_INDEX;
 						int nItemSubType = (Type - MODEL_ITEM) % MAX_ITEM_INDEX;
-
 						if (nItemType >= 7 && nItemType <= 11
 							&& (nItemSubType == 10 || nItemSubType == 11))
 						{
@@ -9652,6 +9725,7 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
 #endif //PBG_ADD_NEWCHAR_MONK_ITEM
 
 					BMD* b = &Models[Type];
+
 #ifdef PBG_ADD_NEWCHAR_MONK
 					if (CLASS_RAGEFIGHTER == GetBaseClass(c->Class))
 					{
@@ -9678,13 +9752,11 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
 					if (c->MonsterIndex >= 529 && c->MonsterIndex <= 539)
 					{
 						if (gMapManager.WorldActive == WD_65DOPPLEGANGER1)
-							RenderPartObject(&c->Object, Type, p, c->Light, o->Alpha, p->Level << 3, p->Option1, p->ExtOption, false, false, Translate,
+							RenderPartObject(&c->Object, Type, p, c->Light, o->Alpha, RenderLevel, RenderOption, p->ExtOption, false, false, Translate,
 								Select, RENDER_DOPPELGANGER | RENDER_TEXTURE);
 						else
-							RenderPartObject(&c->Object, Type, p, c->Light, o->Alpha, p->Level << 3, p->Option1, p->ExtOption, false, false, Translate,
+							RenderPartObject(&c->Object, Type, p, c->Light, o->Alpha, RenderLevel, RenderOption, p->ExtOption, false, false, Translate,
 								Select, RENDER_DOPPELGANGER | RENDER_BRIGHT | RENDER_TEXTURE);
-						// 						RenderPartObject(&c->Object,Type,p,c->Light,o->Alpha,p->Level<<3,p->Option1,p->ExtOption,false,false,Translate,
-						// 							Select,RENDER_DOPPELGANGER|RENDER_BRIGHT|RENDER_CHROME);
 					}
 					else
 					{
@@ -9693,31 +9765,29 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
 						{
 							RenderCharacter_AfterImage(c, p, Translate, Select, 2.5f, 1.0f);
 						}
-						else
-							if ((o->CurrentAction == PLAYER_SKILL_DARKSIDE_READY) && (GetBaseClass(c->Class) == CLASS_RAGEFIGHTER))
-							{
+						else if ((o->CurrentAction == PLAYER_SKILL_DARKSIDE_READY) && (GetBaseClass(c->Class) == CLASS_RAGEFIGHTER))
+						{
 #ifdef PBG_MOD_RAGEFIGHTERSOUND
-								if (o->m_sTargetIndex < 0 || c->JumpTime>0)
-								{
-									RenderPartObject(&c->Object, Type, p, c->Light, o->Alpha, p->Level << 3, p->Option1, p->ExtOption, false, false, Translate, Select);
-								}
-								else
-#endif //PBG_MOD_RAGEFIGHTERSOUND
-									g_CMonkSystem.DarksideRendering(c, p, Translate, Select);
+							if (o->m_sTargetIndex < 0 || c->JumpTime > 0)
+							{
+								RenderPartObject(&c->Object, Type, p, c->Light, o->Alpha, RenderLevel, RenderOption, p->ExtOption, false, false, Translate, Select);
 							}
 							else
+#endif //PBG_MOD_RAGEFIGHTERSOUND
+								g_CMonkSystem.DarksideRendering(c, p, Translate, Select);
+						}
+						else
 #endif //PBG_ADD_NEWCHAR_MONK_SKILL
-
-								if (o->Kind == KIND_PLAYER && o->Type == MODEL_PLAYER && g_pOption->m_Equipments && i > 0)
-								{
-									int COMMON_NUM = ((i - 1) * MODEL_BODY_NUM) + MODEL_BODY_HELM;
-									Type = gCharacterManager.GetSkinModelIndex(c->Class) + COMMON_NUM;
-									RenderPartObject(&c->Object, Type, p, c->Light, o->Alpha, 0 << 3, false, false, false, false, Translate, Select);
-								}
-								else
-								{
-									RenderPartObject(&c->Object, Type, p, c->Light, o->Alpha, p->Level << 3, p->Option1, p->ExtOption, false, false, Translate, Select);
-								}
+							if (o->Kind == KIND_PLAYER && o->Type == MODEL_PLAYER && g_pOption->m_Equipments && i > 0)
+							{
+								int COMMON_NUM = ((i - 1) * MODEL_BODY_NUM) + MODEL_BODY_HELM;
+								Type = gCharacterManager.GetSkinModelIndex(c->Class) + COMMON_NUM;
+								RenderPartObject(&c->Object, Type, p, c->Light, o->Alpha, 0 << 3, false, false, false, false, Translate, Select);
+							}
+							else
+							{
+								RenderPartObject(&c->Object, Type, p, c->Light, o->Alpha, RenderLevel, RenderOption, p->ExtOption, false, false, Translate, Select);
+							}
 					}
 				}
 			}
@@ -10136,8 +10206,100 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
 			}
 
 			PART_t* w = &c->Weapon[i];
+			
 			if (w->Type != -1 && w->Type != MODEL_BOW + 7 && w->Type != MODEL_BOW + 15 && w->Type != MODEL_HELPER + 5)
 			{
+				int WeaponTypeToRender = w->Type;
+				int WeaponLevelToRender = w->Level;
+				int WeaponOptionToRender = w->Option1;
+
+				if (g_pOption->m_WingsLv2)
+				{
+					if (gCharacterManager.GetBaseClass(c->Class) == CLASS_WIZARD)
+					{
+						if (w->Type >= MODEL_STAFF && w->Type < MODEL_STAFF + MAX_ITEM_INDEX)
+						{
+							WeaponTypeToRender = MODEL_STAFF;
+							WeaponLevelToRender = 13;
+							WeaponOptionToRender = 1;
+						}
+						if (w->Type >= MODEL_SHIELD && w->Type < MODEL_SHIELD + MAX_ITEM_INDEX)
+						{
+							WeaponTypeToRender = MODEL_SHIELD+1;
+							WeaponLevelToRender = 13;
+							WeaponOptionToRender = 1;
+						}
+					}
+					if (gCharacterManager.GetBaseClass(c->Class) == CLASS_KNIGHT)
+					{
+						if (w->Type >= MODEL_SWORD && w->Type < MODEL_SWORD + MAX_ITEM_INDEX)
+						{
+							WeaponTypeToRender = MODEL_SWORD+4;
+							WeaponLevelToRender = 13;
+							WeaponOptionToRender = 1;
+						}
+						if (w->Type >= MODEL_SHIELD && w->Type < MODEL_SHIELD + MAX_ITEM_INDEX)
+						{
+							WeaponTypeToRender = MODEL_SHIELD;
+							WeaponLevelToRender = 13;
+							WeaponOptionToRender = 1;
+						}
+					}
+					if (gCharacterManager.GetBaseClass(c->Class) == CLASS_ELF)
+					{
+						if (w->Type >= MODEL_BOW && w->Type < MODEL_BOW + MAX_ITEM_INDEX)
+						{
+							WeaponTypeToRender = MODEL_BOW +1;
+							WeaponLevelToRender = 13;
+							WeaponOptionToRender = 1;
+						}
+					}
+					if (gCharacterManager.GetBaseClass(c->Class) == CLASS_DARK)
+					{
+						if (w->Type >= MODEL_SWORD && w->Type < MODEL_SWORD + MAX_ITEM_INDEX)
+						{
+							WeaponTypeToRender = MODEL_SWORD +4;
+							WeaponLevelToRender = 13;
+							WeaponOptionToRender = 1;
+						}
+						if (w->Type >= MODEL_STAFF && w->Type < MODEL_STAFF + MAX_ITEM_INDEX)
+						{
+							WeaponTypeToRender = MODEL_STAFF;
+							WeaponLevelToRender = 13;
+							WeaponOptionToRender = 1;
+						}
+					}
+					if (gCharacterManager.GetBaseClass(c->Class) == CLASS_DARK_LORD)
+					{
+						if (w->Type >= MODEL_MACE && w->Type < MODEL_MACE + MAX_ITEM_INDEX)
+						{
+							WeaponTypeToRender = MODEL_MACE +1;
+							WeaponLevelToRender = 13;
+							WeaponOptionToRender = 1;
+						}
+						if (w->Type >= MODEL_SHIELD && w->Type < MODEL_SHIELD + MAX_ITEM_INDEX)
+						{
+							WeaponTypeToRender = MODEL_SHIELD+2;
+							WeaponLevelToRender = 13;
+							WeaponOptionToRender = 1;
+						}
+					}
+					if (gCharacterManager.GetBaseClass(c->Class) == CLASS_SUMMONER)
+					{
+						if (w->Type >= MODEL_STAFF && w->Type < MODEL_STAFF + MAX_ITEM_INDEX)
+						{
+							WeaponTypeToRender = MODEL_STAFF+19;
+							WeaponLevelToRender = 13;
+							WeaponOptionToRender = 1;
+						}
+						if (w->Type >= MODEL_SHIELD && w->Type < MODEL_SHIELD + MAX_ITEM_INDEX)
+						{
+							WeaponTypeToRender = MODEL_STAFF + 21;
+							WeaponLevelToRender = 1;
+							WeaponOptionToRender = 0;
+						}
+					}
+				}
 				if (o->CurrentAction == PLAYER_ATTACK_BOW || o->CurrentAction == PLAYER_ATTACK_CROSSBOW || o->CurrentAction == PLAYER_ATTACK_FLY_BOW || o->CurrentAction == PLAYER_ATTACK_FLY_CROSSBOW)
 				{
 					if (w->Type == MODEL_BOW + 23)
@@ -10209,7 +10371,7 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
 
 					if (g_pOption->m_Swords == 0)
 					{
-						RenderLinkObject(0.f, 0.f, 0.f, c, w, w->Type, w->Level, w->Option1, false, Translate);
+						RenderLinkObject(0.f, 0.f, 0.f, c, w, WeaponTypeToRender, WeaponLevelToRender, WeaponOptionToRender, false, Translate);
 					}
 
 				if (w->Level >= 7)
@@ -15231,12 +15393,12 @@ bool RenderCharacterBackItem(CHARACTER* c, OBJECT* o, bool bTranslate)
 				}
 
 				//Lv2Wings
-				int WINGBK = MODEL_WING + 2;
-				int WINGSM = MODEL_WING + 1;
-				int WINGELF = MODEL_WING + 0;
-				int WINGDL = MODEL_WING + 30;
-				INT WINGSUM = MODEL_WING + 41;
-				INT WINGMG = MODEL_WING + 1;
+				int WINGBK = MODEL_WING + 5;
+				int WINGSM = MODEL_WING + 4;
+				int WINGELF = MODEL_WING + 3;
+				int WINGDL = MODEL_HELPER + 30;
+				INT WINGSUM = MODEL_WING + 42;
+				INT WINGMG = MODEL_WING + 6;
 
 				switch (w->Type)
 				{
