@@ -1,19 +1,26 @@
+*.db
+*.vsidx
+Source/GameServer/.vs/GameServer/v17/.suo
+*.json
+*.bin
+*.ipch
 *.obj
+*.recipe
+*.iobj
+*.ipdb
 *.log
 *.pch
-*.recipe
-*.tlog
 *.res
+*.tlog
 *.pdb
-*.ilk
-*.idb
-*.enc
-*.vsidx
-*.db
+*.lib
+*.exp
+/Source/GameServer/Release
+Source/GetMainInfo/.vs/GetMainInfo/v17/.suo
 *.db-shm
 *.db-wal
 *.opendb
-*.ipch
-*.bin
-*.json
+/Source/GetMainInfo/Release
 Source/Main/.vs/Main/v17/.suo
+Source/Main/Global Release/Main
+/Source/Main/Global Release
