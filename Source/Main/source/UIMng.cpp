@@ -12,6 +12,7 @@
 #include "GameCensorship.h"
 #include "UIControls.h"
 #include "ServerListManager.h"
+#include <Update/InGameUpdater.h>
 
 #define DOCK_EXTENT 10
 
@@ -215,69 +216,74 @@ float RenderNumber2D2(float x, float y, int Num, float Width, float Height)
 
 void CUIMng::RenderTitleSceneUI(HDC hDC, DWORD dwNow, DWORD dwTotal)
 {
-    ::BeginOpengl();
-    ::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    ::BeginBitmap();
-
-    if (gProtect->m_MainInfo.LoadingLegend == 1)
+    if (gProtect->m_MainInfo.m_AutoUpdateCpanel == 0)
     {
-        float FT_Perspective = (float)(1024.f / (float)WindowHeight);
-        float FT_Width = (float)(2048.f / FT_Perspective);
-        float FT_Height = (float)(1024.f / FT_Perspective);
-        float iPos_x = 0 + ((WindowWidth - FT_Width) / 2.f);
-        float iPos_y = 0 + ((WindowHeight - FT_Height) / 2.f);
+        ::BeginOpengl();
+        ::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        ::BeginBitmap();
 
-        float width = (FT_Width / 2.f);
+        if (gProtect->m_MainInfo.LoadingLegend == 1)
+        {
+            float FT_Perspective = (float)(1024.f / (float)WindowHeight);
+            float FT_Width = (float)(2048.f / FT_Perspective);
+            float FT_Height = (float)(1024.f / FT_Perspective);
+            float iPos_x = 0 + ((WindowWidth - FT_Width) / 2.f);
+            float iPos_y = 0 + ((WindowHeight - FT_Height) / 2.f);
+            float width = (FT_Width / 2.f);
 
-        RenderBitmap(531122, iPos_x, iPos_y, width, FT_Height, 0.0, 0.0, 1.f, 1.f, 0, 0, 0.0);
-        RenderBitmap(531125, iPos_x + width, iPos_y, width, FT_Height, 0.0, 0.0, 1.f, 1.f, 0, 0, 0.0);
+            RenderBitmap(531122, iPos_x, iPos_y, width, FT_Height, 0.0, 0.0, 1.f, 1.f, 0, 0, 0.0);
+            RenderBitmap(531125, iPos_x + width, iPos_y, width, FT_Height, 0.0, 0.0, 1.f, 1.f, 0, 0, 0.0);
 
-        FT_Perspective = (float)(1024.f / (float)WindowWidth);
-        FT_Height = (float)(119.f / FT_Perspective);
+            FT_Perspective = (float)(1024.f / (float)WindowWidth);
+            FT_Height = (float)(119.f / FT_Perspective);
+            iPos_x = 0;
+            iPos_y = WindowHeight - FT_Height;
+            RenderBitmap(531123, iPos_x, iPos_y, WindowWidth, FT_Height, 0.0, 0.0, 1.f, 119.f / 128.f, 0, 0, 0.0);
 
-        iPos_x = 0;
-        iPos_y = WindowHeight - FT_Height;
-        RenderBitmap(531123, iPos_x, iPos_y, WindowWidth, FT_Height, 0.0, 0.0, 1.f, 119.f / 128.f, 0, 0, 0.0);
+            iPos_x = (42.f / FT_Perspective);
+            iPos_y = (WindowHeight - FT_Height) + (46.f / FT_Perspective);
+            FT_Width = (float)(WindowWidth - (84.f / FT_Perspective));
+            float relative = ((float)dwNow / (float)dwTotal);
+            RenderBitmap(31122, iPos_x, iPos_y, FT_Width * relative, (8.f / FT_Perspective), 0.0, 0.0, 750.f / 1024.f, 1.f, 0, 0, 0.0);
 
-        iPos_x = (42.f / FT_Perspective);
-        iPos_y = (WindowHeight - FT_Height) + (46.f / FT_Perspective);
-        FT_Width = (float)(WindowWidth - (84.f / FT_Perspective));
+            float WH = 0.25f;
+            int   Anim = (int)(timeGetTime() * 0.5f) % 600 / 40;
+            float AnimX = (double)(Anim % 4) * WH;
+            float AnimY = (double)(Anim / 4) * WH;
+            iPos_x += FT_Width * relative;
+            RenderBitmap(531124, iPos_x - (55.f / FT_Perspective), iPos_y - (42.f / FT_Perspective),
+                (81.f / FT_Perspective), (81.f / FT_Perspective), AnimX, AnimY, WH, WH, 0, 0, 0.0);
 
-        float relative = ((float)dwNow / (float)dwTotal);
+            glColor3f(0.84f, 0.85f, 0.86f);
+            RenderNumber2D2(GetWindowsX - 55.f, GetWindowsY - 26.f, (100.f * relative), 10, 10);
+            glColor3f(1.0f, 1.0f, 1.0f);
+        }
+        else
+        {
+            for (int i = 0; i < UIM_TS_MAX; ++i)
+            {
+                if (i == 2) continue;
+                m_asprTitle[i].Render();
+            }
+            m_asprTitle[UIM_TS_MU].Render();
+            m_pgbLoding->SetValue(dwNow, dwTotal);
+            m_pgbLoding->Render();
+        }
 
-        RenderBitmap(31122, iPos_x, iPos_y, FT_Width * relative, (8.f / FT_Perspective), 0.0, 0.0, 750.f / 1024.f, 1.f, 0, 0, 0.0);
-
-        float WH = 0.25;
-        int Anim = (int)(timeGetTime() * 0.5f) % 600 / 40;
-        float AnimX = (double)(Anim % 4) * WH;
-        float AnimY = (double)(Anim / 4) * WH;
-
-        iPos_x += FT_Width * relative;
-
-        RenderBitmap(531124, iPos_x - (55.f / FT_Perspective), iPos_y - (42.f / FT_Perspective), (81.f / FT_Perspective), (81.f / FT_Perspective), AnimX, AnimY, WH, WH, 0, 0, 0.0);
-
-        glColor3f(0.84, 0.85, 0.86);
-        RenderNumber2D2(GetWindowsX - 55.f, GetWindowsY - 26.f, (100.f * relative), 10, 10);
-        glColor3f(1.0, 1.0, 1.0);
+        ::EndBitmap();
+        ::EndOpengl();
+        ::glFlush();
+        ::SwapBuffers(hDC);
     }
     else
     {
-        for (int i = 0; i < UIM_TS_MAX; ++i)
-        {
-            if (i == 2)
-                continue;
-            m_asprTitle[i].Render();
-        }
-        m_asprTitle[UIM_TS_MU].Render();
-        m_pgbLoding->SetValue(dwNow, dwTotal);
-        m_pgbLoding->Render();
-    }
-
-    ::EndBitmap();
-    ::EndOpengl();
-    ::glFlush();
-    ::SwapBuffers(hDC);
+        float pct = (dwTotal > 0) ? ((float)dwNow / (float)dwTotal * 100.f) : 0.f;
+        InGameUpdate_SetLoadingProgress(pct, "Carregando recursos do jogo...");
+        InGameUpdate_RenderScreen(hDC);
+        ::SwapBuffers(hDC);
+     }
 }
+
 
 void CUIMng::Create()
 {

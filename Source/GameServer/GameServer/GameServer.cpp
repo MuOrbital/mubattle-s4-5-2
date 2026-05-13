@@ -256,6 +256,7 @@ LRESULT CALLBACK WndProc(HWND hWnd,UINT message,WPARAM wParam,LPARAM lParam) // 
 				case IDM_EXIT:
 					if(MessageBox(0,"Are you sure to terminate GameServer?","Ask terminate server",MB_YESNO | MB_ICONQUESTION) == IDYES)
 					{
+						gObjAllDisconnect();
 						DestroyWindow(hWnd);
 					}
 					break;

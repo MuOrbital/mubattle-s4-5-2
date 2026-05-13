@@ -168,4 +168,7 @@ OpenFolder("Interfaces")
 OpenFolder("Guardiao//Configs")
 OpenFolder("Guardiao//Interface")
 
+OpenFolder("Central//Configs")
+OpenFolder("Central//Interface")
+
 return InterfaceController

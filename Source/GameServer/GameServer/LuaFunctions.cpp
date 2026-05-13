@@ -83,12 +83,12 @@ void LogAddTD(std::string str) {
 	LogAdd(LOG_BLACK, (char*)str.c_str());
 }
 
-void SendMessageUser(std::string str, int aIndex, int type) 
+void SendMessageUser(std::string str, int aIndex, int type)
 {
 	gNotice.GCNoticeLuaSend(aIndex, type, 0, 0, 0, 0, 0, (char*)str.c_str());
 }
 
-void SendMessageGlobal(std::string str, int type) 
+void SendMessageGlobal(std::string str, int type)
 {
 	if (type == 2)
 	{
@@ -108,7 +108,7 @@ void SendMessageGlobal(std::string str, int type)
 	}
 }
 
-void SendMessageAllServer(std::string str, int type) 
+void SendMessageAllServer(std::string str, int type)
 {
 	GJServerMessageInfoSend((char*)str.c_str(), type);
 }
@@ -262,7 +262,7 @@ void ItemSerialCreateComplete(int aIndex, int map, int x, int y, int ItemIndex, 
 	GDCreateItemSend(aIndex, map, (BYTE)x, (BYTE)y, ItemIndex, level, (BYTE)dur, op1, op2, op3, ownerIndex, exc, ItemSetOption, 0, 0, 0, 0, Time);
 }
 
-void CreateItemInventory(int aIndex, int ItemIndex, int level, int dur, int op1, int op2, int op3, int exc, int Ancient, int JoH, int SockBonus, int Sock1, int Sock2, int Sock3, int Sock4, int Sock5, int Timer) {
+void CreateItemInventory(int aIndex, int ItemIndex, int level, int dur, int op1, int op2, int op3, int exc, int Ancient, int JoH, int SockBonus, int Sock1, int Sock2, int Sock3, int Sock4, int Sock5, int Op380, int Timer) {
 	if (!OBJECT_RANGE(aIndex)) {
 		return;
 	}
@@ -282,13 +282,14 @@ void CreateItemInventory(int aIndex, int ItemIndex, int level, int dur, int op1,
 	BYTE ItemNewOption = Ancient;
 	BYTE ItemSocketOption[MAX_SOCKET_OPTION] = { (BYTE)Sock1,(BYTE)Sock2,(BYTE)Sock3,(BYTE)Sock4,(BYTE)Sock5 };
 
-	//ItemNewOption = ((ItemIndex >= GET_ITEM(12, 0)) ? 0 : ItemNewOption);
-
-	//gItemOptionRate.MakeSetOption(ItemIndex, ItemNewOption, &ItemNewOption);
-
 	gItemOptionRate.MakeSocketOption(ItemIndex, ItemSocketOption[0], &ItemSocketOption[0]);
 
-	GDCreateItemSend(aIndex, 235, (BYTE)0, (BYTE)0, ItemIndex, level, dur, op1, op2, op3, aIndex, exc, ItemNewOption, JoH, 0, ItemSocketOption, SockBonus, ValueTimer);
+	BYTE Item380Option = 0;
+	if (Op380 != 0) {
+		Item380Option |= 0x80;
+	}
+
+	GDCreateItemSend(aIndex, 235, (BYTE)0, (BYTE)0, ItemIndex, level, dur, op1, op2, op3, aIndex, exc, ItemNewOption, JoH, Item380Option, ItemSocketOption, SockBonus, ValueTimer);
 }
 
 void CreateItemInventory2(int aIndex, int ItemIndex, int level, int op1, int op2, int op3, int exc, int Ancient, int JoH, int socket, int Timer) {
@@ -999,7 +1000,7 @@ void ChaosBoxGenesisCreateItem(int aIndex, int type, int level, int dur, int op1
 	BYTE slot = gItemManager.ChaosBoxGenesisGetEmptySlot(aIndex);
 
 
-	if (slot == 0xFF) 
+	if (slot == 0xFF)
 	{
 		return;
 	}
@@ -1079,19 +1080,19 @@ int LGetRandomValue(int min, int max) {
 
 }
 
-void InsertDeath(int Value1, int Value2, int Value3) 
+void InsertDeath(int Value1, int Value2, int Value3)
 {
 	//gDeathSystem.DeathIncrease(Value1, Value2, Value3);
 }
 
-void DecreaseDeath(int Value1, int Value2, int Value3) 
+void DecreaseDeath(int Value1, int Value2, int Value3)
 {
 	//gDeathSystem.DeathDecrease(Value1, Value2, Value3);
 }
 
-void UpdateDeath(int aIndex) 
+void UpdateDeath(int aIndex)
 {
-	if (!OBJECT_RANGE(aIndex)) 
+	if (!OBJECT_RANGE(aIndex))
 	{
 		return;
 	}

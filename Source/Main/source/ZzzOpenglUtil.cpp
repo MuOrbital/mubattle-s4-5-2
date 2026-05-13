@@ -51,8 +51,8 @@ bool    FogEnable   = false;
 GLfloat FogDensity = 0.0004f;
 GLfloat FogColor[4] = { 10 / 256.f, 10 / 256.f, 10 / 256.f, 256.f / 256.f };
 
-unsigned int WindowWidth  = 1024;
-unsigned int WindowHeight = 768;
+unsigned int WindowWidth  = 2560;
+unsigned int WindowHeight = 1440;
 int          MouseX       = WindowWidth/2;
 int          MouseY       = WindowHeight/2;
 int          BackMouseX   = MouseX;

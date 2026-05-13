@@ -88,6 +88,8 @@
 #pragma comment(lib, "wzAudio.lib")
 #include <wzAudio.h>
 #include <ServerListManager.h>
+#include "Update/InGameUpdater.h"
+
 #define WM_TRAYICON (WM_USER + 100)
 #define ID_TRAYICON 1001
 NOTIFYICONDATA g_nid = { 0 };
@@ -456,7 +458,7 @@ void DestroyWindow()
 	{
 		gMapManager.DeleteObjects();
 
-		for (int i = MODEL_LOGO;i < MAX_MODELS;i++)
+		for (int i = MODEL_LOGO; i < MAX_MODELS; i++)
 		{
 			Models[i].Release();
 		}
@@ -506,7 +508,7 @@ void DestroyWindow()
 }
 void DestroySound()
 {
-	for (int i = 0;i < MAX_BUFFER;i++)
+	for (int i = 0; i < MAX_BUFFER; i++)
 		ReleaseBuffer(i);
 
 	FreeDirectSound();
@@ -694,7 +696,7 @@ LONG FAR PASCAL WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		return 0;
 	}
-	break; 
+	break;
 
 	case WM_KEYDOWN:
 	{
@@ -750,6 +752,8 @@ LONG FAR PASCAL WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_ACTIVATE:
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
+			// Não desativa o jogo quando perde foco (fullscreen continua rodando)
+			// Apenas reseta os botões do mouse no Window Mode
 #if defined USER_WINDOW_MODE || (defined WINDOWMODE)
 			if (g_bUseWindowMode == TRUE)
 			{
@@ -859,9 +863,20 @@ LONG FAR PASCAL WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	return 0;
 	break;
+	case WM_CLOSE:
+	{
+		Destroy = true;
+		if (gProtect->m_MainInfo.m_AutoUpdateCpanel != 0)
+			InGameUpdate_Shutdown();
+		TerminateProcess(GetCurrentProcess(), 0);
+		return 0;
+	}
+	break;
 	case WM_DESTROY:
 	{
 		Destroy = true;
+		if (gProtect->m_MainInfo.m_AutoUpdateCpanel != 0)
+			InGameUpdate_Shutdown();
 		SocketClient.Close();
 
 #ifdef NEW_PROTOCOL_SYSTEM
@@ -1137,8 +1152,9 @@ HWND StartWindow(HINSTANCE hCurrentInst, int nCmdShow)
 	wndClass.cbClsExtra = 0;
 	wndClass.cbWndExtra = 0;
 	wndClass.hInstance = hCurrentInst;
-	wndClass.hIcon = LoadIcon(hCurrentInst, (LPCTSTR)IDI_ICON1);
-	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	HICON hBigIcon = (HICON)LoadImage(hCurrentInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32, 32, LR_DEFAULTCOLOR);
+	HICON hSmallIcon = (HICON)LoadImage(hCurrentInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+	wndClass.hIcon = hBigIcon;	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wndClass.lpszMenuName = NULL;
 	wndClass.lpszClassName = windowName;
@@ -1151,37 +1167,53 @@ HWND StartWindow(HINSTANCE hCurrentInst, int nCmdShow)
 	{
 		AdjustWindowRect(&rc, WS_POPUP | WS_CLIPCHILDREN, FALSE);
 
-		hWnd = CreateWindow(
-			windowName, windowName,
+		hWnd = CreateWindowEx(
+			WS_EX_APPWINDOW,
+			windowName,
+			windowName,
 			WS_POPUP | WS_CLIPCHILDREN | WS_VISIBLE,
 			(GetSystemMetrics(SM_CXSCREEN) - (rc.right - rc.left)) / 2,
 			(GetSystemMetrics(SM_CYSCREEN) - (rc.bottom - rc.top)) / 2,
 			rc.right - rc.left,
 			rc.bottom - rc.top,
-			NULL, NULL, hCurrentInst, NULL);
+			NULL,
+			NULL,
+			hCurrentInst,
+			NULL);
 	}
 	else if (g_bUseWindowMode == TRUE)
 	{
-		AdjustWindowRect(&rc, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER | WS_CLIPCHILDREN, NULL);
+		AdjustWindowRect(&rc, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER | WS_CLIPCHILDREN, FALSE);
 
-		hWnd = CreateWindow(
-			windowName, windowName,
+		hWnd = CreateWindowEx(
+			WS_EX_APPWINDOW,
+			windowName,
+			windowName,
 			WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER | WS_CLIPCHILDREN,
 			(GetSystemMetrics(SM_CXSCREEN) - (rc.right - rc.left)) / 2,
 			(GetSystemMetrics(SM_CYSCREEN) - (rc.bottom - rc.top)) / 2,
 			rc.right - rc.left,
 			rc.bottom - rc.top,
-			NULL, NULL, hCurrentInst, NULL);
+			NULL,
+			NULL,
+			hCurrentInst,
+			NULL);
 	}
 	else
 	{
-		hWnd = CreateWindowEx(WS_EX_TOPMOST | WS_EX_APPWINDOW,
-			windowName, windowName,
+		hWnd = CreateWindowEx(
+			WS_EX_TOPMOST | WS_EX_APPWINDOW,
+			windowName,
+			windowName,
 			WS_POPUP,
-			0, 0,
+			0,
+			0,
 			WindowWidth,
 			WindowHeight,
-			NULL, NULL, hCurrentInst, NULL);
+			NULL,
+			NULL,
+			hCurrentInst,
+			NULL);
 	}
 
 	return hWnd;
@@ -2032,6 +2064,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 {
 	MSG msg;
 
+	if (szCmdLine && strstr(szCmdLine, "--apply-update"))
+	{
+		InGameUpdate_RunAsUpdater(szCmdLine);
+		return 0;
+	}
+
 	gController.Instance = hInstance;
 
 	leaf::AttachExceptionHandler(ExceptionCallback);
@@ -2100,8 +2138,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 
 	DWORD MaxInstances = gProtect->m_MainInfo.m_MaxInstance;
 
-	if (MaxInstances == 0 || MaxInstances > 250)
-		MaxInstances = 2;
+	if (MaxInstances == 0)
+		MaxInstances = 10;
 
 	const char* SEMAPHORE_NAME = "Global\\MuOnlineClientLimit_v2026";
 
@@ -2359,6 +2397,56 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 	ShowWindow(g_hWnd, nCmdShow);
 	UpdateWindow(g_hWnd);
 
+	if (gProtect->m_MainInfo.m_AutoUpdateCpanel != 0)
+	{
+		InGameUpdate_Start(g_hWnd);
+		{
+			MSG msgUpd;
+
+			while (InGameUpdate_GetState() == IUS_CHECKING)
+			{
+				while (PeekMessage(&msgUpd, NULL, 0, 0, PM_REMOVE))
+				{
+					TranslateMessage(&msgUpd);
+					DispatchMessage(&msgUpd);
+				}
+				InGameUpdate_RenderScreen(g_hDC);
+				SwapBuffers(g_hDC);
+				Sleep(16);
+			}
+
+			while (true)
+			{
+				INGAME_UPDATE_STATE updState = InGameUpdate_GetState();
+				if (updState == IUS_DONE || updState == IUS_ERROR)
+					break;
+
+				while (PeekMessage(&msgUpd, NULL, 0, 0, PM_REMOVE))
+				{
+					TranslateMessage(&msgUpd);
+					DispatchMessage(&msgUpd);
+				}
+
+				InGameUpdate_RenderScreen(g_hDC);
+				SwapBuffers(g_hDC);
+				Sleep(16);
+			}
+
+			DWORD dwEnd = GetTickCount() + 1500;
+			while (GetTickCount() < dwEnd)
+			{
+				while (PeekMessage(&msgUpd, NULL, 0, 0, PM_REMOVE))
+				{
+					TranslateMessage(&msgUpd);
+					DispatchMessage(&msgUpd);
+				}
+				InGameUpdate_RenderScreen(g_hDC);
+				SwapBuffers(g_hDC);
+				Sleep(16);
+			}
+		}
+	}
+
 	//g_ErrorReport.WriteImeInfo( g_hWnd);
 	g_ErrorReport.AddSeparator();
 
@@ -2433,7 +2521,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 	SetTimer(g_hWnd, HACK_TIMER, 20 * 1000, NULL);
 
 	srand((unsigned)time(NULL));
-	for (int i = 0;i < 100;i++)
+	for (int i = 0; i < 100; i++)
 		RandomTable[i] = rand() % 360;
 
 	//memorydump[0]
@@ -2567,14 +2655,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 #if (defined WINDOWMODE)
 					if (g_bUseWindowMode == TRUE)
 					{
-						Scene(g_hDC);
+						Scene(g_hDC);           // Window Mode
 					}
 					else
 					{
-						Scene(g_hDC);
+						Scene(g_hDC);           // Fullscreen - agora roda SEMPRE (mesmo sem foco)
 					}
 #else
-					Scene(g_hDC);
+					Scene(g_hDC);               // Versão antiga
 #endif
 				}
 				else
@@ -2594,7 +2682,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 					Scene(g_hDC);
 				}
 #ifndef FOR_WORK
-
+				else if (g_bUseWindowMode == FALSE)
+				{
+					// seu código antigo de minimized (deixe como estava)
+				}
 #endif
 #else
 				if (g_bWndActive)
@@ -2619,6 +2710,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 
 	DestroyWindow();
 
+	ExitProcess(0);
 	return msg.wParam;
 }
 

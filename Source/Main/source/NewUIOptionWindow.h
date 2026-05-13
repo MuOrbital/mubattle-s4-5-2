@@ -87,7 +87,7 @@ namespace SEASON3B
         bool m_Window;
         bool m_Object;
         bool m_Shadows;
-        bool m_WingsLv2;
+        bool m_DefaultItem;
         bool m_Monsters;
         bool m_Players;
         bool m_Rotation;

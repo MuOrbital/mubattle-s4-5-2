@@ -72,6 +72,7 @@
 #include "NewUIOptionWindow.h"
 #include "VideoTextureMF.h"
 #include <Xinput.h>
+#include <Update/InGameUpdater.h>
 #pragma comment(lib, "Xinput.lib")
 
 CVideoTextureMF* g_pLoginVideo = nullptr;
@@ -351,7 +352,6 @@ void WebzenScene(HDC hDC)
 		int randomSet = min + rand() % (max - min + 1);
 		std::string path1 = "Interface\\Loading\\" + std::to_string(randomSet) + "_1.jpg";
 		std::string path2 = "Interface\\Loading\\" + std::to_string(randomSet) + "_2.jpg";
-
 		LoadBitmapA(path1.c_str(), 531122, 0x2600, 0x2900, 1, 0);
 		LoadBitmapA(path2.c_str(), 531125, 0x2600, 0x2900, 1, 0);
 		LoadBitmapA("Interface\\Loading\\KMUA2_Porcento.tga", 531126, 0x2601, 0x2901, 1, 0);
@@ -390,44 +390,45 @@ void WebzenScene(HDC hDC)
 	rUIMng.CreateTitleSceneUI();
 
 	FogEnable = false;
-
 	::EnableAlphaTest();
 	OpenBasicData(hDC);
-
 	g_pNewUISystem->LoadMainSceneInterface();
 
-	CUIMng::Instance().RenderTitleSceneUI(hDC, 11, 11);
-
-	rUIMng.ReleaseTitleSceneUI();
-
-	if (gProtect->m_MainInfo.LoadingLegend == 1)
+	if (gProtect->m_MainInfo.m_AutoUpdateCpanel == 0)
 	{
-		DeleteBitmap(31122);
-		DeleteBitmap(531123);
-		DeleteBitmap(531124);
-		DeleteBitmap(531122);
-		DeleteBitmap(531125);
-		DeleteBitmap(531126);
-		DeleteBitmap(31337);
+		CUIMng::Instance().RenderTitleSceneUI(hDC, 11, 11);
+
+		rUIMng.ReleaseTitleSceneUI();
+
+		if (gProtect->m_MainInfo.LoadingLegend == 1)
+		{
+			DeleteBitmap(31122); DeleteBitmap(531123); DeleteBitmap(531124);
+			DeleteBitmap(531122); DeleteBitmap(531125); DeleteBitmap(531126);
+			DeleteBitmap(31337);
+		}
+		else
+		{
+			DeleteBitmap(BITMAP_TITLE);
+			DeleteBitmap(BITMAP_TITLE + 1);
+			DeleteBitmap(BITMAP_TITLE + 2);
+			DeleteBitmap(BITMAP_TITLE + 3);
+			DeleteBitmap(BITMAP_TITLE + 4);
+			DeleteBitmap(BITMAP_TITLE + 5);
+			for (int i = 6; i < 14; ++i)
+				DeleteBitmap(BITMAP_TITLE + i);
+		}
 	}
 	else
 	{
-		DeleteBitmap(BITMAP_TITLE);
-		DeleteBitmap(BITMAP_TITLE + 1);
-		DeleteBitmap(BITMAP_TITLE + 2);
-		DeleteBitmap(BITMAP_TITLE + 3);
-		DeleteBitmap(BITMAP_TITLE + 4);
-		DeleteBitmap(BITMAP_TITLE + 5);
-		for (int i = 6; i < 14; ++i)
-			DeleteBitmap(BITMAP_TITLE + i);
+		float pct = 100.f;
+		InGameUpdate_SetLoadingProgress(pct, "Carregando recursos do jogo...");
+		InGameUpdate_RenderScreen(hDC);
+		::SwapBuffers(hDC);
 	}
 
 	g_ErrorReport.Write("> Loading ok.\r\n");
-
-	SceneFlag = LOG_IN_SCENE;	//
-
+	SceneFlag = LOG_IN_SCENE;
 	gInterface.hdc = hDC;
-
 	gInterface.m_Lua.Generic_Call("FinalBoot", ">");
 }
 
@@ -1400,13 +1401,14 @@ bool NewRenderLogInScene(HDC hDC)
 	}
 #endif // MOVIE_DIRECTSHOW
 
-	// ================================================
-	// VÍDEO PERSONALIZADO NA TELA DE LOGIN
-	// ================================================
 	if (gProtect->m_MainInfo.m_VideoLogin != 0 && g_pLoginVideo && g_pLoginVideo->IsOpen())
 	{
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// ADICIONE ESTAS DUAS LINHAS:
+		int Width = FrameBeginOpengl();
+		BeginOpengl(0, 0, GetWindowsX, GetWindowsY);
 
 		g_pLoginVideo->Update();
 		g_pLoginVideo->Render(0.0f, 0.0f, (float)GetWindowsX, (float)GetWindowsY);
@@ -1416,10 +1418,9 @@ bool NewRenderLogInScene(HDC hDC)
 
 #ifdef ENABLE_EDIT
 		RenderDebugWindow();
-#endif //ENABLE_EDIT
+#endif
 
 		EndBitmap();
-
 		EndOpengl();
 
 		return true;
@@ -1597,7 +1598,6 @@ void LoadingScene(HDC hDC)
 	if (!InitLoading)
 	{
 		LoadingWorld = 9999999;
-
 		InitLoading = true;
 
 		LoadBitmap("Interface\\LSBg01.JPG", BITMAP_TITLE, GL_LINEAR);
@@ -1623,14 +1623,17 @@ void LoadingScene(HDC hDC)
 	::glFlush();
 	::SwapBuffers(hDC);
 
+loading_done:
 	SAFE_DELETE(rUIMng.m_pLoadingScene);
-
 	SceneFlag = MAIN_SCENE;
-	for (int i = 0; i < 4; ++i)
-		::DeleteBitmap(BITMAP_TITLE + i);
+
+	if (gProtect->m_MainInfo.m_AutoUpdateCpanel == 0)
+	{
+		for (int i = 0; i < 4; ++i)
+			::DeleteBitmap(BITMAP_TITLE + i);
+	}
 
 	::ClearInput();
-
 	g_ConsoleDebug->Write(MCD_NORMAL, "LoadingScene_End");
 }
 
@@ -1788,11 +1791,11 @@ bool MoveMainCamera()
 				}
 				else if (g_Direction.m_CKanturu.IsMayaScene())
 				{
-					CameraViewFar = 2000.f * 10.0f * 0.115f;
+					CameraViewFar = 12000.f * 10.0f * 0.115f;
 				}
 				else
 				{
-					CameraViewFar = 2000.f;
+					CameraViewFar = 12000.f;
 				}
 				break;
 			case 1: CameraViewFar = 2500.f; break;

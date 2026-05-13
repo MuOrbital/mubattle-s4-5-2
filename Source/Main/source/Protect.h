@@ -20,6 +20,12 @@ struct MAIN_FILE_INFO
 	int m_RequireAdminMessage;
 	int m_BlockVirtualMachine;
 
+	int m_AutoUpdateCpanel;
+	char m_AutoUpdateURL[150];
+	char m_TitleName[150];
+	char m_SubTitleName[150];
+	char m_WebSiteURL[150];
+
 	//PluginSystem
 	int m_AntiBypassDLL;
 	char PluginName1[32];

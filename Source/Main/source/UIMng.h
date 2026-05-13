@@ -28,7 +28,7 @@ class CGaugeBar;
 class CWin;
 class CLoadingScene;
 
-class CUIMng  
+class CUIMng
 {
 public:
 	CMsgWin			m_MsgWin;
@@ -42,11 +42,11 @@ public:
 	CCharMakeWin	m_CharMakeWin;
 	CCharInfoBalloonMng	m_CharInfoBalloonMng;
 	CServerMsgWin	m_ServerMsgWin;
-	CLoadingScene*	m_pLoadingScene;
+	CLoadingScene* m_pLoadingScene;
 
 protected:
-	CSprite*		m_asprTitle;
-	CGaugeBar*		m_pgbLoding;
+	CSprite* m_asprTitle;
+	CGaugeBar* m_pgbLoding;
 	CPList			m_WinList;
 	bool			m_bCursorOnUI;
 	bool			m_bBlockCharMove;

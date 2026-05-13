@@ -38,7 +38,7 @@ SEASON3B::CNewUIOptionWindow::CNewUIOptionWindow()
 	m_Window = false;
 	m_Object = false;
 	m_Shadows = true;
-	m_WingsLv2 = false;
+	m_DefaultItem = false;
 	m_Monsters = false;
 	m_Players = false;
 	m_Rotation = false;
@@ -141,7 +141,7 @@ bool SEASON3B::CNewUIOptionWindow::Create(CNewUIManager* pNewUIMng, int x, int y
 	m_Equipments = ReadOptionFromIni("Equipments", 0) != 0;
 	m_Object = ReadOptionFromIni("Object", 0) != 0;
 	m_Shadows = ReadOptionFromIni("Shadows", 1) != 0;
-	m_WingsLv2 = ReadOptionFromIni("WingsLv2", 0) != 0;
+	m_DefaultItem = ReadOptionFromIni("WingsLv2", 0) != 0;
 	m_Monsters = ReadOptionFromIni("Monsters", 0) != 0;
 	m_Players = ReadOptionFromIni("Players", 0) != 0;
 	m_NSkillCollor = ReadOptionFromIni("NewSkill", 1) != 0;
@@ -174,7 +174,7 @@ bool SEASON3B::CNewUIOptionWindow::Create(CNewUIManager* pNewUIMng, int x, int y
 	SaveOptionToIni("Equipments", m_Equipments ? 1 : 0);
 	SaveOptionToIni("Object", m_Object ? 1 : 0);
 	SaveOptionToIni("Shadows", m_Shadows ? 1 : 0);
-	SaveOptionToIni("WingsLv2", m_WingsLv2 ? 1 : 0);
+	SaveOptionToIni("WingsLv2", m_DefaultItem ? 1 : 0);
 	SaveOptionToIni("Monsters", m_Monsters ? 1 : 0);
 	SaveOptionToIni("Players", m_Players ? 1 : 0);
 	SaveOptionToIni("NewSkill", m_NSkillCollor ? 1 : 0);
@@ -369,8 +369,8 @@ bool SEASON3B::CNewUIOptionWindow::UpdateMouseEvent()
 		}
 		if (SEASON3B::IsPress(VK_LBUTTON) && CheckMouseIn(m_Pos.x + 12, m_Pos.y + 149 + m_NewY, 15, 15))
 		{
-			m_WingsLv2 = !m_WingsLv2;
-			SaveOptionToIni("WingsLv2", m_WingsLv2 ? 1 : 0);
+			m_DefaultItem = !m_DefaultItem;
+			SaveOptionToIni("WingsLv2", m_DefaultItem ? 1 : 0);
 		}
 		if (SEASON3B::IsPress(VK_LBUTTON) && CheckMouseIn(m_Pos.x + 12, m_Pos.y + 165 + m_NewY, 15, 15))
 		{
@@ -687,7 +687,7 @@ void SEASON3B::CNewUIOptionWindow::RenderContents()
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 103 + m_NewY, m_Equipments ? "Sets Disable" : "Sets Enable");
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 119 + m_NewY, m_Object ? "Objects Disable" : "Objects Enable");
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 135 + m_NewY, m_Shadows ? "Sombras Disable" : "Sombras Enable");
-		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 151 + m_NewY, m_WingsLv2 ? "Default Item Enable" : "Default Item Disable");
+		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 151 + m_NewY, m_DefaultItem ? "Default Item Enable" : "Default Item Disable");
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 167 + m_NewY, m_Monsters ? "Monsters Disable" : "Monsters Enable");
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 183 + m_NewY, m_Players ? "Players Disable" : "Players Enable");
 		g_pRenderText->RenderText(m_Pos.x + 130, m_Pos.y + 23 + m_NewY, m_FogSystem ? "Fog Enable" : "Fog Disable");
@@ -846,7 +846,7 @@ void SEASON3B::CNewUIOptionWindow::RenderButtons()
 		{
 			RenderImage(IMAGE_OPTION_BTN_CHECK, m_Pos.x + 12, m_Pos.y + 133 + m_NewY, 15, 15, 0, 15.f);
 		}
-		if (m_WingsLv2)
+		if (m_DefaultItem)
 		{
 			RenderImage(IMAGE_OPTION_BTN_CHECK, m_Pos.x + 12, m_Pos.y + 149 + m_NewY, 15, 15, 0, 0);
 		}

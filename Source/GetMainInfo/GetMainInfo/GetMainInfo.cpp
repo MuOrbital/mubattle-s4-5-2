@@ -33,6 +33,13 @@ struct MAIN_FILE_INFO
 	int m_RequireAdminMessage;
 	int m_BlockVirtualMachine;
 
+	//Launcher Updater
+	int m_AutoUpdateCpanel;
+	char m_AutoUpdateURL[150];
+	char m_TitleName[150];
+	char m_SubTitleName[150];
+	char m_WebSiteURL[150];
+
 	//PluginSystem
 	int m_AntiBypassDLL;
 	char PluginName1[32];
@@ -148,6 +155,12 @@ void GerateConfig()// OK
 	info.m_RequireAdmin = GetPrivateProfileInt("MainInfo", "RequireAdmin", 1, ".\\MainInfo.ini");
 	info.m_RequireAdminMessage = GetPrivateProfileInt("MainInfo", "RequireAdminMessage", 1, ".\\MainInfo.ini");
 	info.m_BlockVirtualMachine = GetPrivateProfileInt("MainInfo", "BlockVirtualMachine", 1, ".\\MainInfo.ini");
+
+	info.m_AutoUpdateCpanel = GetPrivateProfileInt("IntegratedLauncher", "AutoUpdateCpanel", 1, ".\\MainInfo.ini");
+	GetPrivateProfileString("IntegratedLauncher", "AutoUpdateURL", "", info.m_AutoUpdateURL, sizeof(info.m_AutoUpdateURL), ".\\MainInfo.ini");
+	GetPrivateProfileString("IntegratedLauncher", "TitleName", "", info.m_TitleName, sizeof(info.m_TitleName), ".\\MainInfo.ini");
+	GetPrivateProfileString("IntegratedLauncher", "SubTitleName", "", info.m_SubTitleName, sizeof(info.m_SubTitleName), ".\\MainInfo.ini");
+	GetPrivateProfileString("IntegratedLauncher", "WebSiteURL", "", info.m_WebSiteURL, sizeof(info.m_WebSiteURL), ".\\MainInfo.ini");
 
 	//PluginSystem
 	GetPrivateProfileString("PluginSystem", "PluginName1", "", info.PluginName1, sizeof(info.PluginName1), ".\\MainInfo.ini");

@@ -9630,7 +9630,7 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
 		else
 #endif// GUILD_WAR_EVENT
 		{
-			bool bWingsLv2 = g_pOption->m_WingsLv2;
+			bool bWingsLv2 = g_pOption->m_DefaultItem;
 
 			if (o->Kind != KIND_PLAYER)
 				bWingsLv2 = false;
@@ -9641,7 +9641,7 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
 				if (p->Type != -1)
 				{
 					int Type = p->Type;
-					int RenderLevel = p->Level << 3; 
+					int RenderLevel = p->Level << 3;
 					int RenderOption = p->Option1;
 
 					if (bWingsLv2)
@@ -10213,7 +10213,7 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
 				int WeaponLevelToRender = w->Level;
 				int WeaponOptionToRender = w->Option1;
 
-				if (g_pOption->m_WingsLv2)
+				if (g_pOption->m_DefaultItem)
 				{
 					if (gCharacterManager.GetBaseClass(c->Class) == CLASS_WIZARD)
 					{
@@ -15410,7 +15410,7 @@ bool RenderCharacterBackItem(CHARACTER* c, OBJECT* o, bool bTranslate)
 					RenderLinkObject(0.f, 0.f, 15.f, c, w, w->Type, w->Level, w->Option1, true, bTranslate);
 					break;
 				default:
-					if (g_pOption->m_WingsLv2)
+					if (g_pOption->m_DefaultItem)
 					{
 						if (gCharacterManager.GetBaseClass(c->Class) == CLASS_WIZARD)
 						{

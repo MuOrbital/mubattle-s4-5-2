@@ -1534,6 +1534,12 @@
     <ClCompile Include="source\ItemSize.cpp">
       <Filter>MU\Client\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\Update\InGameUpdater.cpp">
+      <Filter>MU\Client\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Update\miniz.c">
+      <Filter>MU\Client\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\BlackWin.h">
@@ -2800,6 +2806,12 @@
       <Filter>MU\Client\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\ItemSize.h">
+      <Filter>MU\Client\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Update\InGameUpdater.h">
+      <Filter>MU\Client\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Update\miniz.h">
       <Filter>MU\Client\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

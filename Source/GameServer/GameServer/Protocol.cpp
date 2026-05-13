@@ -66,6 +66,7 @@
 #include "Warehouse.h"
 #include "LuaSocket.h"
 #include "EventEntryLevel.h"
+#include "Monster.h"
 
 void ProtocolCore(BYTE head, BYTE* lpMsg, int size, int aIndex, int encrypt, int serial) // OK
 {
@@ -3384,15 +3385,12 @@ void GCNewCharacterCalcSend(LPOBJ lpObj) // OK
 
 void GCNewHealthBarSend(LPOBJ lpObj) // OK
 {
-#if(GAMESERVER_EXTRA==1)
-#if(GAMESERVER_UPDATE<=603)
-
 	if (gServerInfo.m_MonsterHealthBarSwitch == 0 && gServerInfo.m_PlayerHealthBarSwitch == 0)
 	{
 		return;
 	}
 
-	BYTE send[4096];
+	BYTE send[16384];
 	PMSG_NEW_HEALTH_BAR_SEND pMsg;
 
 	pMsg.header.set(0xF3, 0xE2, 0);
@@ -3433,8 +3431,72 @@ void GCNewHealthBarSend(LPOBJ lpObj) // OK
 		info.index = lpTarget->Index;
 		info.type = (BYTE)lpTarget->Type;
 
-		// Envia apenas a vida (igual para monstro e jogador)
 		info.rate = (BYTE)((lpTarget->Life * 100) / (lpTarget->MaxLife + lpTarget->AddLife));
+		info.life = (DWORD)lpTarget->Life;
+		info.maxLife = (DWORD)(lpTarget->MaxLife + lpTarget->AddLife);
+
+		struct DamageEntry
+		{
+			int index;
+			int damage;
+		};
+
+		DamageEntry entries[MAX_HIT_DAMAGE];
+		int count = 0;
+
+		for (int i = 0; i < MAX_HIT_DAMAGE; i++)
+		{
+			int idx = lpTarget->HitDamage[i].index;
+
+			if (OBJECT_RANGE(idx) &&
+				gObjIsConnected(idx) &&
+				lpTarget->HitDamage[i].damage > 0 &&
+				(GetTickCount() - lpTarget->HitDamage[i].time) <= 30000 &&
+				lpTarget->Map == gObj[idx].Map &&
+				gObjCalcDistance(lpTarget, &gObj[idx]) <= 20)
+			{
+				if (count >= MAX_HIT_DAMAGE)
+				{
+					break;
+				}
+
+				entries[count].index = idx;
+				entries[count].damage = lpTarget->HitDamage[i].damage;
+				count++;
+			}
+		}
+
+		for (int i = 0; i < count - 1; i++)
+		{
+			for (int j = 0; j < count - i - 1; j++)
+			{
+				if (entries[j].damage < entries[j + 1].damage)
+				{
+					DamageEntry temp = entries[j];
+					entries[j] = entries[j + 1];
+					entries[j + 1] = temp;
+				}
+			}
+		}
+
+		for (int i = 0; i < 10; i++)
+		{
+			info.topIndex[i] = -1;
+			info.topDamage[i] = 0;
+		}
+
+		int max = (count > 10) ? 10 : count;
+
+		for (int i = 0; i < max; i++)
+		{
+			info.topIndex[i] = entries[i].index;
+			info.topDamage[i] = entries[i].damage;
+		}
+
+		if ((size + sizeof(info)) >= sizeof(send))
+		{
+			break;
+		}
 
 		memcpy(&send[size], &info, sizeof(info));
 		size += sizeof(info);
@@ -3448,10 +3510,8 @@ void GCNewHealthBarSend(LPOBJ lpObj) // OK
 		memcpy(send, &pMsg, sizeof(pMsg));
 		DataSend(lpObj->Index, send, size);
 	}
-
-#endif
-#endif
 }
+
 void GCNewGensBattleInfoSend(LPOBJ lpObj) // OK
 {
 #if(GAMESERVER_EXTRA==1)

@@ -61,6 +61,7 @@
 #include "MonsterHPBar.h"
 #include "CustomWing.h"
 #include <Camera3D.h>
+extern bool g_bHideHeroBoolean; 
 
 extern CUITextInputBox* g_pSingleTextInputBox;
 extern CUITextInputBox* g_pSinglePasswdInputBox;
@@ -1042,6 +1043,7 @@ void RenderBoolean(int x, int y, CHAT* c)
 #endif
 
 }
+
 void AddChat(CHAT* c, const char* Text, int Flag)
 {
 	int Time = 0;
@@ -8729,6 +8731,8 @@ void RenderBooleans()
 		CHAT* ci = &Chat[i];
 		if (ci->IDLifeTime > 0 || ci->LifeTime[0] > 0)
 		{
+			if (g_bHideHeroBoolean)
+				continue;
 			//. Fit to screen
 			if (ci->x < 0) ci->x = 0;
 			if (ci->x >= (int)WindowWidth - ci->Width) ci->x = WindowWidth - ci->Width;

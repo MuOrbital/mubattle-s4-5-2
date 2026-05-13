@@ -119,7 +119,7 @@ void CNotice::MainProc() // OK
 
 void CNotice::GCNoticeSend(int aIndex,BYTE type,BYTE count,BYTE opacity,WORD delay,DWORD color,BYTE speed,char* message,...) // OK
 {
-	char buff[512] = {0};
+	char buff[1024] = {0};
 
 	va_list arg;
 	va_start(arg,message);
@@ -155,7 +155,7 @@ void CNotice::GCNoticeSend(int aIndex,BYTE type,BYTE count,BYTE opacity,WORD del
 
 void CNotice::GCNoticeSendToAll(BYTE type,BYTE count,BYTE opacity,WORD delay,DWORD color,BYTE speed,char* message,...) // OK
 {
-	char buff[512] = {0};
+	char buff[1024] = {0};
 
 	va_list arg;
 	va_start(arg,message);
@@ -228,7 +228,7 @@ void CNotice::GCNoticeLuaSend(int aIndex, BYTE type, BYTE count, BYTE opacity, W
 
 void CNotice::GCNoticeLuaSendToAll(BYTE type, BYTE count, BYTE opacity, WORD delay, DWORD color, BYTE speed, char* message)
 {
-	char buff[512] = { 0 };
+	char buff[1024] = { 0 };
 
 	wsprintf(buff, message);
 

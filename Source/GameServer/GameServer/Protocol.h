@@ -1085,6 +1085,11 @@ struct PMSG_NEW_HEALTH_BAR
 	WORD index;
 	BYTE type;
 	BYTE rate;
+	DWORD life;
+	DWORD maxLife;
+
+	WORD topIndex[10];
+	DWORD topDamage[10];
 };
 
 struct PMSG_NEW_GENS_BATTLE_INFO_SEND

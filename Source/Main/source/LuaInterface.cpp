@@ -11,7 +11,7 @@
 #include "NewUICommon.h"
 #include <Windows.h>
 using namespace luaaa;
-
+bool g_bHideHeroBoolean = false;
 
 void RenderImageLua(int imageID, float x, float y, float width, float height) 
 {
@@ -263,7 +263,7 @@ void ItemByteConvert(BYTE* lpMsg, int ItemIndex, int Level, int dur, int Op1, in
 	lpMsg[11] = Sock5;
 }
 
-void LuaRenderTooltipComplete(int x, int y, int ItemIndex, int Level, int dur, int Op1, int Op2, int Op3, int Exc, int Ancient, int JoH, int Socket, int Sock1, int Sock2, int Sock3, int Sock4, int Sock5) {
+void LuaRenderTooltipComplete(int x, int y, int ItemIndex, int Level, int dur, int Op1, int Op2, int Op3, int Exc, int Ancient, int JoH, int Item380, int Socket, int Sock1, int Sock2, int Sock3, int Sock4, int Sock5) {
 	EnableAlphaTest(1);
 
 	static BYTE ItemBuffer[12];
@@ -272,6 +272,10 @@ void LuaRenderTooltipComplete(int x, int y, int ItemIndex, int Level, int dur, i
 	ItemByteConvert(ItemBuffer, ItemIndex, Level, dur, Op1, Op2, Op3, Exc, Ancient, JoH, Socket, Sock1, Sock2, Sock3, Sock4, Sock5);
 
 	auto m_Item = g_pNewItemMng->CreateItem(ItemBuffer);
+
+	if (m_Item) {
+		m_Item->option_380 = (Item380 != 0);
+	}
 
 	RenderItemInfo(x, y, m_Item, false);
 
@@ -386,6 +390,14 @@ void LuaSetUnlockInterfaces() {
 	ErrorMessage = 0;
 }
 
+void LuaHideHeroBoolean() {
+	g_bHideHeroBoolean = true;
+}
+
+void LuaShowHeroBoolean() {
+	g_bHideHeroBoolean = false;
+}
+
 std::string LuaGetLanguage() {
 	return g_strSelectedML;
 }
@@ -480,4 +492,6 @@ void LuaInterface::RegisterInterface(lua_State* Lua)
 	LuaModule(Lua).fun("RenderImage", &RenderImageLua);
 	lua_register(Lua, "GLSwitchBlend", LuaGLSwitchBlend);
 	lua_register(Lua, "GLSwitch", LuaGLSwitch);
+	LuaModule(Lua).fun("HideHeroBoolean", &LuaHideHeroBoolean);
+	LuaModule(Lua).fun("ShowHeroBoolean", &LuaShowHeroBoolean);
 }

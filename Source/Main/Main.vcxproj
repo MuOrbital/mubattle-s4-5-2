@@ -923,6 +923,11 @@
     <ClCompile Include="source\UIPopup.cpp" />
     <ClCompile Include="source\UISenatus.cpp" />
     <ClCompile Include="source\UIWindows.cpp" />
+    <ClCompile Include="source\Update\InGameUpdater.cpp" />
+    <ClCompile Include="source\Update\miniz.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Global Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Global Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="source\UsefulDef.cpp" />
     <ClCompile Include="source\Utilities\Log\DebugAngel.cpp" />
     <ClCompile Include="source\Utilities\Log\ErrorReport.cpp" />
@@ -1429,6 +1434,8 @@
     <ClInclude Include="source\UIPopup.h" />
     <ClInclude Include="source\UISenatus.h" />
     <ClInclude Include="source\UIWindows.h" />
+    <ClInclude Include="source\Update\InGameUpdater.h" />
+    <ClInclude Include="source\Update\miniz.h" />
     <ClInclude Include="source\UsefulDef.h" />
     <ClInclude Include="source\Utilities\Log\DebugAngel.h" />
     <ClInclude Include="source\Utilities\Log\ErrorReport.h" />

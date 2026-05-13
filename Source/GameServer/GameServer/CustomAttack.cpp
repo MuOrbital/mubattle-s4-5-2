@@ -222,9 +222,8 @@ bool CCustomAttack::GetAttackSkill(LPOBJ lpObj, int* SkillNumber, int SetSkill) 
 		}
 		break;
 	case CLASS_DL:
-		lpSkill = ((lpSkill == 0) ? gSkillManager.GetSkill(lpObj, SKILL_FIRE_SCREAM) : lpSkill);
-		lpSkill = ((lpSkill == 0) ? gSkillManager.GetSkill(lpObj, SKILL_BIRDS) : lpSkill);
 		lpSkill = ((lpSkill == 0) ? gSkillManager.GetSkill(lpObj, SKILL_FIRE_BURST) : lpSkill);
+		lpSkill = ((lpSkill == 0) ? gSkillManager.GetSkill(lpObj, SKILL_BIRDS) : lpSkill);
 		lpSkill = ((lpSkill == 0) ? gSkillManager.GetSkill(lpObj, SKILL_FORCE) : lpSkill);
 		break;
 	case CLASS_SU:

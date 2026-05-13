@@ -38,7 +38,7 @@ function InterfaceInfos.Render()
     end
     
     glColor3f(r, g, b)
-    SetFontType(1)
+    SetFontType(2)
     SetTextBg(0, 0, 0, 0)
     SetTextColor(math.floor(r*255), math.floor(g*255), math.floor(b*255), 255)
     RenderText3(550 + (2*GetWideX()), 1, string.format("FPS: %d", fps), 120, 3)
