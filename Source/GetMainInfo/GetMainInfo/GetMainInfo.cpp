@@ -69,6 +69,7 @@ struct MAIN_FILE_INFO
 	int m_DisableClassSUM;
 	int m_WideScreenType;
 	int m_VideoLogin;
+	int m_VisualBugHPFerrarezi;
 
 	//Custom
 	int LoadingLegend;
@@ -184,6 +185,7 @@ void GerateConfig()// OK
 	info.m_DisableClassSUM = GetPrivateProfileInt("Interface", "DisableClassSUM", 0, ".\\MainInfo.ini");
 	info.m_WideScreenType = GetPrivateProfileInt("Interface", "WideScreenType", 0, ".\\MainInfo.ini");
 	info.m_VideoLogin = GetPrivateProfileInt("Interface", "VideoLogin", 0, ".\\MainInfo.ini");
+	info.m_VisualBugHPFerrarezi = GetPrivateProfileInt("Interface", "VisualBugHPFerrarezi", 0, ".\\MainInfo.ini");
 
 	//Custom
 	info.LoadingLegend = GetPrivateProfileInt("Custom", "LoadingLegend", 1, ".\\MainInfo.ini");

@@ -276,98 +276,214 @@ void SEASON3B::CNewUIMainFrameWindow::RenderFrame()
 
 void SEASON3B::CNewUIMainFrameWindow::RenderLifeMana()
 {
-	DWORD wLifeMax, wLife, wManaMax, wMana;
-
-	float frame_cx = GetCenterX(640);
-	float frame_cy = GetWindowsY;
-
-	if(gCharacterManager.IsMasterLevelExpCheck( Hero->Class ) == true )
+	if (gProtect->m_MainInfo.m_VisualBugHPFerrarezi != 0)
 	{
-		wLifeMax = Master_Level_Data.wMaxLife;
-		wLife = min(max(0, CharacterAttribute->Life), wLifeMax);
-		wManaMax = Master_Level_Data.wMaxMana;
-		wMana = min(max(0, CharacterAttribute->Mana), wManaMax);
-	}
-	else
-	{
-		wLifeMax = CharacterAttribute->LifeMax;
-		wLife = min(max(0, CharacterAttribute->Life), wLifeMax);
-		wManaMax = CharacterAttribute->ManaMax;
-		wMana = min(max(0, CharacterAttribute->Mana), wManaMax);
-	}
-
-	if(wLifeMax > 0)
-	{
-		if(wLife > 0 && (wLife / (float)wLifeMax) < 0.2f)
+		DWORD wLifeMax, wLife, wManaMax, wMana;
+		float frame_cx = GetCenterX(640);
+		float frame_cy = GetWindowsY;
+		if (gCharacterManager.IsMasterLevelExpCheck(Hero->Class) == true)
 		{
-			PlayBuffer(SOUND_HEART);
+			wLifeMax = Master_Level_Data.wMaxLife;
+			wLife = min(max(0, CharacterAttribute->Life), wLifeMax);
+			wManaMax = Master_Level_Data.wMaxMana;
+			wMana = min(max(0, CharacterAttribute->Mana), wManaMax);
+		}
+		else
+		{
+			wLifeMax = CharacterAttribute->LifeMax;
+			wLife = min(max(0, CharacterAttribute->Life), wLifeMax);
+			wManaMax = CharacterAttribute->ManaMax;
+			wMana = min(max(0, CharacterAttribute->Mana), wManaMax);
+		}
+		if (wLifeMax > 0)
+		{
+			if (wLife > 0 && (wLife / (float)wLifeMax) < 0.2f)
+			{
+				PlayBuffer(SOUND_HEART);
+			}
+		}
+		const DWORD HP_BAR_CAP = 65000;
+		float fLife = 0.f;
+		float fMana = 0.f;
+		if (wLifeMax > 0)
+		{
+			if (wLifeMax <= HP_BAR_CAP)
+			{
+				fLife = (wLifeMax - wLife) / (float)wLifeMax;
+			}
+			else
+			{
+				DWORD wLifeThreshold = wLifeMax - HP_BAR_CAP;
+				if (wLife <= wLifeThreshold)
+				{
+					fLife = 1.f;
+				}
+				else
+				{
+					DWORD wLifeVisible = wLife - wLifeThreshold;
+					fLife = (HP_BAR_CAP - wLifeVisible) / (float)HP_BAR_CAP;
+				}
+			}
+		}
+		if (wManaMax > 0)
+		{
+			fMana = (wManaMax - wMana) / (float)wManaMax;
+		}
+		float width, height;
+		float x, y;
+		float fY, fH, fV;
+		// life
+		width = 45.f;
+		x = 158 + frame_cx;
+		height = 39.f;
+		y = frame_cy - 48.f;
+
+		fY = y + (fLife * height);
+		fH = height - (fLife * height);
+		fV = fLife;
+		if (g_isCharacterBuff((&Hero->Object), eDeBuff_Poison))
+		{
+			RenderBitmap(IMAGE_GAUGE_GREEN, x, fY, width, fH, 0.f, fV * height / 64.f, width / 64.f, (1.0f - fV) * height / 64.f);
+		}
+		else
+		{
+			RenderBitmap(IMAGE_GAUGE_RED, x, fY, width, fH, 0.f, fV * height / 64.f, width / 64.f, (1.0f - fV) * height / 64.f);
+		}
+
+		DWORD wLifeDisplay;
+		if (wLifeMax <= HP_BAR_CAP)
+		{
+			wLifeDisplay = wLife;
+		}
+		else
+		{
+			DWORD wLifeThreshold = wLifeMax - HP_BAR_CAP;
+			if (wLife <= wLifeThreshold)
+			{
+				wLifeDisplay = 0;
+			}
+			else
+			{
+				wLifeDisplay = wLife - wLifeThreshold;
+			}
+		}
+		SEASON3B::RenderNumber(x + 25, frame_cy - 20, wLifeDisplay, 0.8f);
+
+		char strTipText[256];
+		if (SEASON3B::CheckMouseIn(x, y, width, height) == true)
+		{
+			sprintf(strTipText, GlobalText[358], wLifeDisplay, HP_BAR_CAP);
+			RenderTipText((int)x, frame_cy - 68.f, strTipText);
+		}
+		// mana
+		width = 45.f;
+		x = 256.f + 128.f + 53.f + frame_cx;
+		height = 39.f;
+		y = frame_cy - 48.f;
+		fY = y + (fMana * height);
+		fH = height - (fMana * height);
+		fV = fMana;
+		RenderBitmap(IMAGE_GAUGE_BLUE, x, fY, width, fH, 0.f, fV * height / 64.f, width / 64.f, (1.0f - fV) * height / 64.f);
+		SEASON3B::RenderNumber(x + 30, frame_cy - 20, wMana, 0.8f);
+		if (SEASON3B::CheckMouseIn(x, y, width, height) == true)
+		{
+			sprintf(strTipText, GlobalText[359], wMana, wManaMax);
+			RenderTipText((int)x, frame_cy - 68.f, strTipText);
 		}
 	}
-
-	float fLife = 0.f;
-	float fMana = 0.f;
-
-	if(wLifeMax > 0)
-	{
-		fLife = (wLifeMax - wLife) / (float)wLifeMax;
-	}
-	if(wManaMax > 0)	
-	{
-		fMana = (wManaMax - wMana) / (float)wManaMax;
-	}
-
-	float width, height;
-	float x, y;
-	float fY, fH, fV;
-
-	// life
-	width = 45.f; 
-	x = 158 + frame_cx;
-	height = 39.f; 
-	y = frame_cy - 48.f;
-	
-	fY = y + (fLife * height);
-	fH = height - (fLife * height);
-	fV = fLife;
-	if( g_isCharacterBuff((&Hero->Object), eDeBuff_Poison) )
-	{
-		RenderBitmap(IMAGE_GAUGE_GREEN, x, fY, width, fH, 0.f, fV*height/64.f, width/64.f, (1.0f - fV)*height/64.f);
-	}
 	else
 	{
-		RenderBitmap(IMAGE_GAUGE_RED, x, fY, width, fH, 0.f, fV*height/64.f, width/64.f, (1.0f - fV)*height/64.f);
-	}
+		DWORD wLifeMax, wLife, wManaMax, wMana;
 
-	SEASON3B::RenderNumber(x + 25, frame_cy - 20, wLife, 0.8f);
+		float frame_cx = GetCenterX(640);
+		float frame_cy = GetWindowsY;
 
-	char strTipText[256];
-	if(SEASON3B::CheckMouseIn(x, y, width, height) == true)
-	{
-		sprintf(strTipText, GlobalText[358], wLife, wLifeMax);
-		RenderTipText((int)x, frame_cy - 68.f, strTipText);
-	}
+		if (gCharacterManager.IsMasterLevelExpCheck(Hero->Class) == true)
+		{
+			wLifeMax = Master_Level_Data.wMaxLife;
+			wLife = min(max(0, CharacterAttribute->Life), wLifeMax);
+			wManaMax = Master_Level_Data.wMaxMana;
+			wMana = min(max(0, CharacterAttribute->Mana), wManaMax);
+		}
+		else
+		{
+			wLifeMax = CharacterAttribute->LifeMax;
+			wLife = min(max(0, CharacterAttribute->Life), wLifeMax);
+			wManaMax = CharacterAttribute->ManaMax;
+			wMana = min(max(0, CharacterAttribute->Mana), wManaMax);
+		}
 
-	// mana
-	width = 45.f; 
-	x = 256.f + 128.f + 53.f + frame_cx;
-	height = 39.f;
-	y = frame_cy - 48.f;
+		if (wLifeMax > 0)
+		{
+			if (wLife > 0 && (wLife / (float)wLifeMax) < 0.2f)
+			{
+				PlayBuffer(SOUND_HEART);
+			}
+		}
 
-	fY = y + (fMana * height);
-	fH = height - (fMana * height);
-	fV = fMana;
-	RenderBitmap(IMAGE_GAUGE_BLUE, x, fY, width, fH, 0.f, fV*height/64.f, width/64.f, (1.0f - fV)*height/64.f);
+		float fLife = 0.f;
+		float fMana = 0.f;
 
-	SEASON3B::RenderNumber(x + 30, frame_cy - 20, wMana, 0.8f);
+		if (wLifeMax > 0)
+		{
+			fLife = (wLifeMax - wLife) / (float)wLifeMax;
+		}
+		if (wManaMax > 0)
+		{
+			fMana = (wManaMax - wMana) / (float)wManaMax;
+		}
 
-	// mana
-	if(SEASON3B::CheckMouseIn(x, y, width, height) == true)
-	{
-		sprintf(strTipText, GlobalText[359], wMana, wManaMax);
-		RenderTipText((int)x, frame_cy - 68.f, strTipText);
+		float width, height;
+		float x, y;
+		float fY, fH, fV;
+
+		// life
+		width = 45.f;
+		x = 158 + frame_cx;
+		height = 39.f;
+		y = frame_cy - 48.f;
+
+		fY = y + (fLife * height);
+		fH = height - (fLife * height);
+		fV = fLife;
+		if (g_isCharacterBuff((&Hero->Object), eDeBuff_Poison))
+		{
+			RenderBitmap(IMAGE_GAUGE_GREEN, x, fY, width, fH, 0.f, fV * height / 64.f, width / 64.f, (1.0f - fV) * height / 64.f);
+		}
+		else
+		{
+			RenderBitmap(IMAGE_GAUGE_RED, x, fY, width, fH, 0.f, fV * height / 64.f, width / 64.f, (1.0f - fV) * height / 64.f);
+		}
+
+		SEASON3B::RenderNumber(x + 25, frame_cy - 20, wLife, 0.8f);
+
+		char strTipText[256];
+		if (SEASON3B::CheckMouseIn(x, y, width, height) == true)
+		{
+			sprintf(strTipText, GlobalText[358], wLife, wLifeMax);
+			RenderTipText((int)x, frame_cy - 68.f, strTipText);
+		}
+
+		// mana
+		width = 45.f;
+		x = 256.f + 128.f + 53.f + frame_cx;
+		height = 39.f;
+		y = frame_cy - 48.f;
+
+		fY = y + (fMana * height);
+		fH = height - (fMana * height);
+		fV = fMana;
+		RenderBitmap(IMAGE_GAUGE_BLUE, x, fY, width, fH, 0.f, fV * height / 64.f, width / 64.f, (1.0f - fV) * height / 64.f);
+
+		SEASON3B::RenderNumber(x + 30, frame_cy - 20, wMana, 0.8f);
+
+		if (SEASON3B::CheckMouseIn(x, y, width, height) == true)
+		{
+			sprintf(strTipText, GlobalText[359], wMana, wManaMax);
+			RenderTipText((int)x, frame_cy - 68.f, strTipText);
+		}
 	}
 }
-
 void SEASON3B::CNewUIMainFrameWindow::RenderGuageAG()
 {
 	float x, y, width, height;

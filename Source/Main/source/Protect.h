@@ -55,6 +55,7 @@ struct MAIN_FILE_INFO
 	int m_DisableClassSUM;
 	int m_WideScreenType;
 	int m_VideoLogin;
+	int m_VisualBugHPFerrarezi;
 
 	//Custom
 	int LoadingLegend;
