@@ -9,13 +9,10 @@ REWARD_ANNOUNCE_GLOBAL = 1
 
 REWARD_PLAYERS_CONFIGS = { }
 
-REWARD_PLAYERS_CONFIGS[1] = {
-Table = 'CashShopData',
-Column = 'WCoinC',
-Where = 'AccountID',
-CoinName = 'Golds',
-MaxReward = 5, --  max coin amount reward -1 = no limit
-}
+REWARD_PLAYERS_CONFIGS[1] = {Table = 'CashShopData', Column = 'WCoinC', Where = 'AccountID', CoinName = 'WCoinC', MaxReward = 5,}
+REWARD_PLAYERS_CONFIGS[2] = {Table = 'CashShopData', Column = 'WCoinP', Where = 'AccountID', CoinName = 'WCoinP', MaxReward = 5,}
+REWARD_PLAYERS_CONFIGS[3] = {Table = 'CashShopData', Column = 'GoblinPoint', Where = 'AccountID', CoinName = 'GoblinPoint', MaxReward = 5,}
+REWARD_PLAYERS_CONFIGS[4] = {Table = 'PcPointData', Column = 'PcPoint', Where = 'AccountID', CoinName = 'PcPoint', MaxReward = 5,}
 
 --[[
 Command Message

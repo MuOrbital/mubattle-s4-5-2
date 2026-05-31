@@ -1,10 +1,8 @@
 CUSTOM_MONSTER_EFFECT = {}
 
 --[MonsterID]
-CUSTOM_MONSTER_EFFECT[999] = { 
+CUSTOM_MONSTER_EFFECT[600] = { 
       { Type = 1, EffectID = 32003, EffectLv = 0, Bone = 41, Size = 0.60, ColorR = 0.05, ColorG = 0.35, ColorB = 0.96, Black = 0, RandTime = 100 }, 
-      { Type = 1, EffectID = 32003, EffectLv = 0, Bone = 47, Size = 0.60, ColorR = 0.05, ColorG = 0.35, ColorB = 0.96, Black = 0, RandTime = 100 }, 
-      { Type = 1, EffectID = 32003, EffectLv = 0, Bone = 21, Size = 1.50, ColorR = 0.05, ColorG = 0.35, ColorB = 0.96, Black = 0, RandTime = 100 }, 
 } 
 
 

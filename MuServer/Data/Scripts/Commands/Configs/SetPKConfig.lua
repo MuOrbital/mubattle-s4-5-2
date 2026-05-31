@@ -3,7 +3,7 @@
 SETPK_CONFIG = {
     Enabled = true,
     Command = "/setpk",
-    GMLevel = 2,
+    GMLevel = 32,
 }
 
 SETPK_MESSAGES = {}

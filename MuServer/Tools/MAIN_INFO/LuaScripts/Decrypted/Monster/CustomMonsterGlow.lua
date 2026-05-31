@@ -1,6 +1,6 @@
 CUSTOM_MONSTER_GLOW_INFO = 
 {
-    { MonsterID = 999, GlowLayer = 1, GlowType = 70, GlowR = 255, GlowG = 153, GlowB = 26 },
+    { MonsterID = 600, GlowLayer = 1, GlowType = 70, GlowR = 255, GlowG = 153, GlowB = 26 },
 }
 
 function StartLoadMonsterGlow()

@@ -1,6 +1,6 @@
 CUSTOM_SERVER_NAME = 
 {
-	{ ServerID = 1, ServerName = "Principal" },
+	{ ServerID = 1, ServerName = "Sala - Easy Principal" },
 }
 
 function StartLoadCustomServerName()

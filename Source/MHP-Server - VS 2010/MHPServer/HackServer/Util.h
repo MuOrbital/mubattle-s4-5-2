@@ -52,7 +52,7 @@ bool isNumber(const string& str);
 vector<string> split(const string& str, char delim);
 bool validateIP(string ip);
 BOOL WINAPI AddListViewItems(HWND hWndLV, int colNum, int textMaxLen, char** item);
-
+DWORD WINAPI FirewallBlockThread(LPVOID param);
 void MsgBox(char* message,...);
 void ErrorMessageBox(char* message,...);
 void LogAdd(eLogColor color,char* text,...);

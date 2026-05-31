@@ -1795,7 +1795,7 @@ bool MoveMainCamera()
 				}
 				else
 				{
-					CameraViewFar = 12000.f;
+					CameraViewFar = 2000.f;
 				}
 				break;
 			case 1: CameraViewFar = 2500.f; break;
@@ -2469,9 +2469,15 @@ float GetFpsFromConfig()
 				size_t pos = line.find('=');
 				if (pos != std::string::npos) {
 					try {
-						fps = std::stof(line.substr(pos + 1));
+						std::string val = line.substr(pos + 1);
+						val.erase(0, val.find_first_not_of(" \t\r\n"));
+						val.erase(val.find_last_not_of(" \t\r\n") + 1);
+						fps = std::stof(val);
 						if (fps > 64.0f) {
 							fps = 64.0f;
+						}
+						if (fps < 32.0f) {
+							fps = 32.0f;
 						}
 					}
 					catch (...) {
@@ -2556,6 +2562,7 @@ void MainScene(HDC hDC)
 	}
 
 	g_PhysicsManager.Move(0.025f * FPS_ANIMATION_FACTOR);
+
 	MoveNotices();
 
 	if (PressKey(VK_SNAPSHOT))

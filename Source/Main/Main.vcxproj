@@ -927,6 +927,8 @@
     <ClCompile Include="source\Update\miniz.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Global Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Global Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='NewDebug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='NewDebug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="source\UsefulDef.cpp" />
     <ClCompile Include="source\Utilities\Log\DebugAngel.cpp" />

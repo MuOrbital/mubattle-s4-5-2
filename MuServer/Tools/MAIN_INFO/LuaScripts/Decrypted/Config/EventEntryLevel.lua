@@ -1,5 +1,5 @@
 OpenFolder("Definitions")
----Requisitos de Resets para entrar no Eventos
+---Requisitos de RESETS para entrar no Eventos
 BLOOD_CASTLE = {
 	{Index = 0, CommonMinLevel = 0, CommonMaxLevel = 5, SpecialMinLevel = 1, SpecialMaxLevel = 4},
 	{Index = 1, CommonMinLevel = 6, CommonMaxLevel = 10, SpecialMinLevel = 5, SpecialMaxLevel = 8},

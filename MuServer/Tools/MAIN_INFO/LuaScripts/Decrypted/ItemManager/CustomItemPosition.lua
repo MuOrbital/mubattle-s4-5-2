@@ -2,7 +2,7 @@ OpenFolder("Definitions")
 
 CUSTOM_ITEM_POSITION = 
 {
-	{ItemIndex = GET_ITEM(4, 511), PosX = -0.08, PosY = 0.13, AngleX = 360.99, AngleY = 265.0, AngleZ = 182.0, },  --Bow Exemple
+	{ItemIndex = GET_ITEM(4, 511), PosX = -0.08, PosY = 0.13, AngleX = 360.99, AngleY = 265.0, AngleZ = 182.0, },
 }
 
 function StartLoadItemPosition()

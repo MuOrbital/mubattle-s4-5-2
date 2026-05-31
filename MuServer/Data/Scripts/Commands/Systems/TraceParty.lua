@@ -24,10 +24,17 @@ function TraceParty.TraceCommand(aIndex, Arguments)
         return
     end
 
+    local leaderMap = player:getMapNumber()
+
+    if NO_TRACE_MAPS[leaderMap] == false then
+        SendMessage(PT_TRACE_MESSAGES[Language][8], aIndex, 1)
+        return
+    end
+
     SendMessage(PT_TRACE_MESSAGES[Language][3], aIndex, 1)
+
     local leaderX = player:getX()
     local leaderY = player:getY()
-    local leaderMap = player:getMapNumber()
 
     for i = 0, GetMemberCountParty(partyNumber) - 1 do
         local memberIndex = GetMemberIndexParty(partyNumber, i)
@@ -59,7 +66,7 @@ function TraceParty.TrackCommand(aIndex, Arguments)
     end
 
     if IsLeaderParty(partyNumber, aIndex) == 1 then
-        SendMessage(PT_TRACE_MESSAGES[Language][1], aIndex, 1)
+        SendMessage(PT_TRACE_MESSAGES[Language][6], aIndex, 1)
         return
     end
 
@@ -67,13 +74,20 @@ function TraceParty.TrackCommand(aIndex, Arguments)
         local memberIndex = GetMemberIndexParty(partyNumber, i)
         if IsLeaderParty(partyNumber, memberIndex) == 1 and gObjIsConnectedGP(memberIndex) == 1 then
             local leader = User.new(memberIndex)
+            local leaderMap = leader:getMapNumber()
+
+            if NO_TRACE_MAPS[leaderMap] == false then
+                SendMessage(PT_TRACE_MESSAGES[Language][7], aIndex, 1)
+                leader = nil
+                return
+            end
+
             local leaderX = leader:getX()
             local leaderY = leader:getY()
-            local leaderMap = leader:getMapNumber()
-            
+
             SendMessage(PT_TRACE_MESSAGES[Language][4], aIndex, 1)
             Teleport(aIndex, leaderMap, leaderX, leaderY)
-            
+
             leader = nil
             break
         end

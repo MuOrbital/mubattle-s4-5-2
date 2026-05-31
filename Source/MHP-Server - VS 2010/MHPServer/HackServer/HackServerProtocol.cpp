@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "HackServerProtocol.h"
 #include "ClientManager.h"
 #include "HidManager.h"
@@ -165,13 +165,13 @@ void CHClientInfoRecv(SDHP_CLIENT_INFO_RECV* lpMsg,int index) // OK
 
 void CHConnectionStatusRecv(SDHP_CONNECTION_STATUS_RECV* lpMsg,int index) // OK
 {
-	SDHP_CONNECTION_STATUS_SEND pMsg;
+    SDHP_CONNECTION_STATUS_SEND pMsg;
 
-	pMsg.header.set(0x01,sizeof(pMsg));
+    pMsg.header.set(0x01,sizeof(pMsg));
 
-	gSocketManager.DataSend(index,(BYTE*)&pMsg,pMsg.header.size);
+    gSocketManager.DataSend(index,(BYTE*)&pMsg,pMsg.header.size);
 
-	gClientManager[index].m_OnlineTime = GetTickCount();
+    gClientManager[index].m_OnlineTime = GetTickCount();
 }
 
 void CHClientDisconnectRecv(SDHP_CLIENT_DISCONNECT_RECV* lpMsg,int index) // OK

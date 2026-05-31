@@ -1,7 +1,3 @@
--- ATENÇÃO
--- O Código de HardwareID obtido por este Script não é o mesmo que é obtido pelos AntiHackers!
--- Este HardwareID é gerado de forma exclusiva e única para este Sistema!
-
 local CONFIG = {
     ENABLED = true,
     HEADCODE_HWID = 0xF1,

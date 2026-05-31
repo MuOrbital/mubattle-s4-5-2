@@ -1,13 +1,13 @@
 GuardiaoBrindes_Config ={
 	Name = "Guardião de Brindes",
-	Enabled = false,
+	Enabled = true,
 	Packet = 0x34,
 	Npc = {
 		{
 			class = 255,
 			map = 0,
 			x = 130,
-			y = 127,
+			y = 125,
 			dir = 3
 		},
 	},

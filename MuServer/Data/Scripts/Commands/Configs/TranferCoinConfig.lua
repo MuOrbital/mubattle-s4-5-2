@@ -1,7 +1,7 @@
 --[[
 Configuração de Comandos
 ]]
-TRANSFER_COIN_SWITCH = 1			-- Liga ou Desliga o Sistema
+TRANSFER_COIN_SWITCH = 0			-- Liga ou Desliga o Sistema
 TRANSFER_COIN_COMMAND = "/transferir" 		-- Comando /transferir <value> <coin> <NickDestinatario> Ex: /transferir 10 Golds Admin
 TRANSFER_COIN_COMMAND_VIP = 1 			-- Level do Vip que pode usar o comando
 TRANSFER_COIN_COMMAND_CONFIRM = "/ok" 		-- Comando para confirmar a transação
@@ -9,37 +9,38 @@ TRANSFER_COIN_COMMAND_CANCEL = "/cancelar" 	-- Comando para cancelar a transaç�
 --[[
 Configuração de Moedas
 ]]
-TRANSFER_COIN_COUNT = 4 			-- Quantidade de moedas habilitadas (moedas abaixo)
-TRANSFER_COIN_COUNT_MIN = 10 			-- Valor mínimo para envio de moedas
+TRANSFER_COIN_COUNT = 4 			-- Quantidade de moedas habilitadas (moedas abaixo - Max 4)
+TRANSFER_COIN_COUNT_MIN = 100 			-- Valor mínimo para envio de moedas
 
-TRANSFER_COIN_NAME1 = "pcp" 			-- Nome da Moeda 1
-TRANSFER_COIN_NAME2 = "Cashs" 			-- Nome da Moeda 2
-TRANSFER_COIN_NAME3 = "Golds" 			-- Nome da Moeda 3
-TRANSFER_COIN_NAME4 = "PEvent" 			-- Nome da Moeda 4
+TRANSFER_COIN_NAME1 = "wc" 			-- Nome da Moeda 1
+TRANSFER_COIN_NAME2 = "wp" 			-- Nome da Moeda 2
+TRANSFER_COIN_NAME3 = "gp" 			-- Nome da Moeda 3
+TRANSFER_COIN_NAME4 = "pcp" 			-- Nome da Moeda 4
 
-TRANSFER_COIN_TABLE1 = "PcPointData" 		-- Tabela da Moeda 1
+TRANSFER_COIN_TABLE1 = "CashShopData" 		-- Tabela da Moeda 1
 TRANSFER_COIN_TABLE2 = "CashShopData" 		-- Tabela da Moeda 2
 TRANSFER_COIN_TABLE3 = "CashShopData" 		-- Tabela da Moeda 3
-TRANSFER_COIN_TABLE4 = "CashShopData" 		-- Tabela da Moeda 4
+TRANSFER_COIN_TABLE4 = "PcPointData" 		-- Tabela da Moeda 4
 
 TRANSFER_COIN_COLUMN_ACCOUNT1 = "AccountID" 	-- Coluna da Conta da Moeda 1
 TRANSFER_COIN_COLUMN_ACCOUNT2 = "AccountID" 	-- Coluna da Conta da Moeda 2
 TRANSFER_COIN_COLUMN_ACCOUNT3 = "AccountID" 	-- Coluna da Conta da Moeda 3
 TRANSFER_COIN_COLUMN_ACCOUNT4 = "AccountID" 	-- Coluna da Conta da Moeda 4
 
-TRANSFER_COIN_COLUMN_COIN1 = "PcPoint" 		-- Coluna de saldo da conta da Moeda 1
-TRANSFER_COIN_COLUMN_COIN2 = "WCoinC" 		-- Coluna de saldo da conta da Moeda 2
-TRANSFER_COIN_COLUMN_COIN3 = "WCoinP" 		-- Coluna de saldo da conta da Moeda 3
-TRANSFER_COIN_COLUMN_COIN4 = "GoblinPoint" 	-- Coluna de saldo da conta da Moeda 4
+TRANSFER_COIN_COLUMN_COIN1 = "WCoinC" 		-- Coluna de saldo da conta da Moeda 1
+TRANSFER_COIN_COLUMN_COIN2 = "WCoinP" 		-- Coluna de saldo da conta da Moeda 2
+TRANSFER_COIN_COLUMN_COIN3 = "GoblinPoint" 	-- Coluna de saldo da conta da Moeda 3
+TRANSFER_COIN_COLUMN_COIN4 = "PcPoint" 		-- Coluna de saldo da conta da Moeda 4
+
 --[[
 Configuração de Taxa de Envio
 ]]
-TRANSFER_COIN_DISCOUNT = 0 			-- Habilita se irá descontar moeda do remetente ao enviar
-TRANSFER_COIN_DISCOUNT_COIN = "PEvent" 		-- Nome da moeda que será exibido na mensagem
+TRANSFER_COIN_DISCOUNT = 1 			-- Sistema de TAXA irá descontar moeda do remetente ao enviar
+TRANSFER_COIN_DISCOUNT_COIN = "WCoinC" 		-- Nome da moeda que será exibido na mensagem
 TRANSFER_COIN_DISCOUNT_VALUE = 10 		-- Valor da moeda que irá descontar
 TRANSFER_COIN_DISCOUNT_TABLE = "CashShopData" 	-- Tabela da moeda de desconto
 TRANSFER_COIN_DISCOUNT_COLUMN = "AccountID" 	-- Coluna da Conta da moeda de desconto
-TRANSFER_COIN_DISCOUNT_COLUMN_COIN = "WCoinP" 	-- Coluna da Moeda de desconto
+TRANSFER_COIN_DISCOUNT_COLUMN_COIN = "WCoinC" 	-- Coluna da Moeda de desconto
 
 TRANSFER_COIN_MESSAGES = {  }
 TRANSFER_COIN_MESSAGES["Por"] = {

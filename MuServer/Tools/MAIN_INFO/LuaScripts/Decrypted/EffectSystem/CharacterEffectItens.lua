@@ -1,12 +1,11 @@
 OpenFolder("Definitions")
 CUSTOM_EFFECT_INFOS = {}
-
---CUSTOM_EFFECT_INFOS[GET_ITEM_MODEL(0, 108)] = {
---    { Type = 0, EffectID = 32002, EffectLv = 0, Bone = 2, Size = 1.3, ColorR = 0.0, ColorG = 0.7, ColorB = 1.0, Black = 0, RandTime = 0 },
---    { Type = 0, EffectID = 32002, EffectLv = 0, Bone = 3, Size = 1.2, ColorR = 0.0, ColorG = 0.7, ColorB = 1.0, Black = 0, RandTime = 0 },
---    { Type = 0, EffectID = 32002, EffectLv = 0, Bone = 4, Size = 1.1, ColorR = 0.0, ColorG = 0.7, ColorB = 1.0, Black = 0, RandTime = 0 },
---    { Type = 0, EffectID = 32002, EffectLv = 0, Bone = 5, Size = 1.0, ColorR = 0.0, ColorG = 0.7, ColorB = 1.0, Black = 0, RandTime = 0 },
---}
+CUSTOM_EFFECT_INFOS[GET_ITEM_MODEL(0, 511)] = {
+    { Type = 0, EffectID = 32002, EffectLv = 0, Bone = 2, Size = 1.3, ColorR = 0.0, ColorG = 0.7, ColorB = 1.0, Black = 0, RandTime = 0 },
+    { Type = 0, EffectID = 32002, EffectLv = 0, Bone = 3, Size = 1.2, ColorR = 0.0, ColorG = 0.7, ColorB = 1.0, Black = 0, RandTime = 0 },
+    { Type = 0, EffectID = 32002, EffectLv = 0, Bone = 4, Size = 1.1, ColorR = 0.0, ColorG = 0.7, ColorB = 1.0, Black = 0, RandTime = 0 },
+    { Type = 0, EffectID = 32002, EffectLv = 0, Bone = 5, Size = 1.0, ColorR = 0.0, ColorG = 0.7, ColorB = 1.0, Black = 0, RandTime = 0 },
+}
 
 function CharacterItensEffect(ObjectStruct, BMDStruct, ItemIndex)
 	--Effects in tuple

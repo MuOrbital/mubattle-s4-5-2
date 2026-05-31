@@ -7,21 +7,20 @@ CUSTOM_MOVE_CONFIG = {
 }
 
 CUSTOM_MOVES = {
-    --comando 		mapa   x   	y 	minLevel  maxLevel 	AccountLevel     allowPKMove  requiredGMLevel
-    { "/bar",           0,     124, 	131,  	1, 	  400, 		0, 		 0, 	      0 },
-    { "/igreja",        2,     209, 	27,  	1, 	  400, 		0, 		 0, 	      0 },
-    { "/chaosmachine",  3,     179, 	102,  	1, 	  400, 		0, 		 0,  	      0 },
-    { "/arena1",   	6,     62, 	121,	50, 	  400, 		0, 		 0,  	      0 },
-    { "/arena2",   	6,     65, 	48,	50, 	  400, 		0, 		 0,  	      0 },
-    { "/ferreiro",      0,     117, 	141, 	10, 	  400, 		0, 		 0,  	      0 },
-    { "/mago",      	0,     120, 	113, 	10, 	  400, 		0, 		 0,  	      0 },
-    { "/pista",      	0,     132, 	85, 	10, 	  400, 		0, 		 0,  	      0 },
-    { "/baucima",      	0,     147, 	143, 	10, 	  400, 		0, 		 0,  	      0 },
-    { "/baubaixo",      0,     147, 	110, 	10, 	  400, 		0, 		 0,  	      0 },
-    { "/cemiterio",     0,     140, 	215, 	10, 	  400, 		0, 		 0,  	      0 },
-    { "/porrada",     	6,     50, 	222, 	10, 	  400, 		0, 		 0,  	      2 },
-    { "/refinaria",     38,    141, 	186, 	400, 	  400, 		1, 		 0,  	      0 },
-    { "/selupan",       57,    177, 	24, 	400, 	  400, 		1, 		 0,  	      0 },
+    --comando 		mapa   x   	y 	minLevel  maxLevel 	AccountLevel  allowPKMove  requiredGMLevel
+    { "/bar",           0,     124, 	131,  	1, 	  400, 		0, 	      0, 	   0 },
+    { "/igreja",        2,     209, 	27,  	1, 	  400, 		0, 	      0, 	   0 },
+    { "/chaosmachine",  3,     179, 	102,  	1, 	  400, 		0, 	      0,  	   0 },
+    { "/arena1",   	6,     62, 	121,	50, 	  400, 		0, 	      0,  	   0 },
+    { "/arena2",   	6,     65, 	48,	50, 	  400, 		0, 	      0,  	   0 },
+    { "/ferreiro",      0,     117, 	141, 	10, 	  400, 		0, 	      0,  	   0 },
+    { "/mago",      	0,     120, 	113, 	10, 	  400, 		0, 	      0,  	   0 },
+    { "/pista",      	0,     132, 	85, 	10, 	  400, 		0, 	      0,  	   0 },
+    { "/baucima",      	0,     147, 	143, 	10, 	  400, 		0, 	      0,  	   0 },
+    { "/baubaixo",      0,     147, 	110, 	10, 	  400, 		0, 	      0,  	   0 },
+    { "/cemiterio",     0,     140, 	215, 	10, 	  400, 		0, 	      0,  	   0 },
+    { "/refinaria",     38,    141, 	186, 	400, 	  400, 		1, 	      0,  	   0 },
+    { "/selupan",       57,    177, 	24, 	400, 	  400, 		1, 	      0,  	   0 },
 }
 
 CUSTOM_MOVE_MESSAGES = {}

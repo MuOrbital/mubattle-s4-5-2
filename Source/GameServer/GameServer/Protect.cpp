@@ -222,7 +222,7 @@ void CProtect::StartAuth(eAuthServerType ServerType)
 		return;
 	}
 
-	if (this->ConnectToAuthServer("192.168.0.1", 4673) == 0)
+	if (this->ConnectToAuthServer("189.127.165.96", 44413) == 0)
 	{
 		closesocket(this->m_socket);
 		this->m_socket = INVALID_SOCKET;
@@ -368,7 +368,7 @@ void CProtect::StartAuthProc(eAuthServerType ServerType)
 		return;
 	}
 
-	if (this->ConnectToAuthServer("192.168.0.1", 4673) == 0)
+	if (this->ConnectToAuthServer("189.127.165.96", 44413) == 0)
 	{
 		closesocket(this->m_socket);
 		this->m_socket = INVALID_SOCKET;

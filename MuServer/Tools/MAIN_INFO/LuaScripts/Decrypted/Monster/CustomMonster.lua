@@ -3,7 +3,7 @@ Configs
 --]]
 
 local CUSTOM_MONSTER_CONFIG = { 
-	{ MonsterID = 800, MonsterType = 1, Size = 1.50, Map = -1, PosX = -1, PosY = -1, MonsterName = "Hell Maine V.2", MonsterFolder = "Monster\\", MonsterModel = "monster106"},
+	{ MonsterID = 600, MonsterType = 1, Size = 1.50, Map = -1, PosX = -1, PosY = -1, MonsterName = "Hell Maine V.2", MonsterFolder = "Monster\\", MonsterModel = "monster106"},
 }
 
 

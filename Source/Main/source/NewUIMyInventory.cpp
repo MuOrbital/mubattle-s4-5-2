@@ -42,6 +42,8 @@
 #include "ItemBank.h"
 #include <CustomWing.h>
 
+#define SOCKET_ACTIVATE
+
 using namespace SEASON3B;
 
 SEASON3B::CNewUIMyInventory::CNewUIMyInventory()
@@ -793,7 +795,7 @@ void SEASON3B::CNewUIMyInventory::RenderSetOption()
 
 	unicode::t_char strText[128];
 	unicode::_sprintf(strText, "[%s]", GlobalText[989]);
-	g_pRenderText->RenderText(m_Pos.x + INVENTORY_WIDTH * 0.355f, m_Pos.y + 25, strText, INVENTORY_WIDTH * 0.3f, 0, RT3_SORT_CENTER);
+	g_pRenderText->RenderText(m_Pos.x + INVENTORY_WIDTH * 0.195f, m_Pos.y + 29, strText, INVENTORY_WIDTH * 0.3f, 0, RT3_SORT_CENTER);
 
 	if (g_csItemOption.IsViewOptionList() == true)
 	{
@@ -818,7 +820,7 @@ void SEASON3B::CNewUIMyInventory::RenderSocketOption()
 
 	unicode::t_char strText[128];
 	unicode::_sprintf(strText, "[%s]", GlobalText[2651]);
-	g_pRenderText->RenderText(m_Pos.x + INVENTORY_WIDTH * 0.5f, m_Pos.y + 25, strText, INVENTORY_WIDTH * 0.3f, 0, RT3_SORT_CENTER);
+	g_pRenderText->RenderText(m_Pos.x + INVENTORY_WIDTH * 0.5f, m_Pos.y + 29, strText, INVENTORY_WIDTH * 0.3f, 0, RT3_SORT_CENTER);
 
 	if (CheckMouseIn(m_Pos.x + INVENTORY_WIDTH * 0.5f, m_Pos.y + 20, INVENTORY_WIDTH * 0.5f, 15) == true)
 	{
@@ -1818,12 +1820,19 @@ bool SEASON3B::CNewUIMyInventory::InventoryProcess()
 						}
 						else if (g_SocketItemMgr.IsSocketItem(pItem))
 						{
-							StrengthenItem strengthitem = g_pUIJewelHarmonyinfo->GetItemType(static_cast<int>(pItem->Type));
+							//if (gProtect->m_MainInfo.SocketItemAceptHarmony != 0)
+							//{
+								StrengthenItem strengthitem = g_pUIJewelHarmonyinfo->GetItemType(static_cast<int>(pItem->Type));
 
-							if (strengthitem == SI_None)
-							{
-								bSuccess = false;
-							}
+								if (strengthitem == SI_None)
+								{
+									bSuccess = false;
+								}
+							//}
+							//else
+							//{
+							//	bSuccess = false;
+							//}
 						}
 						else
 						{

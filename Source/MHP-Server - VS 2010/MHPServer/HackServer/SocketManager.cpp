@@ -1,4 +1,4 @@
-// SocketManager.cpp: implementation of the CSocketManager class.
+Ôªø// SocketManager.cpp: implementation of the CSocketManager class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -8,6 +8,17 @@
 #include "HackServerProtocol.h"
 #include "IpManager.h"
 #include "Util.h"
+
+// --- Flood detection ---
+#include <unordered_map>
+#include <string>
+
+#define FLOOD_MAX_CONNECTIONS  10
+#define FLOOD_WINDOW_MS        5000
+static const char* FLOOD_BLOCK_PORTS = "55901,55991,44405";
+
+static std::unordered_map<std::string, std::pair<int,DWORD>> g_FloodMap;
+static CRITICAL_SECTION g_FloodCS;
 
 CSocketManager gSocketManager;
 //////////////////////////////////////////////////////////////////////
@@ -75,7 +86,7 @@ bool CSocketManager::Start(WORD port) // OK
 		return 0;
 	}
 
-	LogAdd(LOG_BLACK,"El servidor [SocketManager] se iniciÛ en el puerto [%d]",this->m_port);
+	LogAdd(LOG_BLACK,"El servidor [SocketManager] se inici√≥ en el puerto [%d]",this->m_port);
 	return 1;
 }
 
@@ -130,7 +141,7 @@ bool CSocketManager::CreateListenSocket() // OK
 {
 	if((this->m_listen=WSASocket(AF_INET,SOCK_STREAM,0,0,0,WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET)
 	{
-		LogAdd(LOG_RED,"[SocketManager] WSASocket() fallÛ con el error: %d",WSAGetLastError());
+		LogAdd(LOG_RED,"[SocketManager] WSASocket() fall√≥ con el error: %d",WSAGetLastError());
 		return 0;
 	}
 
@@ -142,13 +153,13 @@ bool CSocketManager::CreateListenSocket() // OK
 
 	if(bind(this->m_listen,(sockaddr*)&SocketAddr,sizeof(SocketAddr)) == SOCKET_ERROR)
 	{
-		LogAdd(LOG_RED,"[SocketManager] bind() fallÛ con el error: %d",WSAGetLastError());
+		LogAdd(LOG_RED,"[SocketManager] bind() fall√≥ con el error: %d",WSAGetLastError());
 		return 0;
 	}
 
-	if(listen(this->m_listen,5) == SOCKET_ERROR)
+	if(listen(this->m_listen, SOMAXCONN) == SOCKET_ERROR)
 	{
-		LogAdd(LOG_RED,"[SocketManager] listening() fallÛ con el error: %d",WSAGetLastError());
+		LogAdd(LOG_RED,"[SocketManager] listening() fall√≥ con el error: %d",WSAGetLastError());
 		return 0;
 	}
 	
@@ -161,13 +172,13 @@ bool CSocketManager::CreateCompletionPort() // OK
 
 	if(socket == INVALID_SOCKET) 
 	{
-		LogAdd(LOG_RED,"[SocketManager] socket() fallÛ con el error: %d",WSAGetLastError());
+		LogAdd(LOG_RED,"[SocketManager] socket() fall√≥ con el error: %d",WSAGetLastError());
 		return 0;
 	}
 
 	if((this->m_CompletionPort=CreateIoCompletionPort((HANDLE)socket,0,0,0)) == 0)
 	{
-		LogAdd(LOG_RED,"[SocketManager] CreateIoCompletionPort() fallÛ con el error: %d",GetLastError());
+		LogAdd(LOG_RED,"[SocketManager] CreateIoCompletionPort() fall√≥ con el error: %d",GetLastError());
 		closesocket(socket);
 		return 0;
 	}
@@ -180,13 +191,13 @@ bool CSocketManager::CreateAcceptThread() // OK
 {
 	if((this->m_ServerAcceptThread=CreateThread(0,0,(LPTHREAD_START_ROUTINE)this->ServerAcceptThread,this,0,0)) == 0)
 	{
-		LogAdd(LOG_RED,"[SocketManager] CreateThread() fallÛ con el error: %d",GetLastError());
+		LogAdd(LOG_RED,"[SocketManager] CreateThread() fall√≥ con el error: %d",GetLastError());
 		return 0;
 	}
 
 	if(SetThreadPriority(this->m_ServerAcceptThread,THREAD_PRIORITY_HIGHEST) == 0)
 	{
-		LogAdd(LOG_RED,"[SocketManager] SetThreadPriority() fallÛ con el error: %d",GetLastError());
+		LogAdd(LOG_RED,"[SocketManager] SetThreadPriority() fall√≥ con el error: %d",GetLastError());
 		return 0;
 	}
 
@@ -205,13 +216,13 @@ bool CSocketManager::CreateWorkerThread() // OK
 	{
 		if((this->m_ServerWorkerThread[n]=CreateThread(0,0,(LPTHREAD_START_ROUTINE)this->ServerWorkerThread,this,0,0)) == 0)
 		{
-			LogAdd(LOG_RED,"[SocketManager] CreateThread() fallÛ con el error: %d",GetLastError());
+			LogAdd(LOG_RED,"[SocketManager] CreateThread() fall√≥ con el error: %d",GetLastError());
 			return 0;
 		}
 
 		if(SetThreadPriority(this->m_ServerWorkerThread[n],THREAD_PRIORITY_HIGHEST) == 0)
 		{
-			LogAdd(LOG_RED,"[SocketManager] SetThreadPriority() fallÛ con el error: %d",GetLastError());
+			LogAdd(LOG_RED,"[SocketManager] SetThreadPriority() fall√≥ con el error: %d",GetLastError());
 			return 0;
 		}
 	}
@@ -223,19 +234,19 @@ bool CSocketManager::CreateServerQueue() // OK
 {
 	if((this->m_ServerQueueSemaphore=CreateSemaphore(0,0,MAX_QUEUE_SIZE,0)) == 0)
 	{
-		LogAdd(LOG_RED,"[SocketManager] CreateSemaphore() fallÛ con el error: %d",GetLastError());
+		LogAdd(LOG_RED,"[SocketManager] CreateSemaphore() fall√≥ con el error: %d",GetLastError());
 		return 0;
 	}
 
 	if((this->m_ServerQueueThread=CreateThread(0,0,(LPTHREAD_START_ROUTINE)this->ServerQueueThread,this,0,0)) == 0)
 	{
-		LogAdd(LOG_RED,"[SocketManager] CreateThread() fallÛ con el error: %d",GetLastError());
+		LogAdd(LOG_RED,"[SocketManager] CreateThread() fall√≥ con el error: %d",GetLastError());
 		return 0;
 	}
 
 	if(SetThreadPriority(this->m_ServerQueueThread,THREAD_PRIORITY_HIGHEST) == 0)
 	{
-		LogAdd(LOG_RED,"[SocketManager] SetThreadPriority() fallÛ con el error: %d",GetLastError());
+		LogAdd(LOG_RED,"[SocketManager] SetThreadPriority() fall√≥ con el error: %d",GetLastError());
 		return 0;
 	}
 
@@ -283,13 +294,13 @@ bool CSocketManager::DataRecv(int index,IO_MAIN_BUFFER* lpIoBuffer) // OK
 		}
 		else
 		{
-			LogAdd(LOG_RED,"[SocketManager] Error de encabezado de protocolo (Õndice: %d, Encabezado: %x)",index,lpMsg[count]);
+			LogAdd(LOG_RED,"[SocketManager] Error de encabezado de protocolo (√çndice: %d, Encabezado: %x)",index,lpMsg[count]);
 			return 0;
 		}
 
 		if(size < 4 || size > MAX_MAIN_PACKET_SIZE)
 		{
-			LogAdd(LOG_RED,"[SocketManager] Error de tamaÒo del protocolo (Õndice: %d, Encabezado: %x, TamaÒo: %d, Cabezal: %x)",index,header,size,head);
+			LogAdd(LOG_RED,"[SocketManager] Error de tama√±o del protocolo (√çndice: %d, Encabezado: %x, Tama√±o: %d, Cabezal: %x)",index,header,size,head);
 			return 0;
 		}
 
@@ -386,7 +397,7 @@ bool CSocketManager::DataSend(int index,BYTE* lpMsg,int size) // OK
 
 	if(size > MAX_MAIN_PACKET_SIZE)
 	{
-		LogAdd(LOG_RED,"[SocketManager] TamaÒo m·ximo de mensaje (Tipo: 1, Õndice: %d, TamaÒo: %d)",index,size);
+		LogAdd(LOG_RED,"[SocketManager] Tama√±o m√°ximo de mensaje (Tipo: 1, √çndice: %d, Tama√±o: %d)",index,size);
 		this->m_critical.unlock();
 		return 0;
 	}
@@ -397,7 +408,7 @@ bool CSocketManager::DataSend(int index,BYTE* lpMsg,int size) // OK
 	{
 		if((lpIoContext->IoSideBuffer.size+size) > MAX_SIDE_PACKET_SIZE)
 		{
-			LogAdd(LOG_RED,"[SocketManager] TamaÒo m·ximo de mensaje (Tipo: 2, Õndice: %d, TamaÒo: %d)",index,(lpIoContext->IoSideBuffer.size+size));
+			LogAdd(LOG_RED,"[SocketManager] Tama√±o m√°ximo de mensaje (Tipo: 2, √çndice: %d, Tama√±o: %d)",index,(lpIoContext->IoSideBuffer.size+size));
 			this->Disconnect(index);
 			this->m_critical.unlock();
 			return 0;
@@ -427,7 +438,7 @@ bool CSocketManager::DataSend(int index,BYTE* lpMsg,int size) // OK
 	{
 		if(WSAGetLastError() != WSA_IO_PENDING)
 		{
-			LogAdd(LOG_RED,"[SocketManager] WSASend() fallÛ con el error: %d",WSAGetLastError());
+			LogAdd(LOG_RED,"[SocketManager] WSASend() fall√≥ con el error: %d",WSAGetLastError());
 			this->Disconnect(index);
 			this->m_critical.unlock();
 			return 0;
@@ -458,7 +469,7 @@ void CSocketManager::Disconnect(int index) // OK
 
 	if(closesocket(lpClientManager->m_socket) == SOCKET_ERROR && WSAGetLastError() != WSAENOTSOCK)
 	{
-		LogAdd(LOG_RED,"[SocketManager] closesocket() fallÛ con el error: %d",WSAGetLastError());
+		LogAdd(LOG_RED,"[SocketManager] closesocket() fall√≥ con el error: %d",WSAGetLastError());
 		this->m_critical.unlock();
 		return;
 	}
@@ -508,7 +519,7 @@ void CSocketManager::OnRecv(int index,DWORD IoSize,IO_RECV_CONTEXT* lpIoContext)
 	{
 		if(WSAGetLastError() != WSA_IO_PENDING)
 		{
-			LogAdd(LOG_RED,"[SocketManager] WSARecv() fallÛ con el error: %d",WSAGetLastError());
+			LogAdd(LOG_RED,"[SocketManager] WSARecv() fall√≥ con el error: %d",WSAGetLastError());
 			this->Disconnect(index);
 			this->m_critical.unlock();
 			return;
@@ -598,7 +609,7 @@ void CSocketManager::OnSend(int index,DWORD IoSize,IO_SEND_CONTEXT* lpIoContext)
 	{
 		if(WSAGetLastError() != WSA_IO_PENDING)
 		{
-			LogAdd(LOG_RED,"[SocketManager] WSASend() fallÛ con el error: %d",WSAGetLastError());
+			LogAdd(LOG_RED,"[SocketManager] WSASend() fall√≥ con el error: %d",WSAGetLastError());
 			this->Disconnect(index);
 			this->m_critical.unlock();
 			return;
@@ -608,18 +619,161 @@ void CSocketManager::OnSend(int index,DWORD IoSize,IO_SEND_CONTEXT* lpIoContext)
 	this->m_critical.unlock();
 }
 
-int CALLBACK CSocketManager::ServerAcceptCondition(IN LPWSABUF lpCallerId,IN LPWSABUF lpCallerData,IN OUT LPQOS lpSQOS,IN OUT LPQOS lpGQOS,IN LPWSABUF lpCalleeId,OUT LPWSABUF lpCalleeData,OUT GROUP FAR* g,CSocketManager* lpSocketManager) // OK
-{
-	SOCKADDR_IN* SocketAddr = (SOCKADDR_IN*)lpCallerId->buf;
+// ---- ORDEM CORRETA: BlockIpInFirewall primeiro, FirewallBlockThread segundo ----
 
-	if(gIpManager.CheckIpAddress(inet_ntoa(SocketAddr->sin_addr)) == 0)
+static void BlockIpInFirewall(const char* ip)
+{
+	char ruleName[128];
+	sprintf_s(ruleName, sizeof(ruleName), "FLOOD_BLOCK_%s", ip);
+
+	// Verifica se a regra j√° existe para n√£o duplicar
+	char checkCmd[512];
+	sprintf_s(checkCmd, sizeof(checkCmd),
+		"netsh advfirewall firewall show rule name=\"%s\" > nul 2>&1",
+		ruleName);
+
+	if(system(checkCmd) == 0)
 	{
-		return CF_REJECT;
+		return;
+	}
+
+	// Uma √∫nica regra bloqueando todas as portas de uma vez
+	char addCmd[620];
+	sprintf_s(addCmd, sizeof(addCmd),
+		"netsh advfirewall firewall add rule "
+		"name=\"%s\" "
+		"protocol=TCP "
+		"dir=in "
+		"remoteip=%s "
+		"localport=%s "
+		"action=block",
+		ruleName, ip, FLOOD_BLOCK_PORTS);
+
+	STARTUPINFOA si = { sizeof(si) };
+	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.wShowWindow = SW_HIDE;
+	PROCESS_INFORMATION pi = {};
+
+	char full[700];
+	sprintf_s(full, sizeof(full), "cmd.exe /C %s", addCmd);
+
+	if(CreateProcessA(NULL, full, NULL, NULL, FALSE,
+		CREATE_NO_WINDOW, NULL, NULL, &si, &pi))
+	{
+		WaitForSingleObject(pi.hProcess, 3000);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+		LogAdd(LOG_RED, "[FloodBlock] IP bloqueado no firewall: %s portas [%s] (2 min)",
+			ip, FLOOD_BLOCK_PORTS);
 	}
 	else
 	{
-		return CF_ACCEPT;
+		LogAdd(LOG_RED, "[FloodBlock] Falhou ao bloquear IP: %s (erro: %d)",
+			ip, GetLastError());
+		return;
 	}
+
+	// Aguarda 2 minutos e remove a regra
+	Sleep(120000);
+
+	char delCmd[300];
+	sprintf_s(delCmd, sizeof(delCmd),
+		"netsh advfirewall firewall delete rule name=\"%s\"",
+		ruleName);
+
+	STARTUPINFOA si2 = { sizeof(si2) };
+	si2.dwFlags = STARTF_USESHOWWINDOW;
+	si2.wShowWindow = SW_HIDE;
+	PROCESS_INFORMATION pi2 = {};
+
+	char full2[400];
+	sprintf_s(full2, sizeof(full2), "cmd.exe /C %s", delCmd);
+
+	if(CreateProcessA(NULL, full2, NULL, NULL, FALSE,
+		CREATE_NO_WINDOW, NULL, NULL, &si2, &pi2))
+	{
+		WaitForSingleObject(pi2.hProcess, 3000);
+		CloseHandle(pi2.hProcess);
+		CloseHandle(pi2.hThread);
+		LogAdd(LOG_RED, "[FloodBlock] IP desbloqueado automaticamente: %s portas [%s]",
+			ip, FLOOD_BLOCK_PORTS);
+	}
+}
+
+DWORD WINAPI FirewallBlockThread(LPVOID param)
+{
+	char* ip = (char*)param;
+	BlockIpInFirewall(ip);
+	delete[] ip;
+	return 0;
+}
+
+int CALLBACK CSocketManager::ServerAcceptCondition(IN LPWSABUF lpCallerId,IN LPWSABUF lpCallerData,IN OUT LPQOS lpSQOS,IN OUT LPQOS lpGQOS,IN LPWSABUF lpCalleeId,OUT LPWSABUF lpCalleeData,OUT GROUP FAR* g,CSocketManager* lpSocketManager)
+{
+	SOCKADDR_IN* SocketAddr = (SOCKADDR_IN*)lpCallerId->buf;
+	char* ip = inet_ntoa(SocketAddr->sin_addr);
+
+	// --- Flood detection ---
+	std::string ipStr = ip;
+	DWORD now = GetTickCount();
+
+	// Se j√° est√° bloqueado, rejeita direto sem logar
+	static std::unordered_map<std::string, DWORD> g_BlockedMap; // ip -> tempo do bloqueio
+	auto blocked = g_BlockedMap.find(ipStr);
+	if(blocked != g_BlockedMap.end())
+	{
+		// Remove do mapa ap√≥s 2 minutos (sincronizado com o desbloqueio do firewall)
+		if((now - blocked->second) < 120000)
+		{
+			return CF_REJECT;
+		}
+		else
+		{
+			g_BlockedMap.erase(blocked);
+			g_FloodMap.erase(ipStr);
+		}
+	}
+
+	auto& entry = g_FloodMap[ipStr];
+
+	if((now - entry.second) > FLOOD_WINDOW_MS)
+	{
+		entry.first  = 1;
+		entry.second = now;
+	}
+	else
+	{
+		entry.first++;
+	}
+
+	if(entry.first > FLOOD_MAX_CONNECTIONS)
+	{
+		LogAdd(LOG_RED,
+			"[FloodDetect] Flood de %s (%d conexoes) - bloqueando firewall por 2 min",
+			ip, entry.first);
+
+		// Marca como bloqueado
+		g_BlockedMap[ipStr] = now;
+
+		// Zera contador
+		entry.first  = 0;
+		entry.second = now;
+
+		char* ipCopy = new char[64];
+		strcpy_s(ipCopy, 64, ip);
+		HANDLE hThread = CreateThread(0, 0, FirewallBlockThread, ipCopy, 0, 0);
+		if(hThread != 0) CloseHandle(hThread);
+
+		return CF_REJECT;
+	}
+	// --- fim flood detection ---
+
+	if(gIpManager.CheckIpAddress(ip) == 0)
+	{
+		return CF_REJECT;
+	}
+
+	return CF_ACCEPT;
 }
 
 DWORD WINAPI CSocketManager::ServerAcceptThread(CSocketManager* lpSocketManager) // OK
@@ -634,7 +788,7 @@ DWORD WINAPI CSocketManager::ServerAcceptThread(CSocketManager* lpSocketManager)
 		if(socket == SOCKET_ERROR && WSAGetLastError() != WSAEWOULDBLOCK)
 		{
 			lpSocketManager->m_critical.lock();
-			LogAdd(LOG_RED,"[SocketManager] WSAAccept() fallÛ con el error: %d",WSAGetLastError());
+			LogAdd(LOG_RED,"[SocketManager] WSAAccept() fall√≥ con el error: %d",WSAGetLastError());
 			lpSocketManager->m_critical.unlock();
 			continue;
 		}
@@ -652,7 +806,7 @@ DWORD WINAPI CSocketManager::ServerAcceptThread(CSocketManager* lpSocketManager)
 
 		if(CreateIoCompletionPort((HANDLE)socket,lpSocketManager->m_CompletionPort,index,0) == 0)
 		{
-			LogAdd(LOG_RED,"[SocketManager] CreateIoCompletionPort() fallÛ con el error: %d",GetLastError());
+			LogAdd(LOG_RED,"[SocketManager] CreateIoCompletionPort() fall√≥ con el error: %d",GetLastError());
 			closesocket(socket);
 			lpSocketManager->m_critical.unlock();
 			continue;
@@ -668,7 +822,7 @@ DWORD WINAPI CSocketManager::ServerAcceptThread(CSocketManager* lpSocketManager)
 		{
 			if(WSAGetLastError() != WSA_IO_PENDING)
 			{
-				LogAdd(LOG_RED,"[SocketManager] WSARecv() fallÛ con el error: %d",WSAGetLastError());
+				LogAdd(LOG_RED,"[SocketManager] WSARecv() fall√≥ con el error: %d",WSAGetLastError());
 				lpSocketManager->Disconnect(index);
 				lpSocketManager->m_critical.unlock();
 				continue;
@@ -694,7 +848,7 @@ DWORD WINAPI CSocketManager::ServerWorkerThread(CSocketManager* lpSocketManager)
 			if(lpOverlapped == 0 || (GetLastError() != ERROR_NETNAME_DELETED && GetLastError() != ERROR_CONNECTION_ABORTED && GetLastError() != ERROR_OPERATION_ABORTED && GetLastError() != ERROR_SEM_TIMEOUT))
 			{
 				lpSocketManager->m_critical.lock();
-				LogAdd(LOG_RED,"[SocketManager] GetQueuedCompletionStatus() fallÛ con el error: %d",GetLastError());
+				LogAdd(LOG_RED,"[SocketManager] GetQueuedCompletionStatus() fall√≥ con el error: %d",GetLastError());
 				lpSocketManager->m_critical.unlock();
 				return 0;
 			}
@@ -732,7 +886,7 @@ DWORD WINAPI CSocketManager::ServerQueueThread(CSocketManager* lpSocketManager) 
 	{
 		if(WaitForSingleObject(lpSocketManager->m_ServerQueueSemaphore,INFINITE) == WAIT_FAILED)
 		{
-			LogAdd(LOG_RED,"[SocketManager] WaitForSingleObject() fallÛ con el error: %d",GetLastError());
+			LogAdd(LOG_RED,"[SocketManager] WaitForSingleObject() fall√≥ con el error: %d",GetLastError());
 			break;
 		}
 

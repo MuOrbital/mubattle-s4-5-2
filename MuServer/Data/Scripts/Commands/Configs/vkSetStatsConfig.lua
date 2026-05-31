@@ -1,5 +1,5 @@
 --[[
-SetStats System - By: Victor Jardim 2025
+SetStats System - By: Victor Jardim
 
 Configurações Comando SetStatus
 -- /setstats <name> <type> <value>

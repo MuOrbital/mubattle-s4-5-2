@@ -9,7 +9,8 @@
 #include "ScreenCapture.h"
 #include "ProcessListInfo.h"
 #include "ScreenShot.h"
-
+DWORD WINAPI ConnectionStatusThread(LPVOID lpParam);
+bool gConnectionThreadStarted = false;
 DWORD gConnectionStatusTime = 0;
 DWORD gEncDecKey1 = 0;
 DWORD gEncDecKey2 = 0;
@@ -105,6 +106,12 @@ void HCClientInfoRecv(SDHP_CLIENT_INFO_RECV* lpMsg) // OK
 
 	if(lpMsg->result == 0)
 	{
+		if(gConnectionThreadStarted == false)
+		{
+		    CreateThread(0, 0, ConnectionStatusThread, 0, 0, 0);
+		    gConnectionThreadStarted = true;
+		}
+
 		gClientInfoOK = 1;
 
 		gConnectionStatusTime = GetTickCount();
@@ -373,13 +380,28 @@ void CHClientInfoSend() // OK
 	gConnection.DataSend((BYTE*)&pMsg,pMsg.header.size);
 }
 
-void CHConnectionStatusSend() // OK
+void CHConnectionStatusSend()
 {
-	SDHP_CONNECTION_STATUS_SEND pMsg;
+    SDHP_CONNECTION_STATUS_SEND pMsg;
 
-	pMsg.header.set(0x01,sizeof(pMsg));
+    pMsg.header.set(0x01, sizeof(pMsg));
 
-	gConnection.DataSend((BYTE*)&pMsg,pMsg.header.size);
+    gConnection.DataSend((BYTE*)&pMsg, pMsg.header.size);
+}
+
+DWORD WINAPI ConnectionStatusThread(LPVOID lpParam)
+{
+    while(true)
+    {
+        if(gConnection.CheckState() != 0 && gClientInfoOK == 1)
+        {
+            CHConnectionStatusSend();
+        }
+
+        Sleep(5000);
+    }
+
+    return 0;
 }
 
 void CHClientDisconnectSend(int type,char* text,DWORD pid) // OK

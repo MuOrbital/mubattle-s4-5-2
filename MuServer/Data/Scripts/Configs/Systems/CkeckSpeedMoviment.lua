@@ -1,8 +1,8 @@
-local SPEED_NORMAL = 100		-- Velocidade máxima sem montaria (coords/seg)
-local SPEED_MOUNT = 120			-- Velocidade máxima com montaria (coords/seg)
+local SPEED_NORMAL = 420		-- Velocidade máxima sem montaria (coords/seg)
+local SPEED_MOUNT = 420			-- Velocidade máxima com montaria (coords/seg)
 local SPECIAL_MAP = 58 			-- Mapa onde será aplicado o Bonus de Velocidade
 local SPEED_BONUS_SPECIAL_MAP = 40 	-- Bonus adicional no mapa 58 (boss Selupan)
-local SPEED_TOLERANCE = 5.0		-- Tolerância para delay de ping alto
+local SPEED_TOLERANCE = 10.0		-- Tolerância para delay de ping alto
 local SPEED_ENABLE_DEBUG = 0        	-- 0 = Desligado | 1 = Ligado (mostra log de velocidade no GS)
 
 --Adicione Pets e montarias inclusive as Customs (que aumentam velocidade de movimento)

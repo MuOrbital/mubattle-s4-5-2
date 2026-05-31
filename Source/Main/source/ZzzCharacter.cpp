@@ -8162,28 +8162,29 @@ void RenderLinkObject(float x, float y, float z, CHARACTER* c, PART_t* f, int Ty
 	}break;
 	case MODEL_SHIELD + 18:
 	{
-		Vector(0.9f, 0.f, 0.2f, Light);
-		b->TransformByObjectBone(Position, Object, 1);		// Zx01
-		CreateSprite(BITMAP_LIGHT, Position, 2.0f, Light, o);
+		//Vector(0.9f, 0.f, 0.2f, Light);
+		//b->TransformByObjectBone(Position, Object, 1);		// Zx01
+		//CreateSprite(BITMAP_LIGHT, Position, 2.0f, Light, o);
 
 
-		if (rand_fps_check(1))
-		{
-			Vector(1.f, 1.f, 1.f, Light);
-			switch (rand() % 3)
-			{
-			case 0:
-				CreateParticle(BITMAP_FIRE_HIK1, Position, Object->Angle, Light, 0, 0.7f);
-				break;
-			case 1:
-				CreateParticle(BITMAP_FIRE_CURSEDLICH, Position, Object->Angle, Light, 4, 0.7f);
-				break;
-			case 2:
-				CreateParticle(BITMAP_FIRE_HIK3, Position, Object->Angle, Light, 0, 0.7);
-				break;
-			}
-		}
-	}break;
+		//if (rand_fps_check(1))
+		//{
+		//	Vector(0.f, 0.f, 0.f, Light);
+		//	switch (rand() % 3)
+		//	{
+		//	//case 0:
+		//	//	CreateParticle(BITMAP_FIRE_HIK1, Position, Object->Angle, Light, 0, 0.7f);
+		//	//	break;
+		//	//case 1:
+		//	//	CreateParticle(BITMAP_FIRE_CURSEDLICH, Position, Object->Angle, Light, 4, 0.7f);
+		//	//	break;
+		//	//case 2:
+		//	//	CreateParticle(BITMAP_FIRE_HIK3, Position, Object->Angle, Light, 0, 0.7);
+		//	//	break;
+		//	}
+		//}
+	}
+	break;
 	case MODEL_SHIELD + 20:
 	{
 		Vector(0.f, 0.f, 0.f, Position);
@@ -9705,10 +9706,12 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
 						}
 #endif //PBG_ADD_NEWCHAR_MONK_ITEM
 
-						RenderLevel = 13 << 3;
-						RenderOption = 1;
+						// Força nível 1 sem glow forte
+						RenderLevel = 13 << 3;   // Nível 1
+						RenderOption = 1;       // Remove option/glow extra
 					}
 
+					// ==================== CÓDIGO ORIGINAL (mantido intacto) ====================
 					if (CLASS_SUMMONER == gCharacterManager.GetBaseClass(c->Class))
 					{
 						int nItemType = (Type - MODEL_ITEM) / MAX_ITEM_INDEX;
@@ -10209,6 +10212,7 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
 			
 			if (w->Type != -1 && w->Type != MODEL_BOW + 7 && w->Type != MODEL_BOW + 15 && w->Type != MODEL_HELPER + 5)
 			{
+				// WINGS LV2 - STAFF +1 PARA SOUL MASTER (só quando ativado)
 				int WeaponTypeToRender = w->Type;
 				int WeaponLevelToRender = w->Level;
 				int WeaponOptionToRender = w->Option1;

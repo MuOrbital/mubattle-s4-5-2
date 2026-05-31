@@ -5540,8 +5540,6 @@ void RenderItemInfo(int sx, int sy, ITEM* ip, bool Sell, int Inventype, bool bIt
 	}
 #endif //PBG_MOD_NEWCHAR_MONK_WING
 #endif //PBG_MOD_NEWCHAR_MONK_WING_2
-	// ==================== ALTERAÇÃO: PERMITIR MOSTRAR HARMONY EM ITENS SOCKET ====================
-	// Removido o bloqueio que impedia mostrar Harmony em itens Socket
 
 	if (ip->Jewel_Of_Harmony_Option != 0)
 	{
@@ -5570,22 +5568,6 @@ void RenderItemInfo(int sx, int sy, ITEM* ip, bool Sell, int Inventype, bool bIt
 
 				TextBold[TextNum] = true;
 				TextNum++;
-				sprintf(TextList[TextNum], "\n"); TextNum++; SkipNum++;
-			}
-			else
-			{
-				sprintf(TextList[TextNum], "\n"); TextNum++; SkipNum++;
-				sprintf(TextList[TextNum], "%s : %d %d %d"
-					, GlobalText[2204]
-					, (int)type
-					, (int)ip->Jewel_Of_Harmony_Option
-					, (int)ip->Jewel_Of_Harmony_OptionLevel
-				);
-				TextListColor[TextNum] = TEXT_COLOR_DARKRED;
-				TextBold[TextNum] = true; TextNum++;
-				sprintf(TextList[TextNum], GlobalText[2205]);
-				TextListColor[TextNum] = TEXT_COLOR_DARKRED;
-				TextBold[TextNum] = true; TextNum++;
 				sprintf(TextList[TextNum], "\n"); TextNum++; SkipNum++;
 			}
 		}

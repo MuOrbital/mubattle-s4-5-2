@@ -1,5 +1,5 @@
 CUSTOM_MONSTER_NAME_INFO = {
-    --{ Class = 247, Map = 0, CoordX = 130, CoordY = 130, Name = "NpcName - Activate" },
+    { Class = 600, Map = 0, CoordX = 130, CoordY = 130, Name = "NpcName - Activate" },
 }
 
 

@@ -13,18 +13,18 @@ function TalkNpc.NpcTalk(Npc, aIndex)
 
 	if NpcClass == 249 then
 
-		ChatTargetSend(Npc, string.format("Mu Online Season 4"), aIndex)
+		ChatTargetSend(Npc, string.format("MuOnline 5.2 Season 4: www.seusite.com"), aIndex)
 		return 1
 	end
 	if NpcClass == 255 then
 
-		ChatTargetSend(Npc, string.format("Mu Online Season 4"), aIndex)
+		ChatTargetSend(Npc, string.format("MuOnline 5.2 Season 4: www.seusite.com"), aIndex)
 		return 0
 	end
 	
 	if NpcClass == 240 then --Npc Bau
 
-		ChatTargetSend(Npc, string.format("Mu Online Season 4"), aIndex)
+		ChatTargetSend(Npc, string.format("MuOnline 5.2 Season 4: www.seusite.com"), aIndex)
 		return 0
 	end
 	--if NpcClass == 240 then

@@ -122,6 +122,28 @@ function ChangeNick.ExecQuery(newnick, name)
 	return 1
 end
 
+function ChangeNick.hasActiveMarketListings(name)
+	local str = string.format(
+		"SELECT COUNT(*) as countFind FROM MarketPlace_Listings WHERE SellerName='%s' AND Status=%d",
+		name, MarketPlace_Status.ACTIVE)
+	local db = DataBase.getDb()
+
+	if db:exec(str) == 0 then
+		LogAdd('Error when execute ChangeNick:hasActiveMarketListings')
+		db:clear()
+		return false
+	end
+
+	if db:fetch() == SQL_NO_DATA then
+		db:clear()
+		return false
+	end
+
+	local val = db:getInt('countFind')
+	db:clear()
+	return val > 0
+end
+
 function ChangeNick.Command(aIndex, Arguments)
 	if CHANGE_NICK_SWITCH == 0
 	then
@@ -168,6 +190,12 @@ function ChangeNick.Command(aIndex, Arguments)
 	if player:getMasterReset() < CHANGE_NICK_MRESETS
 	then
 		SendMessage(string.format(CHANGE_NICK_MESSAGE[Language][5], CHANGE_NICK_MRESETS), aIndex, 1)
+		return
+	end
+
+	if ChangeNick.hasActiveMarketListings(Name)
+	then
+		SendMessage(string.format(CHANGE_NICK_MESSAGE[Language][13]), aIndex, 1)
 		return
 	end
 	

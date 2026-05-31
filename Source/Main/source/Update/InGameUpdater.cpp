@@ -20,7 +20,7 @@
 #define UI_BAR_WIDTH_RATIO      0.62f
 #define UI_GLOW_LAYERS          6
 #define UI_PARTICLE_COUNT       80
-#define UI_TIPS_COUNT           15
+#define UI_TIPS_COUNT           7
 #define UI_CHECKING_MSGS_COUNT  6
 #define UI_ANIM_FPS_TARGET      60
 
@@ -35,17 +35,9 @@ static const char* g_tips[UI_TIPS_COUNT] =
     "F10 para habilitar a Camera3D - F11 Restaura.",
     "Shift 2x para habilitar AutoPotion interno.",
     "Control 2x para habilitar Modo PVP.",
-    "Tecla L para abrir o Marketplace.",
-    "Chaos Machine: use TCA para não perder Itens de +10 a +13.",
-    "Chaos Machine: use TOL (Taismâ of Lucky) para aumentar a %.",
-    "Comando: use /selupan para ir ao Boss Selupan.",
-    "Comando: use /refinaria para ir torre de Refinaria.",
-    "Comando: use /treta para ir para Devias 4.",
-    "FREE: 1.000rr = 1mr + 1 PontoMR | VIP: 900rr = 1mr + 1 PontoMR.",
-    "Lucky Wheel por WCoinC no NPC em Frente ao Bar de Lorencia.",
-    "Bosses tem 50% de Chances de drop para TOP: 1°, 2° e 3° Damage.",
-    "Quem Joga sempre evolui, quem chora fica pra trás.",
-    "Elfa ou Summoner pedindo Itens dizendo que é menina? ahem, confia.",
+    "Chaos Machine: use TCA para não perder Itens.",
+    "Chaos Machine: use TOL para aumentar a %.",
+    "Elfa pedindo Itens dizendo que é menina? confia.",
 };
 
 static const char* g_checkingMsgs[UI_CHECKING_MSGS_COUNT] =

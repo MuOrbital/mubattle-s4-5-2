@@ -63,7 +63,7 @@ extern int Conectar;
 #endif
 
 #ifndef PROTECT_STATE
-#define PROTECT_STATE 0
+#define PROTECT_STATE 1
 #endif
 
 #ifndef ENCRYPT_STATE

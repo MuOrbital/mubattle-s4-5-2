@@ -3,28 +3,21 @@ OpenFolder("Definitions")
 --descriptions
 CUSTOM_DESCRIPTIONS_INFO = {}
 
-CUSTOM_DESCRIPTIONS_INFO[GET_ITEM(12, 150)] = 
+CUSTOM_DESCRIPTIONS_INFO[GET_ITEM(14, 511)] = 
 {
-	{ Description = ' Exaple Description1 ', Level = -1, Bold = 0, Color = 1 },
+	{ Description = ' NPC MALUCO BOX ', Level = -1, Bold = 1, Color = 5 },
+	{ Description = ' Caixa exclusiva obtida no evento NPC Maluco ', Level = -1, Bold = 0, Color = 13 },
+	{ Description = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', Level = -1, Bold = 0, Color = 1 },
+	{ Description = ' DROP PADRÃO ', Level = -1, Bold = 1, Color = 7 },
+	{ Description = ' 77%% • Joias Clássicas ', Level = -1, Bold = 0, Color = 1 },
+	{ Description = ' 17%% • Joias Customs ', Level = -1, Bold = 0, Color = 1 },
+	{ Description = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', Level = -1, Bold = 0, Color = 1 },
+	{ Description = ' CHANCE DE DROP DE ITENS RUINED GREEN ', Level = -1, Bold = 1, Color = 5 },
+	{ Description = ' FREE : 2%% de chance ', Level = -1, Bold = 1, Color = 2 },
+	{ Description = ' VIP   : 6%% de chance ', Level = -1, Bold = 1, Color = 13 },
+	{ Description = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', Level = -1, Bold = 0, Color = 1 },
+	{ Description = ' Jogadores VIP possuem Chances maiores de Drop ', Level = -1, Bold = 0, Color = 3 },
 }
-	
-for i = 7, 11 do
-    CUSTOM_DESCRIPTIONS_INFO[GET_ITEM(i, 511)] = {
-        { Description = " Description2 Loop ", Level = -1, Bold = 0, Color = 7 },
-    }
-end
-
-
-for i = 7, 11 do
-	for j = 500, 510 do
-		local itemid = GET_ITEM(i, j)
-		CUSTOM_DESCRIPTIONS_INFO[itemid] = {
-		{
-			Description = " Description3 for Loop Advanced ", Level = -1, Bold = 0, Color = 7
-			}
-		}
-	end
-end
 
 CUSTOM_COLOR_DESCRIPTION = 
 {

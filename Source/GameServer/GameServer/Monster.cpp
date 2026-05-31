@@ -803,12 +803,12 @@ int gObjMonsterGetTopHitDamageUser(LPOBJ lpObj) // OK
 		{
 			continue;
 		}
-
+		
 		if(lpObj->Map != gObj[lpObj->HitDamage[n].index].Map)
 		{
 			continue;
 		}
-
+		
 		if(gObjCalcDistance(lpObj,&gObj[lpObj->HitDamage[n].index]) > 20)
 		{
 			continue;
@@ -851,12 +851,12 @@ int gObjMonsterGetTopHitDamageParty(LPOBJ lpObj,int PartyNumber,int* TopHitDamag
 		{
 			continue;
 		}
-
+		
 		if(lpObj->Map != gObj[lpObj->HitDamage[n].index].Map)
 		{
 			continue;
 		}
-
+		
 		if(gObjCalcDistance(lpObj,&gObj[lpObj->HitDamage[n].index]) > 20)
 		{
 			continue;

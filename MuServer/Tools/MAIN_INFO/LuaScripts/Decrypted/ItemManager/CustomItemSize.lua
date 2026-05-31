@@ -2,7 +2,10 @@ OpenFolder("Definitions")
 
 CUSTOM_ITEM_SIZE = 
 {
-	{ItemIndex = GET_ITEM(14, 511), SizeInventory = 0.0015 },
+	--Box: GreenChaos, RedChaos e PurpleChaos
+	{ItemIndex = GET_ITEM(14, 55), SizeInventory = 0.0015 },
+	{ItemIndex = GET_ITEM(14, 56), SizeInventory = 0.0015 },
+	{ItemIndex = GET_ITEM(14, 57), SizeInventory = 0.0015 },
 }
 
 function StartLoadItemSize()

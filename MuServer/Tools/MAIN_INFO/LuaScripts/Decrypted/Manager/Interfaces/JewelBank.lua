@@ -26,6 +26,16 @@ JewelBank_Jewels = {
 {ListID = 8, Index = GET_ITEM(14, 42), Nome = "Jewel of Harmony",		Position = {X = 2, Y =  2, W = 13, H = 13}},
 {ListID = 9, Index = GET_ITEM(14, 43), Nome = "Lower Refining Stone",		Position = {X = 0, Y =  0, W = 13, H = 13}},
 {ListID = 10, Index = GET_ITEM(14, 44), Nome = "Higher Refining Stone",		Position = {X = 0, Y =  0, W = 13, H = 13}},
+
+{ListID = 11, Index = GET_ITEM(14, 244), Nome = "Jewel Skill",			Position = {X = 2, Y = -3, W = 13, H = 13}},
+{ListID = 12, Index = GET_ITEM(14, 245), Nome = "Jewel Lucky",			Position = {X = 2, Y =  0, W = 13, H = 13}},
+{ListID = 13, Index = GET_ITEM(14, 246), Nome = "Jewel Wing",			Position = {X = 2, Y =  0, W = 13, H = 13}},
+{ListID = 14, Index = GET_ITEM(14, 247), Nome = "Jewel Set",			Position = {X = 2, Y =  0, W = 13, H = 13}},
+{ListID = 15, Index = GET_ITEM(14, 248), Nome = "Jewel Weapon",			Position = {X = 2, Y =  0, W = 13, H = 13}},
+{ListID = 16, Index = GET_ITEM(14, 249), Nome = "Jewel Lvl Ring",		Position = {X = 2, Y =  0, W = 13, H = 13}},
+{ListID = 17, Index = GET_ITEM(14, 250), Nome = "Jewel Ex Ring",		Position = {X = 2, Y =  0, W = 13, H = 13}},
+{ListID = 18, Index = GET_ITEM(14, 251), Nome = "Jewel Life Ring",		Position = {X = 2, Y =  0, W = 13, H = 13}},
+{ListID = 19, Index = GET_ITEM(14, 252), Nome = "Jewel Remove Life",		Position = {X = 2, Y =  0, W = 13, H = 13}},
 }
 -- Textos do sistema
 JewelBank_Texts = {}

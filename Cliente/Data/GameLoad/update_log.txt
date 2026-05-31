@@ -1,0 +1,15 @@
+[20:45:58] ERRO: Arquivo de versao do EXE nao encontrado. path=C:\Users\Mineiro\Desktop\MuBattle Season 4\Client\Data\GameLoad\Config\Config.ini
+[20:45:59] ERRO: InternetOpenUrl falhou. url=https://update.seusite.com.br/update/ err=12007
+[20:45:59] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seusite.com.br/update/ pattern=file_update
+[20:46:02] ERRO: InternetOpenUrl falhou. url=https://update.seusite.com.br/update/ err=12007
+[20:46:02] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seusite.com.br/update/ pattern=exe_update
+[20:47:04] ERRO: Arquivo de versao do EXE nao encontrado. path=C:\Users\Mineiro\Desktop\MuBattle Season 4\Client\Data\GameLoad\Config\Config.ini
+[20:47:05] ERRO: InternetOpenUrl falhou. url=https://update.seusite.com.br/update/ err=12007
+[20:47:05] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seusite.com.br/update/ pattern=file_update
+[20:47:08] ERRO: InternetOpenUrl falhou. url=https://update.seusite.com.br/update/ err=12007
+[20:47:08] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seusite.com.br/update/ pattern=exe_update
+[20:47:39] ERRO: Arquivo de versao do EXE nao encontrado. path=C:\Users\Mineiro\Desktop\MuBattle Season 4\Client\Data\GameLoad\Config\Config.ini
+[20:47:40] ERRO: InternetOpenUrl falhou. url=https://update.seusite.com.br/update/ err=12007
+[20:47:40] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seusite.com.br/update/ pattern=file_update
+[20:47:43] ERRO: InternetOpenUrl falhou. url=https://update.seusite.com.br/update/ err=12007
+[20:47:43] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seusite.com.br/update/ pattern=exe_update

@@ -893,7 +893,7 @@ void SEASON3B::CNewUIInventoryCtrl::Render()
 
 					if (pItem->byColorState == ITEM_COLOR_NORMAL)
 					{
-						glColor4f(0.3f, 0.5f, 1.0f, 1.0f);
+						glColor4f(0.3f, 0.5f, 0.5f, 0.6f);
 					}
 					else if (pItem->byColorState == ITEM_COLOR_DURABILITY_50)
 					{

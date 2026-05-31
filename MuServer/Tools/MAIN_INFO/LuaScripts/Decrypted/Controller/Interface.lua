@@ -168,7 +168,19 @@ OpenFolder("Interfaces")
 OpenFolder("Guardiao//Configs")
 OpenFolder("Guardiao//Interface")
 
+OpenFolder("WarTeam//Configs")
+OpenFolder("WarTeam//Interface")
+
 OpenFolder("Central//Configs")
 OpenFolder("Central//Interface")
+
+OpenFolder("LuckyWheel//Configs")
+OpenFolder("LuckyWheel//Interface")
+
+OpenFolder("Marketplace//Configs")
+OpenFolder("Marketplace//Interface")
+
+OpenFolder("DailyReward//Configs")
+OpenFolder("DailyReward//Interface")
 
 return InterfaceController

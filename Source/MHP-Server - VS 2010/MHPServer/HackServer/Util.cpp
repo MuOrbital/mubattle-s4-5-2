@@ -227,18 +227,31 @@ void LogAdd(eLogColor color,char* text,...) // OK
 	gServerDisplayer.LogAddText(color,log,strlen(log));
 }
 
-void TimeoutProc() // OK
+void TimeoutProc()
 {
-	for(int n=0;n < MAX_CLIENT;n++)
-	{
-		if(gClientManager[n].CheckState() != 0)
-		{
-			if(gClientManager[n].CheckOnlineTime() == 0)
-			{
-				gSocketManager.Disconnect(n);
-			}
-		}
-	}
+    DWORD tempoAtual = GetTickCount();
+
+    for(int n = 0; n < MAX_CLIENT; n++)
+    {
+        if(gClientManager[n].CheckState() == 0)
+            continue;
+
+        if((tempoAtual - gClientManager[n].m_PacketTime) > 6000)
+        {
+            char ip[64];
+            strcpy_s(ip, sizeof(ip), gClientManager[n].m_IpAddr);
+
+            LogAdd(LOG_RED, "[AntiHack] Sem resposta do cliente - IP: %s, bloqueando por 2 min", ip);
+
+            gSocketManager.Disconnect(n);
+
+            // Bloqueia o IP no firewall por 2 minutos em thread separada
+            char* ipCopy = new char[64];
+            strcpy_s(ipCopy, 64, ip);
+            HANDLE hThread = CreateThread(0, 0, FirewallBlockThread, ipCopy, 0, 0);
+            if(hThread != 0) CloseHandle(hThread);
+        }
+    }
 }
 
 int GetUserCount() // OK

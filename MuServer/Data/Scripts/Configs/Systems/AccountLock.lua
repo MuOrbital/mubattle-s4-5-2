@@ -208,6 +208,23 @@ function AccountLock.PlayerMoveItem(aIndex, SourceSlot, TargetSlot, Type)
     end
     return 0
 end
+
+function AccountLock.PlayerSellItem(aIndex, Position)
+    if IsLocked(aIndex, "LockItem") then
+        Msg(aIndex, 11)
+        return 1
+    end
+    return 0
+end
+
+function AccountLock.PlayerBuyItem(aIndex, Position)
+    if IsLocked(aIndex, "LockItem") then
+        Msg(aIndex, 11)
+        return 1
+    end
+    return 0
+end
+
 function AccountLock.PlayerOpenPersonalShop(aIndex)
     if LockStore.IsBlocked(aIndex) == 1 then
         SendMessage(string.format("[Sistema] Loja pessoal bloqueada."), aIndex, 1)
@@ -297,10 +314,10 @@ function AccountLock.BlockCommands(aIndex, command, text)
     return 0
 end
 
---function AccountLock.PlayerMove(aIndex, Map, ax, ay, sx, sy)
---    if IsLocked(aIndex, "LockMove") then Msg(aIndex, 7) return 1 end
---    return 0
---end
+function AccountLock.PlayerMove(aIndex, Map, ax, ay, sx, sy)
+    if IsLocked(aIndex, "LockMove") then return 1 end
+    return 0
+end
 
 function AccountLock.CharacterMove(aIndex, map, x, y)
     if IsLocked(aIndex, "LockMove") then Msg(aIndex, 7) return 1 end
@@ -339,6 +356,8 @@ function AccountLock.Init()
     GameServerFunctions.PlayerMoveItem(AccountLock.PlayerMoveItem)
     GameServerFunctions.PlayerDropItem(AccountLock.PlayerDropItem)
     GameServerFunctions.PlayerPickItem(AccountLock.PlayerPickItem)
+    GameServerFunctions.PlayerSellItem(AccountLock.PlayerSellItem)
+    GameServerFunctions.PlayerBuyItem(AccountLock.PlayerBuyItem)
     GameServerFunctions.BlockSendParty(AccountLock.BlockSendParty)
     GameServerFunctions.BlockRecParty(AccountLock.BlockRecParty)
     Commands.CallCommand(AccountLock.BlockCommands)
