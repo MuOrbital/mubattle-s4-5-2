@@ -31,8 +31,8 @@
 29        *           *           *              -1           16             //Starter Ring 80
 30        7179        7           *              -1           *              //Box of Heaven
 31        7179        13          *              -1           *              //Blue Heart
-32        *           *           *              3            200            //Kundun
-33        *           *           *              3            201            //Erohim
+32        *           *           275             3            200            //Kundun
+33        *           *           295            3            201            //Erohim
 34        *           *           *              -1           17             //Senior Mix
 35        6176        *           *              -1           *              //Red Ribbon Box
 36        6177        *           *              -1           *              //Green Ribbon Box
@@ -44,10 +44,10 @@
 42        7201        1           *              -1           *              //Red Candy Box
 43        7202        1           *              -1           *              //Blue Candy Box
 44        *           *           340            3            *              //Dark Elf
-45        *           *           *              3            202            //Balgass
+45        *           *           349            3            202            //Balgass
 46        *           *           362            3            *              //Maya Hand Left
 47        *           *           363            3            *              //Maya Hand Right
-48        *           *           *              3            203            //Nightmare
+48        *           *           361            3            203            //Nightmare
 49        7213        *           *              -1           *              //Halloween Pumpkin
 50        *           *           365            3            *              //Fortune Pouch
 51        7220        *           *              -1           *              //Game Master Box
@@ -66,7 +66,7 @@
 64        *           *           *              -1           25             //Cherry Blossom Mix 1
 65        *           *           *              -1           26             //Cherry Blossom Mix 2
 66        *           *           *              -1           27             //Cherry Blossom Mix 3
-67        *           *           *              3            204            //Selupan
+67        *           *           459            3            204            //Selupan
 68        *           *           463            3            *              //Fire Flame Ghost
 69        *           *           *              -1           28             //Santa Claus
 70        *           *           *              -1           29             //Lucky Coin 1
@@ -105,7 +105,7 @@
 103       7310        *           *              -1           *              //Elegant Jewelry Case
 104       7311        *           *              -1           *              //Steel Jewelry Case
 105       7312        *           *              -1           *              //Old Jewelry Case
-106       *           *           *              3            205            //Medusa
+106       *           *           561            3            205            //Medusa
 107       *           *           *              -1           57             //Crywolf
 108       *           *           43             3            *              //Golden Budge Dragon
 109       *           *           78             3            *              //Golden Goblin

@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "w_MapProcess.h"
 #include "w_MapHeaders.h"
+#include "CustomWorld.h"
 
 MapProcessPtr g_MapProcess;
 
@@ -91,6 +92,54 @@ void MapProcess::Init()
 	karutan1->AddMapIndex( WD_81KARUTAN2 );
 	Register( karutan1 );
 #endif	// ASG_ADD_MAP_KARUTAN
+
+	CGMAcheronPtr acheron;
+	CGMDeventerPtr deventer;
+	CGMUrukMountainPtr urukMountain;
+	CGMZoneNarsPtr nars;
+	CGMFereaPtr ferea;
+	CGMNixiesLakePtr nixiesLake;
+
+	for (std::map<int, CUSTOM_WORLD_INFO>::const_iterator it = gCustomWorld.m_WorldInfo.begin(); it != gCustomWorld.m_WorldInfo.end(); ++it)
+	{
+		const CUSTOM_WORLD_INFO& world = it->second;
+
+		switch (world.Effect)
+		{
+		case CUSTOM_WORLD_EFFECT_ACHERON:
+			if (!acheron) acheron = CGMAcheron::Make();
+			acheron->AddMapIndex(world.MapIndex);
+			break;
+		case CUSTOM_WORLD_EFFECT_DEVENTER:
+			if (!deventer) deventer = CGMDeventer::Make();
+			deventer->AddMapIndex(world.MapIndex);
+			break;
+		case CUSTOM_WORLD_EFFECT_URUK_MOUNTAIN:
+			if (!urukMountain) urukMountain = CGMUrukMountain::Make();
+			urukMountain->AddMapIndex(world.MapIndex);
+			break;
+		case CUSTOM_WORLD_EFFECT_NARS:
+			if (!nars) nars = CGMZoneNars::Make();
+			nars->AddMapIndex(world.MapIndex);
+			break;
+		case CUSTOM_WORLD_EFFECT_FEREA:
+			if (!ferea) ferea = CGMFerea::Make();
+			ferea->AddMapIndex(world.MapIndex);
+			break;
+		case CUSTOM_WORLD_EFFECT_NIXIES_LAKE:
+			if (!nixiesLake) nixiesLake = CGMNixiesLake::Make();
+			nixiesLake->AddMapIndex(world.MapIndex);
+			break;
+		}
+	}
+
+	if (acheron) Register(acheron);
+	if (deventer) Register(deventer);
+	if (urukMountain) Register(urukMountain);
+	if (nars) Register(nars);
+	if (ferea) Register(ferea);
+	if (nixiesLake) Register(nixiesLake);
+	
 }
 
 void MapProcess::Destroy()
@@ -108,7 +157,7 @@ void MapProcess::Destroy()
 	m_MapList.clear();
 }
 
-bool MapProcess::FindMap( ENUM_WORLD type )
+bool MapProcess::FindMap( int type )
 {
 	for( MapList::iterator iter = m_MapList.begin(); iter != m_MapList.end(); )
 	{
@@ -126,7 +175,7 @@ bool MapProcess::FindMap( ENUM_WORLD type )
 	return false;
 }
 
-BaseMap& MapProcess::FindBaseMap( ENUM_WORLD type )
+BaseMap& MapProcess::FindBaseMap( int type )
 {
 	for( MapList::iterator iter = m_MapList.begin(); iter != m_MapList.end(); )
 	{
@@ -146,8 +195,8 @@ BaseMap& MapProcess::FindBaseMap( ENUM_WORLD type )
 
 void MapProcess::Register( BoostSmart_Ptr( BaseMap ) pMap )
 {	
-	ENUM_WORLD type = pMap->FindMapIndex();
-	if( type == NUM_WD ) {
+	int type = pMap->FindMapIndex();
+	if( type < 0 ) {
 		assert( 0 );
 		throw;
 	}
@@ -157,7 +206,7 @@ void MapProcess::Register( BoostSmart_Ptr( BaseMap ) pMap )
 	}
 }
 
-void MapProcess::UnRegister( ENUM_WORLD type )
+void MapProcess::UnRegister( int type )
 {
 	for( MapList::iterator iter = m_MapList.begin(); iter != m_MapList.end(); )
 	{
@@ -177,7 +226,7 @@ void MapProcess::UnRegister( ENUM_WORLD type )
 
 BaseMap& MapProcess::GetMap( int type )
 {
-	return FindBaseMap( static_cast<ENUM_WORLD>(type) );
+	return FindBaseMap( type );
 }
 
 bool MapProcess::LoadMapData()
@@ -273,6 +322,9 @@ bool MapProcess::RenderObjectVisual(OBJECT* o, BMD* b)
 
 bool MapProcess::RenderObjectMesh(OBJECT* o, BMD* b, bool ExtraMon)
 {
+#if jdk_shader_local330
+	rRenderLayOut uniform(o);
+#endif
 	for( MapList::iterator iter = m_MapList.begin(); iter != m_MapList.end(); )
 	{
 		MapList::iterator tempiter = iter;
@@ -296,6 +348,9 @@ bool MapProcess::RenderObjectMesh(OBJECT* o, BMD* b, bool ExtraMon)
 
 void MapProcess::RenderAfterObjectMesh(OBJECT* o, BMD* b, bool ExtraMon)
 {
+#if jdk_shader_local330
+	rRenderLayOut uniform(o);
+#endif
 	for( MapList::iterator iter = m_MapList.begin(); iter != m_MapList.end(); )
 	{
 		MapList::iterator tempiter = iter;

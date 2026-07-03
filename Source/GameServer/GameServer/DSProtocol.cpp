@@ -9,6 +9,7 @@
 #include "Crywolf.h"
 #include "CrywolfSync.h"
 #include "CSProtocol.h"
+#include "CustomRanking.h"
 #include "CustomStore.h"
 #include "CustomWing.h"
 #include "ESProtocol.h"
@@ -21,6 +22,7 @@
 #include "GuildMatching.h"
 #include "Helper.h"
 #include "IllusionTemple.h"
+#include "InvasionManager.h"
 #include "ItemBagManager.h"
 #include "JSProtocol.h"
 #include "Log.h"
@@ -39,6 +41,7 @@
 #include "PartyMatching.h"
 #include "PcPoint.h"
 #include "PersonalShop.h"
+#include "Pets.h"
 #include "Protect.h"
 #include "Quest.h"
 #include "QuestWorld.h"
@@ -577,11 +580,24 @@ void DataServerProtocolCore(BYTE head, BYTE* lpMsg, int size) // OK
 		case 0xE1:
 			CSDataRecv(head, lpMsg, size);
 			break;
+		case 0xF4:
+			gCustomRanking.GDCustomRankingRecv(lpMsg);
+			break;
 		case 0xF5:
 		{
 			SDHP_CARESUME_RECV* lpRecv = (SDHP_CARESUME_RECV*)lpMsg;
 
 			gCustomAttack.DGCustomAttackResumeRecv(lpRecv);
+		}
+		break;
+		case 0xF6:
+			gCustomRanking.GDCustomRankingPlayerRecv((SDHP_RANKING_CHARACTER_INFO_RECV*)lpMsg);
+			break;
+		case 0xF8:
+		{
+			SDHP_OFFATTACK_RESUME_RECV* lpRecv = (SDHP_OFFATTACK_RESUME_RECV*)lpMsg;
+
+			gCustomAttack.DGCustomOffAttackResumeRecv(lpRecv);
 		}
 		break;
 		}
@@ -1197,10 +1213,10 @@ void DGCharacterListRecv(SDHP_CHARACTER_LIST_RECV* lpMsg) // OK
 		{
 			info.CharSet[16] |= 0x60;
 		}
-		//else if (gCustomPet.CheckCustomPetByItem(GET_ITEM(13, TempInventory[8])) != 0)
-		//{
-		//	infonews.PetIndex = (TempInventory[8]);
-		//}
+		else if (gCustomPet.CheckCustomPetByItem(GET_ITEM(13, TempInventory[8])) != 0)
+		{
+			infonews.PetIndex = (TempInventory[8]);
+		}
 
 #pragma endregion
 
@@ -1342,6 +1358,8 @@ void DGCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg) // OK
 
 	LPOBJ lpObj = &gObj[lpMsg->index];
 
+	bool CustomOffAttackResume = gCustomAttack.ApplyCustomOffAttackResume(lpObj);
+
 	if (lpObj->MapServerMoveRequest == 0)
 	{
 		if ((lpObj->NextServerCode = gMapServerManager.CheckMapServerMove(lpObj->Index, lpObj->Map, lpObj->LastServerCode)) != gServerInfo.m_ServerCode)
@@ -1442,6 +1460,7 @@ void DGCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg) // OK
 #if(GAMESERVER_EXTRA==1)
 	pMsg.ViewReset = (DWORD)(lpObj->Reset);
 #endif
+	pMsg.Camera3DSwitch = ((CHECK_RANGE(lpObj->AccountLevel,MAX_ACCOUNT_LEVEL) == 0) ? 0 : gServerInfo.m_Camera3DSwitch[lpObj->AccountLevel]);
 
 	DataSend(lpObj->Index, (BYTE*)&pMsg, pMsg.header.size);
 
@@ -1545,6 +1564,8 @@ void DGCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg) // OK
 
 	GCNewGensBattleInfoSend(lpObj);
 
+	gInvasionManager.SendPlayerInfo(lpObj->Index);
+
 	gReconnect.GetReconnectInfo(lpObj);
 
 	gSkillManager.SkillChangeUse(lpObj->Index);
@@ -1555,18 +1576,21 @@ void DGCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg) // OK
 
 	gNotice.GCNoticeSend(lpObj->Index, 0, 0, 0, 0, 0, 0, gMessage.GetMessage(256), lpObj->Name);
 
-	gNotice.GCNoticeSend(lpObj->Index, 1, 0, 0, 0, 0, 0, gMessage.GetMessage((248 + lpObj->AccountLevel)), lpObj->AccountExpireDate);
+	if(CustomOffAttackResume == 0)
+	{
+		gNotice.GCNoticeSend(lpObj->Index, 1, 0, 0, 0, 0, 0, gMessage.GetMessage((248 + lpObj->AccountLevel)), lpObj->AccountExpireDate);
+	}
 
 	lpObj->MapServerMoveRequest = 0;
 
-	if (lpObj->Authority == 32)
+	if (CustomOffAttackResume == 0 && lpObj->Authority == 32)
 	{
 		if (gServerInfo.m_OnlineGmSwitch == 1)
 		{
 			gNotice.GCNoticeSendToAll(0, 0, 0, 0, 0, 0, gMessage.GetMessage(639), lpObj->Name);
 		}
 	}
-	else
+	else if(CustomOffAttackResume == 0)
 	{
 		if (gServerInfo.m_OnlineUserSwitch == 1)
 		{

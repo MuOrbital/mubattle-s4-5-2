@@ -2,12 +2,25 @@
 
 #include "CustomJewel.h"
 
+#define UPDATE_COLOR_COUNT 26
+#define UPDATE_TIP_MAX 32
+#define UPDATE_TIP_LENGTH 256
+
+struct UPDATE_COLOR_INFO
+{
+	BYTE Red;
+	BYTE Green;
+	BYTE Blue;
+};
+
 struct MAIN_FILE_INFO
 {
 	//MainInfo
 	char CustomerName[32];
 	char IpAddress[32];
 	WORD IpAddressPort;
+	WORD MHPServerPort;
+	int m_UseIntegratedAntiHack;
 	char ClientVersion[8];
 	char ClientSerial[17];
 	char WindowName[32];
@@ -25,6 +38,9 @@ struct MAIN_FILE_INFO
 	char m_TitleName[150];
 	char m_SubTitleName[150];
 	char m_WebSiteURL[150];
+	UPDATE_COLOR_INFO m_UpdateColors[UPDATE_COLOR_COUNT];
+	int m_UpdateTipsCount;
+	char m_UpdateTips[UPDATE_TIP_MAX][UPDATE_TIP_LENGTH];
 
 	//PluginSystem
 	int m_AntiBypassDLL;
@@ -56,6 +72,7 @@ struct MAIN_FILE_INFO
 	int m_WideScreenType;
 	int m_VideoLogin;
 	int m_VisualBugHPFerrarezi;
+	int m_SelectServerCustom;
 
 	//Custom
 	int LoadingLegend;

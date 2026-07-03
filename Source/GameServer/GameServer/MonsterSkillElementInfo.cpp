@@ -599,8 +599,9 @@ void CMonsterSkillElementInfo::ApplyElementNormalAttack(int aIndex,int bIndex) /
 	{
 		if(gObj[bIndex].Inventory[9].m_Index != GET_ITEM(this->m_IncAndDecType,this->m_IncAndDecValue) && gObj[bIndex].Inventory[10].m_Index != GET_ITEM(this->m_IncAndDecType,this->m_IncAndDecValue) && gObj[bIndex].Inventory[11].m_Index != GET_ITEM(this->m_IncAndDecType,this->m_IncAndDecValue))
 		{
+			int LifeDamage = ((gObj[bIndex].Life<0)?0:(int)gObj[bIndex].Life);
 			gObj[bIndex].Life = 0;
-			gObjectManager.CharacterLifeCheck(&gObj[aIndex],&gObj[bIndex],(int)(gObj[bIndex].MaxLife+gObj[bIndex].AddLife),0,0,0,0,0);
+			gObjectManager.CharacterLifeCheck(&gObj[aIndex],&gObj[bIndex],(int)(gObj[bIndex].MaxLife+gObj[bIndex].AddLife),0,0,0,0,0,LifeDamage);
 			return;
 		}
 	}

@@ -1,4 +1,7 @@
+#ifndef MU_REFERENCE_FPS_DEFINED
+#define MU_REFERENCE_FPS_DEFINED
 constexpr double REFERENCE_FPS = 25.0;
+#endif
 
 int CalcAngle(float PositionX,float PositionY,float TargetX,float TargetY);
 float CreateAngle(float x1,float y1,float x2,float y2);

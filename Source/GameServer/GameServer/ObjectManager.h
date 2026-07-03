@@ -24,7 +24,7 @@ public:
 	void CharacterUpdateMapEffect(LPOBJ lpObj);
 	bool CharacterGetRespawnLocation(LPOBJ lpObj);
 	void CharacterCalcExperienceSplit(LPOBJ lpObj,LPOBJ lpMonster,int damage,int flag);
-	void CharacterCalcExperienceAlone(LPOBJ lpObj,LPOBJ lpMonster,int damage,int flag,bool type,int AttackDamage);
+	void CharacterCalcExperienceAlone(LPOBJ lpObj,LPOBJ lpMonster,QWORD damage,int flag,bool type,int AttackDamage);
 	void CharacterCalcExperienceParty(LPOBJ lpObj,LPOBJ lpMonster,int damage,int flag);
 	bool CharacterLevelUp(LPOBJ lpObj,DWORD AddExperience,int MaxLevelUp,int ExperienceType);
 	bool CharacterLevelUpPointAdd(LPOBJ lpObj,int type,int amount);
@@ -51,7 +51,7 @@ public:
 	void CharacterCalcPvPAccessoryOption(LPOBJ lpObj);
 	void CharacterCalcAttribute(int aIndex);
 	bool CharacterInfoSet(BYTE* aRecv,int aIndex);
-	void CharacterLifeCheck(LPOBJ lpObj,LPOBJ lpTarget,int damage,int DamageType,int flag,int type,int skill,int ShieldDamage);
+	void CharacterLifeCheck(LPOBJ lpObj,LPOBJ lpTarget,int damage,int DamageType,int flag,int type,int skill,int ShieldDamage,int HitDamage=-1);
 };
 
 extern CObjectManager gObjectManager;

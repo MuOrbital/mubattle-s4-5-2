@@ -16,6 +16,7 @@
 #include "MonsterSetBase.h"
 #include "Notice.h"
 #include "ObjectManager.h"
+#include "Pets.h"
 #include "ScheduleManager.h"
 #include "ServerInfo.h"
 #include "Util.h"
@@ -1517,7 +1518,7 @@ void CChaosCastle::CGChaosCastleEnterRecv(PMSG_CHAOS_CASTLE_ENTER_RECV* lpMsg,in
 		return;
 	}
 
-	if(lpObj->Inventory[8].m_Index == GET_ITEM(13,2) || lpObj->Inventory[8].m_Index == GET_ITEM(13,3) || lpObj->Inventory[8].m_Index == GET_ITEM(13,37))
+	if(lpObj->Inventory[8].m_Index == GET_ITEM(13,2) || lpObj->Inventory[8].m_Index == GET_ITEM(13,3) || lpObj->Inventory[8].m_Index == GET_ITEM(13,37) || (gCustomPet.CheckCustomPetIsMontaria(lpObj->Inventory[8].m_Index) == 1))
 	{
 		pMsg.result = 10;
 		DataSend(aIndex,(BYTE*)&pMsg,pMsg.header.size);

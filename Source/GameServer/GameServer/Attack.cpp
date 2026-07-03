@@ -674,6 +674,7 @@ bool CAttack::Attack(LPOBJ lpObj,LPOBJ lpTarget,CSkill* lpSkill,bool send,BYTE f
 	#pragma region DAMAGE_APPLY
 
 	int ShieldDamage = 0;
+	int LifeDamage = 0;
 
 	if(lpObj->Type == OBJECT_USER && lpTarget->Type == OBJECT_USER)
 	{
@@ -681,13 +682,17 @@ bool CAttack::Attack(LPOBJ lpObj,LPOBJ lpTarget,CSkill* lpSkill,bool send,BYTE f
 
 		damage = gLuaGameServer.PlayerCheckDamage(lpObj->Index, lpTarget->Index, damage, ShieldDamage, effect);
 
-		if(lpTarget->Life < (damage-ShieldDamage))
+		int LifeDamageValue = damage-ShieldDamage;
+
+		if(lpTarget->Life < LifeDamageValue)
 		{
+			LifeDamage = ((lpTarget->Life<0)?0:(int)lpTarget->Life);
 			lpTarget->Life = 0;
 		}
 		else
 		{
-			lpTarget->Life -= damage-ShieldDamage;
+			LifeDamage = ((LifeDamageValue<0)?0:LifeDamageValue);
+			lpTarget->Life -= LifeDamageValue;
 		}
 
 		if(lpTarget->Shield < ShieldDamage)
@@ -703,10 +708,12 @@ bool CAttack::Attack(LPOBJ lpObj,LPOBJ lpTarget,CSkill* lpSkill,bool send,BYTE f
 	{
 		if(lpTarget->Life < damage)
 		{
+			LifeDamage = ((lpTarget->Life<0)?0:(int)lpTarget->Life);
 			lpTarget->Life = 0;
 		}
 		else
 		{
+			LifeDamage = damage;
 			lpTarget->Life -= damage;
 		}
 	}
@@ -850,7 +857,7 @@ bool CAttack::Attack(LPOBJ lpObj,LPOBJ lpTarget,CSkill* lpSkill,bool send,BYTE f
 			}
 		}
 
-		gObjectManager.CharacterLifeCheck(lpObj,lpTarget,(damage-ShieldDamage),0,flag,effect,((lpSkill==0)?0:lpSkill->m_index),ShieldDamage);
+		gObjectManager.CharacterLifeCheck(lpObj,lpTarget,(damage-ShieldDamage),0,flag,effect,((lpSkill==0)?0:lpSkill->m_index),ShieldDamage,LifeDamage);
 
 		#if(GAMESERVER_UPDATE>=701)
 
@@ -1037,18 +1044,23 @@ bool CAttack::AttackElemental(LPOBJ lpObj,LPOBJ lpTarget,CSkill* lpSkill,bool se
 	#pragma region DAMAGE_APPLY
 
 	int ShieldDamage = 0;
+	int LifeDamage = 0;
 
 	if(lpObj->Type == OBJECT_USER && lpTarget->Type == OBJECT_USER)
 	{
 		ShieldDamage = this->GetShieldDamage(lpObj,lpTarget,damage);
 
-		if(lpTarget->Life < (damage-ShieldDamage))
+		int LifeDamageValue = damage-ShieldDamage;
+
+		if(lpTarget->Life < LifeDamageValue)
 		{
+			LifeDamage = ((lpTarget->Life<0)?0:(int)lpTarget->Life);
 			lpTarget->Life = 0;
 		}
 		else
 		{
-			lpTarget->Life -= damage-ShieldDamage;
+			LifeDamage = ((LifeDamageValue<0)?0:LifeDamageValue);
+			lpTarget->Life -= LifeDamageValue;
 		}
 
 		if(lpTarget->Shield < ShieldDamage)
@@ -1066,10 +1078,12 @@ bool CAttack::AttackElemental(LPOBJ lpObj,LPOBJ lpTarget,CSkill* lpSkill,bool se
 	{
 		if(lpTarget->Life < damage)
 		{
+			LifeDamage = ((lpTarget->Life<0)?0:(int)lpTarget->Life);
 			lpTarget->Life = 0;
 		}
 		else
 		{
+			LifeDamage = damage;
 			lpTarget->Life -= damage;
 		}
 	}
@@ -1080,7 +1094,7 @@ bool CAttack::AttackElemental(LPOBJ lpObj,LPOBJ lpTarget,CSkill* lpSkill,bool se
 
 	if(damage > 0)
 	{
-		gObjectManager.CharacterLifeCheck(lpObj,lpTarget,(damage-ShieldDamage),4,flag,effect,((lpSkill==0)?0:lpSkill->m_index),ShieldDamage);
+		gObjectManager.CharacterLifeCheck(lpObj,lpTarget,(damage-ShieldDamage),4,flag,effect,((lpSkill==0)?0:lpSkill->m_index),ShieldDamage,LifeDamage);
 	}
 	else
 	{

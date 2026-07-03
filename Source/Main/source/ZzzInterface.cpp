@@ -1,4 +1,4 @@
-ï»¿///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -61,7 +61,10 @@
 #include "MonsterHPBar.h"
 #include "CustomWing.h"
 #include <Camera3D.h>
-extern bool g_bHideHeroBoolean; 
+#include <GOBoid.h>
+#include "HelperSystem.h"
+
+extern bool g_bHideHeroBoolean;
 
 extern CUITextInputBox* g_pSingleTextInputBox;
 extern CUITextInputBox* g_pSinglePasswdInputBox;
@@ -292,7 +295,7 @@ void SetIME_Status(bool halfShape)
 
 	data = ::ImmGetContext(g_hWnd);
 
-	//  Â¹ÃÂ°Â¢.
+	//  ¹Ý°¢.
 	dwConv = g_dwOldConv;
 	dwSent = g_dwOldSent;
 	if (halfShape)
@@ -454,8 +457,8 @@ void RenderTipText(int sx, int sy, const char* Text)
 	int BackupAlphaBlendType = AlphaBlendType;
 	EnableAlphaTest();
 	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-	RenderColor((float)sx - 2, (float)sy - 3, (float)TextSize.cx / g_fScreenRate_x + 4, (float)1);	// Ã€Â§
-	RenderColor((float)sx - 2, (float)sy - 3, (float)1, (float)TextSize.cy / g_fScreenRate_y + 4);	// ÃÃ‚
+	RenderColor((float)sx - 2, (float)sy - 3, (float)TextSize.cx / g_fScreenRate_x + 4, (float)1);	// À§
+	RenderColor((float)sx - 2, (float)sy - 3, (float)1, (float)TextSize.cy / g_fScreenRate_y + 4);	// ÁÂ
 	RenderColor((float)sx - 2 + TextSize.cx / g_fScreenRate_x + 3, (float)sy - 3, (float)1, (float)TextSize.cy / g_fScreenRate_y + 4);
 	RenderColor((float)sx - 2, (float)sy - 3 + TextSize.cy / g_fScreenRate_y + 3, (float)TextSize.cx / g_fScreenRate_x + 4, (float)1);
 
@@ -755,7 +758,7 @@ void SetBooleanPosition(CHAT* c)
 	SIZE Size[5];
 	memset(&Size[0], 0, sizeof(SIZE) * 5);
 
-	if (g_isCharacterBuff((&c->Owner->Object), eBuff_GMEffect) || // GM Ã€ÃÂ°Ã¦Â¿Ã¬
+	if (g_isCharacterBuff((&c->Owner->Object), eBuff_GMEffect) || // GM ÀÏ°æ¿ì
 		(c->Owner->CtlCode == CTLCODE_20OPERATOR) || (c->Owner->CtlCode == CTLCODE_08OPERATOR))
 	{
 		g_pRenderText->SetFont(g_hFontBold);
@@ -814,7 +817,7 @@ void SetPlayerColor(BYTE PK)
 	}
 }
 
-extern float g_fScreenRate_x;	// Â¡Ã˜
+extern float g_fScreenRate_x;	// ¡Ø
 extern float g_fScreenRate_y;
 const int ciSystemColor = 240;
 
@@ -2220,11 +2223,10 @@ void UseSkillWarrior(CHARACTER* c, OBJECT* o)
 			SetAction(o, PLAYER_ATTACK_RUSH);
 			break;
 		default:
-			if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone)
+			if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone && !g_bMiniatureMode)
 				SetAction(o, PLAYER_FENRIR_ATTACK_MAGIC);
 			else
 				SetAction(o, PLAYER_ATTACK_SKILL_SWORD1 + g_MovementSkill.m_iSkill - AT_SKILL_SWORD1);
-			break;
 		}
 	}
 	else
@@ -2305,7 +2307,7 @@ void UseSkillWarrior(CHARACTER* c, OBJECT* o)
 #ifdef NEW_PROTOCOL_SYSTEM
 				gProtocolSend.SendPositionNew(positionX, positionY);
 #else
-					//SendPosition( positionX, positionY );	//	Aqui desativa o puxÃ£o da skill
+					//SendPosition( positionX, positionY );	//	Aqui desativa o puxão da skill
 #endif
 			}
 		}
@@ -4504,12 +4506,12 @@ void CheckChatText(char* Text)
 		SetActionClass(c, o, PLAYER_AWKWARD1, AT_AWKWARD1);
 		SendRequestAction(AT_AWKWARD1, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
 	}
-	else if (FindText(Text, "Â¤Ã.Â¤Ã") || FindText(Text, "Â¤ÃŒ.Â¤ÃŒ") || FindText(Text, "T_T") || FindText(Text, GlobalText[306]) || FindText(Text, GlobalText[307]) || FindText(Text, GlobalText[308]) || FindText(Text, GlobalText[309]))
+	else if (FindText(Text, "¤Ð.¤Ð") || FindText(Text, "¤Ì.¤Ì") || FindText(Text, "T_T") || FindText(Text, GlobalText[306]) || FindText(Text, GlobalText[307]) || FindText(Text, GlobalText[308]) || FindText(Text, GlobalText[309]))
 	{
 		SetActionClass(c, o, PLAYER_CRY1, AT_CRY1);
 		SendRequestAction(AT_CRY1, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
 	}
-	else if (FindText(Text, "Â¤Ã‘.Â¤Ã‘") || FindText(Text, "Â¤Ã‘.,Â¤Ã‘") || FindText(Text, "Â¤Ã‘,.Â¤Ã‘") || FindText(Text, "-.-") || FindText(Text, "-_-") || FindText(Text, GlobalText[310]) || FindText(Text, GlobalText[311]))
+	else if (FindText(Text, "¤Ñ.¤Ñ") || FindText(Text, "¤Ñ.,¤Ñ") || FindText(Text, "¤Ñ,.¤Ñ") || FindText(Text, "-.-") || FindText(Text, "-_-") || FindText(Text, GlobalText[310]) || FindText(Text, GlobalText[311]))
 	{
 		SetActionClass(c, o, PLAYER_SEE1, AT_SEE1);
 		SendRequestAction(AT_SEE1, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
@@ -4549,7 +4551,7 @@ void CheckChatText(char* Text)
 		SetActionClass(c, o, PLAYER_RESPECT1, AT_RESPECT1);
 		SendRequestAction(AT_RESPECT1, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
 	}
-	else if (FindText(Text, GlobalText[342]) || FindText(Text, GlobalText[343]) || FindText(Text, "/Â¤Ã‘") || FindText(Text, "Â¤Ã‘^"))
+	else if (FindText(Text, GlobalText[342]) || FindText(Text, GlobalText[343]) || FindText(Text, "/¤Ñ") || FindText(Text, "¤Ñ^"))
 	{
 		SetActionClass(c, o, PLAYER_SALUTE1, AT_SALUTE1);
 		SendRequestAction(AT_SALUTE1, ((BYTE)((o->Angle[2] + 22.5f) / 360.f * 8.f + 1.f) % 8));
@@ -5294,7 +5296,7 @@ void AttackKnight(CHARACTER* c, int Skill, float Distance)
 						SendRequestMagicContinue(Skill, (c->PositionX),
 							(c->PositionY), ((o->Angle[2] / 360.f) * 255), byValue, angle, TKey, 0);
 						SetAttackSpeed();
-						if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone)
+						if ((c->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(c->Helper.Type, 8) == 1) && !c->SafeZone)
 						{
 							SetAction(o, PLAYER_FENRIR_ATTACK_MAGIC);
 						}
@@ -5512,7 +5514,7 @@ void AttackKnight(CHARACTER* c, int Skill, float Distance)
 						{
 							SetAction(o, PLAYER_ATTACK_RIDE_STRIKE);
 						}
-						else if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone)
+						else if ((c->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(c->Helper.Type, 8) == 1) && !c->SafeZone)
 						{
 							SetAction(o, PLAYER_FENRIR_ATTACK_DARKLORD_STRIKE);
 						}
@@ -5534,7 +5536,7 @@ void AttackKnight(CHARACTER* c, int Skill, float Distance)
 			case AT_SKILL_ASHAKE_UP + 3:
 			case AT_SKILL_ASHAKE_UP + 4:
 			case AT_SKILL_DARK_HORSE:
-				if (c->Helper.Type != MODEL_HELPER + 4 || c->SafeZone) break;
+				if ((c->Helper.Type != MODEL_HELPER + 4 && gHelperSystem.CheckHelperType(c->Helper.Type, 16) != 1) || c->SafeZone) break;
 
 			case AT_SKILL_THUNDER_STRIKE:
 				if (CheckTile(c, o, Distance))
@@ -5556,11 +5558,11 @@ void AttackKnight(CHARACTER* c, int Skill, float Distance)
 
 					if (Skill == AT_SKILL_THUNDER_STRIKE)
 					{
-						if (c->Helper.Type == MODEL_HELPER + 4 && !c->SafeZone)
+						if ((c->Helper.Type == MODEL_HELPER + 4 || gHelperSystem.CheckHelperType(c->Helper.Type, 16) == 1) && !c->SafeZone)
 						{
 							SetAction(o, PLAYER_ATTACK_RIDE_ATTACK_FLASH);
 						}
-						else if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone)
+						else if ((c->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(c->Helper.Type, 8) == 1) && !c->SafeZone)
 						{
 							SetAction(o, PLAYER_FENRIR_ATTACK_DARKLORD_FLASH);
 						}
@@ -6001,7 +6003,7 @@ void AttackWizard(CHARACTER* c, int Skill, float Distance)
 					(c->PositionY), (BYTE)(o->Angle[2] / 360.f * 256.f), 0, 0, 0xffff, 0);
 				SetAttackSpeed();
 
-				if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone)
+				if ((c->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(c->Helper.Type, 8) == 1) && !c->SafeZone)
 					SetAction(o, PLAYER_SKILL_FLASH);
 				else
 					SetAction(o, PLAYER_SKILL_FLASH);
@@ -6455,7 +6457,7 @@ void AttackCommon(CHARACTER* c, int Skill, float Distance)
 				SendRequestMagicContinue(Skill, (c->PositionX), (c->PositionY), (BYTE)(o->Angle[2] / 360.f * 256.f), byValue, pos, TKey, 0);
 				SetAttackSpeed();
 
-				if (c->Helper.Type == MODEL_HELPER + 4 && !c->SafeZone)
+				if ((c->Helper.Type == MODEL_HELPER + 4 || gHelperSystem.CheckHelperType(c->Helper.Type, 16) == 1) && !c->SafeZone)
 				{
 					SetAction(o, PLAYER_ATTACK_RIDE_ATTACK_MAGIC);
 				}
@@ -6467,7 +6469,7 @@ void AttackCommon(CHARACTER* c, int Skill, float Distance)
 				{
 					SetAction(o, PLAYER_SKILL_RIDER_FLY);
 				}
-				else if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone)
+				else if ((c->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(c->Helper.Type, 8) == 1) && !c->SafeZone)
 				{
 					SetAction(o, PLAYER_FENRIR_ATTACK_MAGIC);
 				}
@@ -6492,7 +6494,7 @@ void AttackCommon(CHARACTER* c, int Skill, float Distance)
 			}
 
 
-			if (c->Helper.Type == MODEL_HELPER + 4 && !c->SafeZone)
+			if ((c->Helper.Type == MODEL_HELPER + 4 || gHelperSystem.CheckHelperType(c->Helper.Type, 16) == 1) && !c->SafeZone)
 			{
 				SetAction(o, PLAYER_ATTACK_RIDE_ATTACK_MAGIC);
 			}
@@ -6506,7 +6508,7 @@ void AttackCommon(CHARACTER* c, int Skill, float Distance)
 					{
 						SetAction(o, PLAYER_SKILL_RIDER_FLY);
 					}
-					else if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone)
+					else if ((c->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(c->Helper.Type, 8) == 1) && !c->SafeZone)
 					{
 						SetAction(o, PLAYER_FENRIR_ATTACK_MAGIC);
 					}
@@ -6528,7 +6530,7 @@ void AttackCommon(CHARACTER* c, int Skill, float Distance)
 				SendRequestMagic(Skill, CharactersClient[SelectedCharacter].Key);
 			}
 
-			if (c->Helper.Type == MODEL_HELPER + 4 && !c->SafeZone)
+			if ((c->Helper.Type == MODEL_HELPER + 4 || gHelperSystem.CheckHelperType(c->Helper.Type, 16) == 1) && !c->SafeZone)
 			{
 				SetAction(o, PLAYER_ATTACK_RIDE_ATTACK_MAGIC);
 			}
@@ -6540,7 +6542,7 @@ void AttackCommon(CHARACTER* c, int Skill, float Distance)
 			{
 				SetAction(o, PLAYER_SKILL_RIDER_FLY);
 			}
-			else if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone)
+			else if ((c->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(c->Helper.Type, 8) == 1) && !c->SafeZone)
 			{
 				SetAction(o, PLAYER_FENRIR_ATTACK_MAGIC);
 			}
@@ -6561,7 +6563,7 @@ void AttackCommon(CHARACTER* c, int Skill, float Distance)
 					SendRequestMagic(Skill, CharactersClient[SelectedCharacter].Key);
 			}
 
-			if (c->Helper.Type == MODEL_HELPER + 4 && !c->SafeZone)
+			if ((c->Helper.Type == MODEL_HELPER + 4 || gHelperSystem.CheckHelperType(c->Helper.Type, 16) == 1) && !c->SafeZone)
 			{
 				SetAction(o, PLAYER_ATTACK_RIDE_ATTACK_MAGIC);
 			}
@@ -6573,7 +6575,7 @@ void AttackCommon(CHARACTER* c, int Skill, float Distance)
 			{
 				SetAction(o, PLAYER_SKILL_RIDER_FLY);
 			}
-			else if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone)
+			else if ((c->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(c->Helper.Type, 8) == 1) && !c->SafeZone)
 			{
 				SetAction(o, PLAYER_FENRIR_ATTACK_MAGIC);
 			}
@@ -6592,7 +6594,7 @@ void AttackCommon(CHARACTER* c, int Skill, float Distance)
 				SendRequestMagic(Skill, CharactersClient[SelectedCharacter].Key);
 			}
 
-			if (c->Helper.Type == MODEL_HELPER + 4 && !c->SafeZone)
+			if ((c->Helper.Type == MODEL_HELPER + 4 || gHelperSystem.CheckHelperType(c->Helper.Type, 16) == 1) && !c->SafeZone)
 			{
 				SetAction(o, PLAYER_ATTACK_RIDE_ATTACK_MAGIC);
 			}
@@ -6604,7 +6606,7 @@ void AttackCommon(CHARACTER* c, int Skill, float Distance)
 			{
 				SetAction(o, PLAYER_SKILL_RIDER_FLY);
 			}
-			else if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone)
+			else if ((c->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(c->Helper.Type, 8) == 1) && !c->SafeZone)
 			{
 				SetAction(o, PLAYER_FENRIR_ATTACK_MAGIC);
 			}
@@ -6624,7 +6626,7 @@ void AttackCommon(CHARACTER* c, int Skill, float Distance)
 				SendRequestMagic(Skill, CharactersClient[SelectedCharacter].Key);
 			}
 
-			if (c->Helper.Type == MODEL_HELPER + 4 && !c->SafeZone)
+			if ((c->Helper.Type == MODEL_HELPER + 4 || gHelperSystem.CheckHelperType(c->Helper.Type, 16) == 1) && !c->SafeZone)
 			{
 				SetAction(o, PLAYER_ATTACK_RIDE_ATTACK_MAGIC);
 			}
@@ -6636,7 +6638,7 @@ void AttackCommon(CHARACTER* c, int Skill, float Distance)
 			{
 				SetAction(o, PLAYER_SKILL_RIDER_FLY);
 			}
-			else if (c->Helper.Type == MODEL_HELPER + 37 && !c->SafeZone)
+			else if ((c->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(c->Helper.Type, 8) == 1) && !c->SafeZone)
 			{
 				SetAction(o, PLAYER_FENRIR_ATTACK_MAGIC);
 			}
@@ -6956,10 +6958,16 @@ void Attack(CHARACTER* c)
 							)
 						{
 							bool bOk = false;
-							if (c->Helper.Type != MODEL_HELPER + 2
+							if ((c->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(c->Helper.Type, 8) == 1) && g_bMiniatureMode
+								&& (Skill >= AT_SKILL_BLOCKING && Skill <= AT_SKILL_SWORD5))
+							{
+								bOk = true;
+							}
+							else if (c->Helper.Type != MODEL_HELPER + 2
 								&& c->Helper.Type != MODEL_HELPER + 3
 								&& c->Helper.Type != MODEL_HELPER + 4
 								&& c->Helper.Type != MODEL_HELPER + 37
+								&& gHelperSystem.CheckHelperType(c->Helper.Type, 8) != 1
 								)
 							{
 								bOk = true;

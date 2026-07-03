@@ -47,8 +47,25 @@
 #include "Message.h"
 #include "Notice.h"
 
+static QWORD gObjMonsterAddHitDamage(QWORD damage,QWORD add) // OK
+{
+	return ((((QWORD)-1)-damage) < add)?((QWORD)-1):(damage+add);
+}
+
 void gObjMonsterDieGiveItem(LPOBJ lpObj,LPOBJ lpTarget) // OK
 {
+	int BagIndex = gItemBagManager.GetBagIndexByMonsterClass(lpObj->Class);
+
+	if(BagIndex != -1)
+	{
+		if(lpObj->MonsterItemDropDone != 0)
+		{
+			return;
+		}
+
+		lpObj->MonsterItemDropDone = 1;
+	}
+
 	int aIndex = gObjMonsterGetTopHitDamageUser(lpObj);
 
 	if(OBJECT_RANGE(aIndex) != 0)
@@ -148,7 +165,7 @@ void gObjMonsterDieGiveItem(LPOBJ lpObj,LPOBJ lpTarget) // OK
 		{
 			struct DamageEntry {
 				int index;
-				int damage;
+				QWORD damage;
 			};
 
 			DamageEntry entries[MAX_HIT_DAMAGE];
@@ -160,7 +177,9 @@ void gObjMonsterDieGiveItem(LPOBJ lpObj,LPOBJ lpTarget) // OK
 				if (OBJECT_RANGE(idx) &&
 					gObjIsConnected(idx) &&
 					lpObj->HitDamage[n].damage > 0 &&
-					(GetTickCount() - lpObj->HitDamage[n].time) <= 30000)
+					(GetTickCount() - lpObj->HitDamage[n].time) <= 30000 &&
+					lpObj->Map == gObj[idx].Map &&
+					gObjCalcDistance(lpObj,&gObj[idx]) <= 20)
 				{
 					entries[cont].index = idx;
 					entries[cont].damage = lpObj->HitDamage[n].damage;
@@ -192,8 +211,8 @@ void gObjMonsterDieGiveItem(LPOBJ lpObj,LPOBJ lpTarget) // OK
 					{
 						LPOBJ lpTop = &gObj[topIdx];
 
-						BYTE dropX = lpObj->X + (BYTE)((pos % 3) - 1);
-						BYTE dropY = lpObj->Y + (BYTE)((pos / 3) - 1);
+						int dropX = lpObj->X+((pos%3)-1);
+						int dropY = lpObj->Y+((pos/3)-1);
 
 						if (dropX < 0) dropX = 0;
 						if (dropX >= 255) dropX = 254;
@@ -710,11 +729,17 @@ void gObjMonsterInitHitDamage(LPOBJ lpObj) // OK
 	}
 
 	lpObj->HitDamageCount = 0;
+	lpObj->MonsterItemDropDone = 0;
 }
 
 void gObjMonsterSetHitDamage(LPOBJ lpObj,int aIndex,int damage) // OK
 {
 	int HitDamageIndex = -1;
+	QWORD AddDamage = ((damage<0)?0:(QWORD)damage);
+	double MonsterMaxLife = ((double)lpObj->MaxLife+(double)lpObj->AddLife);
+	QWORD MaxDamage = ((MonsterMaxLife<1)?1:(QWORD)MonsterMaxLife);
+
+	AddDamage = ((AddDamage>MaxDamage)?MaxDamage:AddDamage);
 
 	for(int n=0;n < MAX_HIT_DAMAGE;n++)
 	{
@@ -726,7 +751,8 @@ void gObjMonsterSetHitDamage(LPOBJ lpObj,int aIndex,int damage) // OK
 
 		if(lpObj->HitDamage[n].index == aIndex)
 		{
-			lpObj->HitDamage[n].damage = (((lpObj->HitDamage[n].damage+damage)>lpObj->MaxLife)?(int)lpObj->MaxLife:(lpObj->HitDamage[n].damage+damage));
+			QWORD TotalDamage = gObjMonsterAddHitDamage(lpObj->HitDamage[n].damage,AddDamage);
+			lpObj->HitDamage[n].damage = ((TotalDamage>MaxDamage)?MaxDamage:TotalDamage);
 			lpObj->HitDamage[n].time = GetTickCount();
 			return;
 		}
@@ -736,7 +762,7 @@ void gObjMonsterSetHitDamage(LPOBJ lpObj,int aIndex,int damage) // OK
 	{
 		lpObj->HitDamage[HitDamageIndex].index = aIndex;
 
-		lpObj->HitDamage[HitDamageIndex].damage = ((damage>lpObj->MaxLife)?(int)lpObj->MaxLife:damage);
+		lpObj->HitDamage[HitDamageIndex].damage = AddDamage;
 
 		lpObj->HitDamage[HitDamageIndex].time = GetTickCount();
 
@@ -788,9 +814,9 @@ int gObjMonsterDelHitDamageUser(LPOBJ lpObj) // OK
 int gObjMonsterGetTopHitDamageUser(LPOBJ lpObj) // OK
 {
 	int TopHitDamageUser = -1;
-	int TopHitDamage = 0;
+	QWORD TopHitDamage = 0;
 	int PartyTopHitDamageUser = -1;
-	int PartyTopHitDamage = 0;
+	QWORD PartyTopHitDamage = 0;
 
 	for(int n=0;n < MAX_HIT_DAMAGE;n++)
 	{
@@ -835,10 +861,10 @@ int gObjMonsterGetTopHitDamageUser(LPOBJ lpObj) // OK
 	return TopHitDamageUser;
 }
 
-int gObjMonsterGetTopHitDamageParty(LPOBJ lpObj,int PartyNumber,int* TopHitDamageUser) // OK
+QWORD gObjMonsterGetTopHitDamageParty(LPOBJ lpObj,int PartyNumber,int* TopHitDamageUser) // OK
 {
-	int TopHitDamage = 0;
-	int TotalHitDamage = 0;
+	QWORD TopHitDamage = 0;
+	QWORD TotalHitDamage = 0;
 
 	for(int n=0;n < MAX_HIT_DAMAGE;n++)
 	{
@@ -870,13 +896,13 @@ int gObjMonsterGetTopHitDamageParty(LPOBJ lpObj,int PartyNumber,int* TopHitDamag
 				{
 					(*TopHitDamageUser) = lpObj->HitDamage[n].index;
 					TopHitDamage = lpObj->HitDamage[n].damage;
-					TotalHitDamage += lpObj->HitDamage[n].damage;
+					TotalHitDamage = gObjMonsterAddHitDamage(TotalHitDamage,lpObj->HitDamage[n].damage);
 				}
 				else
 				{
 					(*TopHitDamageUser) = (*TopHitDamageUser);
 					TopHitDamage = TopHitDamage;
-					TotalHitDamage += lpObj->HitDamage[n].damage;
+					TotalHitDamage = gObjMonsterAddHitDamage(TotalHitDamage,lpObj->HitDamage[n].damage);
 				}
 			}
 		}
@@ -1649,7 +1675,7 @@ void gObjMonsterDie(LPOBJ lpObj, LPOBJ lpTarget) // OK
 			{
 				struct DamageEntry {
 					int index;
-					int damage;
+					QWORD damage;
 				};
 
 				DamageEntry entries[MAX_HIT_DAMAGE];
@@ -1661,7 +1687,9 @@ void gObjMonsterDie(LPOBJ lpObj, LPOBJ lpTarget) // OK
 					if (OBJECT_RANGE(aIndex) &&
 						gObjIsConnected(aIndex) &&
 						lpObj->HitDamage[n].damage > 0 &&
-						(GetTickCount() - lpObj->HitDamage[n].time) <= 30000)
+						(GetTickCount() - lpObj->HitDamage[n].time) <= 30000 &&
+						lpObj->Map == gObj[aIndex].Map &&
+						gObjCalcDistance(lpObj,&gObj[aIndex]) <= 20)
 					{
 						entries[validCount].index = aIndex;
 						entries[validCount].damage = lpObj->HitDamage[n].damage;
@@ -1691,7 +1719,7 @@ void gObjMonsterDie(LPOBJ lpObj, LPOBJ lpTarget) // OK
 				for (int pos = 0; pos < placesToShow; pos++)
 				{
 					int aIndex = entries[pos].index;
-					int rawDmg = entries[pos].damage;
+					QWORD rawDmg = entries[pos].damage;
 
 					if (!OBJECT_RANGE(aIndex) || !gObjIsConnected(aIndex)) continue;
 

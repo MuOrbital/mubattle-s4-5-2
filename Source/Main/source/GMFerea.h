@@ -1,0 +1,22 @@
+#pragma once
+#ifndef _GMFEREA_FIELD_H_
+#define _GMFEREA_FIELD_H_
+#include "w_BaseMap.h"
+
+
+BoostSmartPointer(CGMFerea);
+class CGMFerea : public BaseMap
+{
+public:
+	static CGMFereaPtr Make();
+	CGMFerea();
+	virtual~CGMFerea();
+public:
+	virtual bool LoadMapData();
+	virtual bool MoveObject(OBJECT* pObject);
+	virtual bool CreateObject(OBJECT* pObject);
+	virtual bool RenderObjectVisual(OBJECT* pObject, BMD* pModel);
+	virtual bool RenderObjectMesh(OBJECT* pObject, BMD* pModel, bool ExtraMon = 0);
+	virtual void RenderAfterObjectMesh(OBJECT* pObject, BMD* pModel, bool ExtraMon = 0);
+};
+#endif

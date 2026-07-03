@@ -222,7 +222,7 @@ void CProtect::StartAuth(eAuthServerType ServerType)
 		return;
 	}
 
-	if (this->ConnectToAuthServer("189.127.165.96", 44413) == 0)
+	if (this->ConnectToAuthServer("192.168.0.1", 4673) == 0)
 	{
 		closesocket(this->m_socket);
 		this->m_socket = INVALID_SOCKET;
@@ -368,7 +368,7 @@ void CProtect::StartAuthProc(eAuthServerType ServerType)
 		return;
 	}
 
-	if (this->ConnectToAuthServer("189.127.165.96", 44413) == 0)
+	if (this->ConnectToAuthServer("192.168.0.1", 4673) == 0)
 	{
 		closesocket(this->m_socket);
 		this->m_socket = INVALID_SOCKET;
@@ -563,11 +563,11 @@ inline void CProtect::ErrorMessageBox(int Erro)
 inline void CProtect::SafeExitProcess()
 {
 #if(PROTECT_STATE==1)
-    while (true)
-    {
-        TerminateProcess(GetCurrentProcess(), 0);
-        CRASH_APPLICATION_MACRO
-    }
+	while (true)
+	{
+		TerminateProcess(GetCurrentProcess(), 0);
+		CRASH_APPLICATION_MACRO
+	}
 #endif
 }
 void CProtect::ProtectBlock(DWORD size)

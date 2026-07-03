@@ -13,3 +13,48 @@
 [20:47:40] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seusite.com.br/update/ pattern=file_update
 [20:47:43] ERRO: InternetOpenUrl falhou. url=https://update.seusite.com.br/update/ err=12007
 [20:47:43] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seusite.com.br/update/ pattern=exe_update
+[19:09:30] ERRO: Arquivo de versao do EXE nao encontrado. path=C:\Users\Mineiro\Documents\GitHub\mubattle-s4-5-2\Cliente\Data\GameLoad\Config\Config.ini
+[19:09:31] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:09:31] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=file_update
+[19:09:33] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:09:33] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=exe_update
+[19:11:15] ERRO: Arquivo de versao do EXE nao encontrado. path=C:\Users\Mineiro\Documents\GitHub\mubattle-s4-5-2\Cliente\Data\GameLoad\Config\Config.ini
+[19:11:16] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:11:16] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=file_update
+[19:11:18] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:11:18] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=exe_update
+[19:11:59] ERRO: Arquivo de versao do EXE nao encontrado. path=C:\Users\Mineiro\Documents\GitHub\mubattle-s4-5-2\Cliente\Data\GameLoad\Config\Config.ini
+[19:11:59] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:11:59] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=file_update
+[19:12:02] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:12:02] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=exe_update
+[19:12:18] ERRO: Arquivo de versao do EXE nao encontrado. path=C:\Users\Mineiro\Documents\GitHub\mubattle-s4-5-2\Cliente\Data\GameLoad\Config\Config.ini
+[19:12:19] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:12:19] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=file_update
+[19:12:22] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:12:22] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=exe_update
+[19:12:44] ERRO: Arquivo de versao do EXE nao encontrado. path=C:\Users\Mineiro\Documents\GitHub\mubattle-s4-5-2\Cliente\Data\GameLoad\Config\Config.ini
+[19:12:45] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:12:45] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=file_update
+[19:12:48] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:12:48] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=exe_update
+[19:13:44] ERRO: Arquivo de versao do EXE nao encontrado. path=C:\Users\Mineiro\Documents\GitHub\mubattle-s4-5-2\Cliente\Data\GameLoad\Config\Config.ini
+[19:13:44] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:13:44] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=file_update
+[19:13:47] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:13:47] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=exe_update
+[19:19:43] ERRO: Arquivo de versao do EXE nao encontrado. path=C:\Users\Mineiro\Documents\GitHub\mubattle-s4-5-2\Cliente\Data\GameLoad\Config\Config.ini
+[19:19:44] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:19:44] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=file_update
+[19:19:46] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:19:46] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=exe_update
+[19:31:09] ERRO: Arquivo de versao do EXE nao encontrado. path=C:\Users\Mineiro\Documents\GitHub\mubattle-s4-5-2\Cliente\Data\GameLoad\Config\Config.ini
+[19:31:10] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:31:10] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=file_update
+[19:31:12] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:31:12] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=exe_update
+[19:43:35] ERRO: Arquivo de versao do EXE nao encontrado. path=C:\Users\Mineiro\Documents\GitHub\mubattle-s4-5-2\Cliente\Data\GameLoad\Config\Config.ini
+[19:43:35] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:43:35] ERRO: Falha ao consultar versao dos arquivos no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=file_update
+[19:43:38] ERRO: InternetOpenUrl falhou. url=https://update.seulinkdeupdatecpanel.com/ err=12007
+[19:43:38] ERRO: Falha ao consultar versao do EXE no servidor. url=https://update.seulinkdeupdatecpanel.com/ pattern=exe_update

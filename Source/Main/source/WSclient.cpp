@@ -1,4 +1,4 @@
-я╗┐#include "stdafx.h"
+#include "stdafx.h"
 #include "UIManager.h"
 #include "GuildCache.h"
 #include "ZzzBMD.h"
@@ -74,6 +74,10 @@
 #include "LuaSocket.h"
 #include "MonsterHPBar.h"
 #include "CustomWing.h"
+#include "HelperSystem.h"
+#include "HelperManager.h"
+#include "Camera3D.h"
+#include "InvasionInfo.h"
 
 #define MAX_DEBUG_MAX 10
 
@@ -324,7 +328,7 @@ void ReceiveServerList( BYTE *ReceiveBuffer )
 		
 	g_ConsoleDebug->Write(MCD_RECEIVE, "0xF4 [ReceiveServerList]");
 }
-void ReceiveServerConnect(BYTE* ReceiveBuffer) //Recebe informa├з├гo do ConnectServer sobre a sala e envia a conex├гo para a sala escolhida
+void ReceiveServerConnect(BYTE* ReceiveBuffer) //Recebe informaчуo do ConnectServer sobre a sala e envia a conexуo para a sala escolhida
 {
 	LPPRECEIVE_SERVER_ADDRESS Data = (LPPRECEIVE_SERVER_ADDRESS)ReceiveBuffer;
 	char IP[16];
@@ -881,6 +885,7 @@ BOOL ReceiveJoinMapServer(BYTE *ReceiveBuffer, BOOL bEncrypted)
 	CharacterAttribute->wMinusPoint     = Data->wMinusPoint;
     CharacterAttribute->wMaxMinusPoint  = Data->wMaxMinusPoint;
 	CharacterAttribute->ViewResets      = Data->ViewReset;
+	gCamera.SetAllowed(Data->Camera3DSwitch != 0);
 
 	Console.Write(1, "[0x03] Resets: %d", Data->ViewReset);
 	CharacterMachine->Gold            = Data->Gold;
@@ -1559,7 +1564,7 @@ void ReceiveChatKey( BYTE *ReceiveBuffer )
 	int Key = ((int)(Data->KeyH)<<8) + Data->KeyL;
 	int Index = FindCharacterIndex(Key);
 	
-	if( Hero->GuildStatus == G_MASTER && !strcmp( CharactersClient[Index].ID, "┬▒├ж┬╡├е ┬╕┬╢┬╜┬║├Е├Н" ) )
+	if( Hero->GuildStatus == G_MASTER && !strcmp( CharactersClient[Index].ID, "▒ц╡х ╕╢╜║┼═" ) )
 	{
 		g_pNewUISystem->Show(SEASON3B::INTERFACE_NPCGUILDMASTER);
 		
@@ -2024,11 +2029,29 @@ void ReceiveChangePlayer( BYTE *ReceiveBuffer )
 		if(Type==0x1FFF)
 		{
 			c->Helper.Type = -1;
+
 			DeleteBug(o);
-			ThePetProcess().DeletePet(c, c->Helper.Type, true);
+
+			ThePetProcess().DeletePet(c);
+
+			gHelperManager.DeleteHelper(c);
+		}
+		else if (gHelperSystem.CheckIsHelper(Type + MODEL_ITEM))
+		{
+			DeleteBug(&c->Object);
+
+			ThePetProcess().DeletePet(c);
+
+			c->Helper.Type = MODEL_ITEM + Type;
+
+			gHelperManager.DeleteHelper(c);
+
+			gHelperManager.CreateHelper(Type, gHelperSystem.GetHelperModel(c->Helper.Type), c->Object.Position, c, 0);
 		}
 		else
 		{
+			gHelperManager.DeleteHelper(c);
+
 			c->Helper.Type = MODEL_ITEM + Type;
 			//c->Helper.Level = LevelConvert(Level);
 			c->Helper.Level = 0;
@@ -3516,7 +3539,7 @@ void ReceiveMagicFinish( BYTE *ReceiveBuffer )
 	case AT_SKILL_BLAST_FREEZE:
 		UnRegisterBuff( eDeBuff_Freeze, o);
 		break;
-        //  ┬╕├│┬╜┬║├Е├Н.
+        //  ╕є╜║┼═.
     case AT_SKILL_MONSTER_MAGIC_DEF:
         SetActionDestroy_Def ( o );
 		UnRegisterBuff( eBuff_Defense, o);
@@ -3953,7 +3976,7 @@ BOOL ReceiveMagic(BYTE *ReceiveBuffer,int Size, BOOL bEncrypted)
 				PlayBuffer(SOUND_SKILL_SWORD4);
 				break;
 				
-			case AT_SKILL_SWORD5://┬║┬г┬▒├в
+			case AT_SKILL_SWORD5://║г▒т
 				if(sc->SwordCount%2==0)
 				{
 					SetAction(so,PLAYER_ATTACK_SKILL_SWORD1+MagicNumber-AT_SKILL_SWORD1);
@@ -3978,7 +4001,7 @@ BOOL ReceiveMagic(BYTE *ReceiveBuffer,int Size, BOOL bEncrypted)
 				PlayBuffer( SOUND_SKILL_SWORD4 );
 				break;
 				
-			case AT_SKILL_SPEAR:	// ├Г┬в├В├о┬╕┬г┬▒├в
+			case AT_SKILL_SPEAR:	// ├в┬ю╕г▒т
 				if(sc->Helper.Type == MODEL_HELPER+37)
 					SetAction(so, PLAYER_FENRIR_ATTACK_SPEAR);
 				else
@@ -5848,9 +5871,9 @@ BOOL ReceiveTalk(BYTE *ReceiveBuffer, BOOL bEncrypted)
 		g_MixRecipeMgr.SetMixType(SEASON3A::MIXTYPE_GOBLIN_NORMAL);
 		g_pNewUISystem->Show(SEASON3B::INTERFACE_MIXINVENTORY);
 		//BYTE *pbyChaosRate = ( &Data->Value) + 1;
-		//int iDummyRate[6];	// ┬▒┬д├А├е├З┬е ├И┬о┬╖├╝├А┬╗ ┬╝┬н┬╣├╢┬┐┬б┬╝┬н ┬╣├Ю├А┬╕┬│┬к ┬╗├з┬┐├л├З├П├Б├╢ ┬╛├К┬░├н ┬╣├╢┬╕┬▓
+		//int iDummyRate[6];	// ▒д└х╟е ╚о╖№└╗ ╝н╣Ў┐б╝н ╣▐└╕│к ╗ч┐ы╟╧┴Ў ╛╩░э ╣Ў╕▓
 		//for ( int i = 0; i < 6; ++i)
-		//	iDummyRate[i] = ( int)pbyChaosRate[i];	// ┬▒┬д├А├е├З┬е ├И┬о┬╖├╝├А┬╗ ┬╝┬н┬╣├╢┬┐┬б┬╝┬н ┬╣├Ю├А┬╕┬│┬к ┬╗├з┬┐├л├З├П├Б├╢ ┬╛├К┬░├н ┬╣├╢┬╕┬▓(┬╜┬║├Е┬й┬╕┬│├Ж┬о┬╗├з┬┐├л)
+		//	iDummyRate[i] = ( int)pbyChaosRate[i];	// ▒д└х╟е ╚о╖№└╗ ╝н╣Ў┐б╝н ╣▐└╕│к ╗ч┐ы╟╧┴Ў ╛╩░э ╣Ў╕▓(╜║┼й╕│╞о╗ч┐ы)
 		break;
 		
 	case 4:
@@ -6978,7 +7001,7 @@ void ReceiveGuildInfo( BYTE *ReceiveBuffer )
 	int Index = g_GuildCache.SetGuildMark( Data->GuildKey, Data->UnionName, Data->GuildName, Data->Mark );
 }
 
-// ┬▒├ж┬╡├е├Б├╖├Г┬е├А┬╗ ├А├У┬╕├н/┬║┬п┬░├ж/├З├Ш├Б┬ж ┬░├б┬░├║
+// ▒ц╡х┴ў├е└╗ └╙╕э/║п░ц/╟╪┴ж ░с░·
 void ReceiveGuildAssign( BYTE *ReceiveBuffer )
 {
 	char szTemp[MAX_GLOBAL_TEXT_STRING] = "Invalid GuildAssign";
@@ -7709,7 +7732,7 @@ void ReceiveMix( BYTE *ReceiveBuffer )
 				g_pChatListBox->AddText("", szText, SEASON3B::TYPE_ERROR_MESSAGE);
 				break;
 				// 			case SEASON3A::MIXTYPE_TRAINER:
-				// 				unicode::_sprintf(szText, GlobalText[1208]);	// ┬║├О├И┬░ ┬╜├З├Ж├Р
+				// 				unicode::_sprintf(szText, GlobalText[1208]);	// ║╬╚░ ╜╟╞╨
 				// 				g_pChatListBox->AddText("", szText, SEASON3B::TYPE_ERROR_MESSAGE);
 				// 				break;
 			case SEASON3A::MIXTYPE_OSBOURNE:
@@ -8861,7 +8884,7 @@ void ReceiveFriendList(BYTE* ReceiveBuffer)
 	g_pFriendList->Sort(1);
 	g_pWindowMgr->RefreshMainWndPalList();
 	
-	// ├Г┬д├Ж├Г ┬╝┬н┬╣├╢ ┬╗├м┬╛├Ж┬│┬▓
+	// ├д╞├ ╝н╣Ў ╗ь╛╞│▓
 	g_pWindowMgr->SetServerEnable(TRUE);
 	if (g_iChatInputType == 0) SendRequestChangeState(2);
 	
@@ -13093,6 +13116,18 @@ BOOL TranslateProtocol( int HeadCode, BYTE *ReceiveBuffer, int Size, BOOL bEncry
 			case 0xE2:
 				gMonsterBar->GCNewHealthBarRecv((PMSG_NEW_HEALTH_BAR_RECV*)ReceiveBuffer);
 				return 1;
+			case 0xE6:
+				if (gNewUIRankingTop)
+					gNewUIRankingTop->ReceiveRankingListInfo(ReceiveBuffer);
+				return 1;
+			case 0xE7:
+				if (gNewUIRankingTop)
+					gNewUIRankingTop->ReceiveRankingInfo(ReceiveBuffer);
+				return 1;
+			case 0xEF:
+				if (gNewUIRankingTop)
+					gNewUIRankingTop->ReceiveCharacterInfo(ReceiveBuffer);
+				return 1;
 			case 0x70:
 				GCCustomPreviewCharListRecv((PMSG_CUSTOM_PREVIEW_CHAR_LIST_RECV*)ReceiveBuffer);
 				return 1;
@@ -13764,6 +13799,31 @@ BOOL TranslateProtocol( int HeadCode, BYTE *ReceiveBuffer, int Size, BOOL bEncry
 				break;
 			case 0x13:
 				ReceiveRefreshItemList( ReceiveBuffer );
+				break;
+			}
+		}
+		break;
+	case 0x4E:
+		{
+			int subcode;
+			if (ReceiveBuffer[0] == 0xC1)
+			{
+				LPPHEADER_DEFAULT_SUBCODE Data = (LPPHEADER_DEFAULT_SUBCODE)ReceiveBuffer;
+				subcode = Data->SubCode;
+			}
+			else
+			{
+				LPPHEADER_DEFAULT_SUBCODE_WORD Data = (LPPHEADER_DEFAULT_SUBCODE_WORD)ReceiveBuffer;
+				subcode = Data->SubCode;
+			}
+
+			switch (subcode)
+			{
+			case 0x3E:
+				gInvasionInfo.GCInvasionKillRecv((PMSG_INVASION_KILL_RECV*)ReceiveBuffer);
+				break;
+			case 0x3F:
+				gInvasionInfo.GCInvasionInfoRecv(ReceiveBuffer, Size);
 				break;
 			}
 		}

@@ -4,6 +4,9 @@
 //
 #define VS_VERSION_INFO_BLUE            1
 #define IDI_ICON1                       101
+#define IDB_BITMAP1                     103
+#define IDB_BITMAP2                     105
+#define IDB_BITMAP3                     106
 #define IDD_DIALOG1                     112
 #define IDI_ICON2                       159
 #define IDD_DIALOG2                     166

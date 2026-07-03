@@ -1,0 +1,60 @@
+//Configuracoes de Cores da tela de carregamento de atualizacao do main
+//====================================================================
+// Cores de referencia para personalizar os elementos:
+// Azul:       26  140 255
+// Azul claro: 80  190 255
+// Vermelho:   230 45  55
+// Roxo:       155 75  255
+// Laranja:    255 125 25
+// Verde:      40  200 120
+// Rosa:       255 70  170
+// Amarelo:    245 200 45
+// Para criar um tema, substitua os tons azuis dos IDs desejados.
+// Nos IDs 1, 2, 17 e 18 use tons mais escuros da mesma cor.
+//====================================================================
+// Id      R   G   B	   Coment
+   1       18  6   3       // Background
+   2       71  13  3       // Brilho radial do background
+   3       255 217 179     // Estrelas
+   4       140 26  5       // Esfera ambiente 1
+   5       230 140 0       // Esfera ambiente 2
+   6       204 64  13      // Esfera ambiente 3
+   7       230 102 0       // Esfera ambiente 4
+   8       255 153 5       // Esfera ambiente 5
+   9       191 51  13      // Esfera ambiente 6
+   10      204 26  13      // Fita animada 1
+   11      230 140 0       // Fita animada 2
+   12      179 64  13      // Fita animada 3
+   13      230 89  20      // Brilho da esfera central
+   14      255 31  23      // Corpo da esfera central
+   15      255 153 51      // Aneis da esfera central
+   16      255 235 204     // Reflexo da esfera central
+   17      0   0   0       // Fundo externo da barra
+   18      31  18  13      // Fundo interno da barra
+   19      191 51  0       // Inicio do progresso
+   20      255 140 26      // Final do progresso
+   21      255 153 51      // Particulas e brilhos
+   22      255 140 26      // Bordas, linhas e detalhes
+   23      255 255 255     // Textos de cima
+   24      255 255 255     // Textos do meio
+   25      255 255 255     // Textos de baixo
+   26      255 255 255     // Reflexos e destaques
+end
+
+//=============================================================================================
+// Configuração das dicas exibidas na tela de atualização.
+// Cada dica deve ter um ID de 1 a 31 e uma frase curta.
+// A quantidade de dicas aqui deve ser igual ao valor configurado em MaxUpdateTips no MainInfo.
+// Mantenha tips antes da primeira dica e finalize com end.
+// Exemplo: se MaxUpdateTips = 10, este arquivo precisa ter exatamente 10 dicas cadastradas.
+//=============================================================================================
+// Id   "Frase"
+tips
+1   "Classe BK - Use Control + Z para combar de Fenrir."
+2   "ALT + ENTER para habilitar modo borda infinita."
+3   "F10 para habilitar a Camera3D - F11 restaura."
+4   "Shift 2x para habilitar AutoPotion interno."
+5   "Control 2x para habilitar Modo PVP."
+6   "Chaos Machine: use TCA para nao perder itens de +10 a +13."
+7   "Chaos Machine: use TOL para aumentar a chance de sucesso."
+end

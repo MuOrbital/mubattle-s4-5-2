@@ -18,6 +18,7 @@
 #include "SummonSystem.h"
 #include "MapManager.h"
 #include "CharacterManager.h"
+#include "New_ModelBMD.h"
 
 extern float g_fScreenRate_x;
 extern float g_fScreenRate_y;
@@ -1761,6 +1762,9 @@ void CUIPhotoViewer::RenderPhotoCharacter()
 {
 	float fPos_x = m_iPos_x * 1.2f + m_iWidth / 2 - 50;
 	float fPos_y = m_iPos_y * 1.2f + m_iHeight * 1.2f - 62;
+
+	bool backFog = FogEnable;
+	FogEnable = false;
 
 	CHARACTER * c = &m_PhotoChar;
 	OBJECT * o = &c->Object;
@@ -1812,28 +1816,48 @@ void CUIPhotoViewer::RenderPhotoCharacter()
 	o->Scale = 0.7f * m_fCurrentZoom;
 	m_PhotoHelper.Scale = m_fPhotoHelperScale * m_fCurrentZoom;
 	Vector(1,1,1,o->Light);
+	Vector(1,1,1,c->Light);
 	Vector(1,1,1,m_PhotoHelper.Light);
 
-	c->HideShadow = true;
+		c->HideShadow = true;
 	if (c->Wing.Type != -1 && m_iSettingAnimation > AT_HEALING1)
 		c->SafeZone = true;
 	else c->SafeZone = false;
-	if (c->Helper.Type == MODEL_HELPER+2)
-		m_PhotoHelper.Position[2] += 10;
-	else if (c->Helper.Type == MODEL_HELPER+3)
-		m_PhotoHelper.Position[2] += 25;
-	RenderBug(&m_PhotoHelper, TRUE);
-	if (c->Helper.Type == MODEL_HELPER+2)
-		m_PhotoHelper.Position[2] -= 10;
-	else if (c->Helper.Type == MODEL_HELPER+3)
-		m_PhotoHelper.Position[2] -= 25;
-	RenderCharacter(c,o);
+
+#if jdk_shader_local330
+	if (OGL330::IsShader() && GMMeshShader->Enabled())
+	{
+		OGL330::SwitchStatePipeline();
+		GMMeshShader->SetHighLight(false, false);
+	}
+#endif
+
+	{
+#if jdk_shader_local330
+		rRenderLayOut photoBatch(o);
+#endif
+		if (c->Helper.Type == MODEL_HELPER+2)
+			m_PhotoHelper.Position[2] += 10;
+		else if (c->Helper.Type == MODEL_HELPER+3)
+			m_PhotoHelper.Position[2] += 25;
+		RenderBug(&m_PhotoHelper, TRUE);
+		if (c->Helper.Type == MODEL_HELPER+2)
+			m_PhotoHelper.Position[2] -= 10;
+		else if (c->Helper.Type == MODEL_HELPER+3)
+			m_PhotoHelper.Position[2] -= 25;
+		RenderCharacter(c,o);
+	}
 
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glViewport2(0,0,WindowWidth,WindowHeight);
+	FogEnable = backFog;
+	if (backFog)
+		glEnable(GL_FOG);
+	else
+		glDisable(GL_FOG);
 }
 
 int CUIPhotoViewer::SetPhotoPose(int iCurrentAni, int iMoveDir)
@@ -2376,17 +2400,8 @@ BOOL CUIPhotoViewer::DoMouseAction()
 
 	if (CheckOption(UIPHOTOVIEWER_CANCONTROL))
 	{
-		if (GetState() == UISTATE_NORMAL && CheckMouseIn(m_iPos_x + 1, m_iPos_y + m_iHeight - 17, 16, 16) == TRUE)
-		{
-			MouseOnWindow = true;
-			if (MouseLButtonPush)
-			{
-				m_bHelpEnable = (m_bHelpEnable + 1) % 2;
-				MouseLButtonPush = FALSE;
-				MouseLButton = FALSE;
-			}
-		}
-		else if (CheckMouseIn(m_iPos_x, m_iPos_y, m_iWidth, m_iHeight) == TRUE)
+		m_bHelpEnable = FALSE;
+		if (CheckMouseIn(m_iPos_x, m_iPos_y, m_iWidth, m_iHeight) == TRUE)
 		{
 			MouseOnWindow = true;
 			if (MouseLButtonPush)
@@ -2490,31 +2505,7 @@ void CUIPhotoViewer::Render()
         DeleteParts ( &m_PhotoChar );
     }
 	RenderPhotoCharacter();
-
-	if (CheckOption(UIPHOTOVIEWER_CANCONTROL))
-	{
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		DisableAlphaBlend();
-		if (m_bHelpEnable == FALSE)
-		{
-			RenderBitmap(BITMAP_INTERFACE_EX+20,m_iPos_x + 1, m_iPos_y + m_iHeight - 17,16.0f,16.0f,0.f,0.f,16.f/16.f,16.f/16.f);
-		}
-		else
-		{
-			glColor4f(0.6f, 0.6f, 0.6f, 1.0f);
-			RenderBitmap(BITMAP_INTERFACE_EX+20,m_iPos_x + 2, m_iPos_y + m_iHeight - 16,15.0f,15.0f,0.f,0.f,15.f/16.f,15.f/16.f);
-			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-			TextNum = 0;
-			sprintf(TextList[TextNum],GlobalText[997]);TextListColor[TextNum]=0;TextBold[TextNum]=false;TextNum++;
-			sprintf(TextList[TextNum],GlobalText[998]);TextListColor[TextNum]=0;TextBold[TextNum]=false;TextNum++;
-			sprintf(TextList[TextNum],GlobalText[999]);TextListColor[TextNum]=0;TextBold[TextNum]=false;TextNum++;
-			SIZE TextSize;
-			g_pMultiLanguage->_GetTextExtentPoint32(g_pRenderText->GetFontDC(), "Z", 1, &TextSize);
-			TextSize.cy /= g_fScreenRate_y;
-			RenderTipTextList(m_iPos_x + m_iWidth / 2, m_iPos_y + m_iHeight - TextNum * (TextSize.cy + 2), TextNum, 0, RT3_SORT_LEFT);
-		}
-	}
+	m_bHelpEnable = FALSE;
 }
 
 void CUILetterWriteWindow::Init(const char * pszTitle, DWORD dwParentID)

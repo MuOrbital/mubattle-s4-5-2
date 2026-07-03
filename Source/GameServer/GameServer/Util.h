@@ -34,6 +34,6 @@ void ChatBlueMessage(int aIndex, char* String);
 void ChatBlueMessageAll(char* String);
 void ChatGoldMessage(int aIndex, char* String);
 void ChatGoldMessageAll(char* String);
-void FormatDamageNumber(int damage, char* outBuffer, size_t bufferSize);
+void FormatDamageNumber(QWORD damage, char* outBuffer, size_t bufferSize);
 
 extern short RoadPathTable[MAX_ROAD_PATH_TABLE];

@@ -241,6 +241,8 @@ bool CItemBagEx::GetItem(LPOBJ lpObj, CItem* lpItem) // OK
 
 bool CItemBagEx::DropItem(LPOBJ lpObj, int map, int x, int y) // OK
 {
+	bool Dropped = 0;
+
 	for (std::map<int, ITEM_BAG_EX_INFO>::iterator it = this->m_ItemBagInfo.begin(); it != this->m_ItemBagInfo.end(); it++)
 	{
 		int DropRate = it->second.DropRate;
@@ -285,13 +287,21 @@ bool CItemBagEx::DropItem(LPOBJ lpObj, int map, int x, int y) // OK
 			std::map<int, std::vector<ITEM_BAG_EX_ITEM_INFO>>::iterator ItemInfo = this->m_ItemBagItemInfo.find(lpItemBagDropInfo->Section);
 			if (ItemInfo == this->m_ItemBagItemInfo.end())
 			{
-				gMap[map].MoneyItemDrop(lpItemBagDropInfo->MoneyAmount, px, py);
+				if(lpItemBagDropInfo->MoneyAmount > 0)
+				{
+					gMap[map].MoneyItemDrop(lpItemBagDropInfo->MoneyAmount, px, py);
+					Dropped = 1;
+				}
 				continue;
 			}
 
 			if (ItemInfo->second.empty() != 0)
 			{
-				gMap[map].MoneyItemDrop(lpItemBagDropInfo->MoneyAmount, px, py);
+				if(lpItemBagDropInfo->MoneyAmount > 0)
+				{
+					gMap[map].MoneyItemDrop(lpItemBagDropInfo->MoneyAmount, px, py);
+					Dropped = 1;
+				}
 				continue;
 			}
 
@@ -323,6 +333,8 @@ bool CItemBagEx::DropItem(LPOBJ lpObj, int map, int x, int y) // OK
 				ItemSetOption, 0, 0, ItemSocketOption, 0xFF,
 				((lpItemBagItemInfo->Duration > 0) ? ((DWORD)time(0) + lpItemBagItemInfo->Duration) : 0));
 
+			Dropped = 1;
+
 			if (lpItemBagItemInfo->ShowMessage == 1)
 			{
 				ITEM_INFO ItemInfo;
@@ -351,7 +363,7 @@ bool CItemBagEx::DropItem(LPOBJ lpObj, int map, int x, int y) // OK
 			}
 		}
 	}
-	return 1;
+	return Dropped;
 }
 bool CItemBagEx::CheckDropClass(LPOBJ lpObj,int type,int RequireClass[MAX_CLASS]) // OK
 {

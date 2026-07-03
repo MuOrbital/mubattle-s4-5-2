@@ -1,0 +1,7 @@
+// Type Pet: 0 = Pet normal | 1 = Pet Montaria
+// Durabilidade: 0 = Imortal
+//Index Type Dur  AddHP   AddMP DmgRate AtkSpeed DblDmgRate TriDmgRate  AddExp  RestIgDef RestIgSD RestCritcDmg RestExDmg BlockStuck ReflectRate AddSD AddAG
+6786    0    0    10000   1000  0       0      	 0          0      	0       0         0        0       	0         0          0       	 0     0
+6790    1    0    10000   1000  0       0      	 0          0      	0       0         0        0       	0         0          0       	 0     0
+6791    1    0    10000   1000  0       0      	 0          0      	0       0         0        0       	0         0          0       	 0     0
+end

@@ -1,4 +1,4 @@
-ï»¿///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -28,6 +28,7 @@
 #include "PersonalShopTitleImp.h"
 #include "uicontrols.h"
 #include "GOBoid.h"
+#include "HelperManager.h"
 #include "GMHellas.h"
 #include "CSItemOption.h"
 #include "GMBattleCastle.h"
@@ -65,13 +66,17 @@
 #include "ServerListManager.h"
 #include "ProtocolSend.h"
 #include "MapManager.h"
+#include "CustomWorld.h"
 #include <thread>
 #include <chrono>
 #include "Interfaces.h"
 #include "Camera3D.h"
+#include "InvasionInfo.h"
 #include "NewUIOptionWindow.h"
 #include "VideoTextureMF.h"
 #include <Xinput.h>
+#include <mmdeviceapi.h>
+#include <audiopolicy.h>
 #include <Update/InGameUpdater.h>
 #pragma comment(lib, "Xinput.lib")
 
@@ -276,8 +281,8 @@ bool CheckAbuseNameFilter(char* Text)
 bool CheckName()
 {
 	if (CheckAbuseNameFilter(InputText[0]) || CheckAbuseFilter(InputText[0]) ||
-		FindText(InputText[0], " ") || FindText(InputText[0], "Â¡Â¡") ||
-		FindText(InputText[0], ".") || FindText(InputText[0], "Â¡Â¤") || FindText(InputText[0], "Â¡Â­") ||
+		FindText(InputText[0], " ") || FindText(InputText[0], "¡¡") ||
+		FindText(InputText[0], ".") || FindText(InputText[0], "¡¤") || FindText(InputText[0], "¡­") ||
 		FindText(InputText[0], "Webzen") || FindText(InputText[0], "WebZen") || FindText(InputText[0], "webzen") || FindText(InputText[0], "WEBZEN") ||
 		FindText(InputText[0], GlobalText[457]) || FindText(InputText[0], GlobalText[458]))
 		return true;
@@ -519,12 +524,86 @@ int SeparateTextIntoLines(const char* lpszText, char* lpszSeparated, int iMaxLin
 	return (iLine + 1);
 }
 
+static void SetProcessMixerVolume(float volume)
+{
+	if (volume < 0.0f)
+		volume = 0.0f;
+	if (volume > 1.0f)
+		volume = 1.0f;
+
+	HRESULT hrCo = CoInitialize(NULL);
+	bool bCoInitialized = SUCCEEDED(hrCo);
+
+	IMMDeviceEnumerator* pDeviceEnumerator = NULL;
+	IMMDevice* pDevice = NULL;
+	IAudioSessionManager2* pSessionManager = NULL;
+	IAudioSessionEnumerator* pSessionEnumerator = NULL;
+
+	HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&pDeviceEnumerator);
+	if (SUCCEEDED(hr))
+		hr = pDeviceEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &pDevice);
+	if (SUCCEEDED(hr))
+		hr = pDevice->Activate(__uuidof(IAudioSessionManager2), CLSCTX_ALL, NULL, (void**)&pSessionManager);
+	if (SUCCEEDED(hr))
+		hr = pSessionManager->GetSessionEnumerator(&pSessionEnumerator);
+
+	if (SUCCEEDED(hr))
+	{
+		int sessionCount = 0;
+		DWORD currentProcessId = GetCurrentProcessId();
+
+		if (SUCCEEDED(pSessionEnumerator->GetCount(&sessionCount)))
+		{
+			for (int n = 0; n < sessionCount; ++n)
+			{
+				IAudioSessionControl* pSessionControl = NULL;
+				IAudioSessionControl2* pSessionControl2 = NULL;
+				ISimpleAudioVolume* pSimpleAudioVolume = NULL;
+
+				if (SUCCEEDED(pSessionEnumerator->GetSession(n, &pSessionControl)) &&
+					SUCCEEDED(pSessionControl->QueryInterface(__uuidof(IAudioSessionControl2), (void**)&pSessionControl2)))
+				{
+					DWORD processId = 0;
+					if (SUCCEEDED(pSessionControl2->GetProcessId(&processId)) && processId == currentProcessId)
+					{
+						if (SUCCEEDED(pSessionControl->QueryInterface(__uuidof(ISimpleAudioVolume), (void**)&pSimpleAudioVolume)))
+						{
+							pSimpleAudioVolume->SetMasterVolume(volume, NULL);
+						}
+					}
+				}
+
+				if (pSimpleAudioVolume != NULL)
+					pSimpleAudioVolume->Release();
+				if (pSessionControl2 != NULL)
+					pSessionControl2->Release();
+				if (pSessionControl != NULL)
+					pSessionControl->Release();
+			}
+		}
+	}
+
+	if (pSessionEnumerator != NULL)
+		pSessionEnumerator->Release();
+	if (pSessionManager != NULL)
+		pSessionManager->Release();
+	if (pDevice != NULL)
+		pDevice->Release();
+	if (pDeviceEnumerator != NULL)
+		pDeviceEnumerator->Release();
+
+	if (bCoInitialized)
+		CoUninitialize();
+}
+
 void SetEffectVolumeLevel(int level)
 {
 	if (level > 9)
 		level = 9;
 	if (level < 0)
 		level = 0;
+
+	SetProcessMixerVolume(level == 0 ? 0.0f : (float(level) / 9.0f));
 
 	if (level == 0)
 	{
@@ -1005,6 +1084,7 @@ void NewMoveCharacterScene()
 	MoveBugs();
 	MoveCharactersClient();
 	MoveCharacterClient(&CharacterView);
+	gHelperManager.UpdateHelpers();
 
 	MoveEffects();
 	MoveJoints();
@@ -1124,6 +1204,11 @@ bool NewRenderCharacterScene(HDC hDC)
 	BeginOpengl(0, 25, GetWindowsX, GetWindowsY - 50);
 
 	CreateFrustrum((float)Width / (float)640, pos);
+
+#if jdk_shader_local330
+	if (OGL330::IsShader() && GMMeshShader->Enabled())
+		GMMeshShader->SetHighLight(HighLight, gMapManager.InBattleCastle());
+#endif
 
 	OBJECT* o = &CharactersClient[SelectedHero].Object;
 
@@ -1282,7 +1367,7 @@ void CreateLogInScene()
 	g_ErrorReport.Write("> Login Scene init success.\r\n");
 
 	// ================================================
-	// CARREGAMENTO DO VÃDEO DA TELA DE LOGIN
+	// CARREGAMENTO DO VÍDEO DA TELA DE LOGIN
 	// ================================================
 	if (gProtect->m_MainInfo.m_VideoLogin != 0)
 	{
@@ -1323,6 +1408,7 @@ void NewMoveLogInScene()
 		MoveBugs();
 		MoveLeaves();
 		MoveCharactersClient();
+		gHelperManager.UpdateHelpers();
 		MoveEffects();
 		MoveJoints();
 		MoveParticles();
@@ -1427,7 +1513,7 @@ bool NewRenderLogInScene(HDC hDC)
 	}
 
 	// ================================================
-	// SE VÃDEO DESLIGADO â†’ executa TODO o render ORIGINAL (intacto!)
+	// SE VÍDEO DESLIGADO ? executa TODO o render ORIGINAL (intacto!)
 	// ================================================
 
 	vec3_t pos;
@@ -1455,6 +1541,11 @@ bool NewRenderLogInScene(HDC hDC)
 	glClearColor(0.f, 0.f, 0.f, 1.f);
 	BeginOpengl(0, 25, GetWindowsX, setPosDown(430.f));
 	CreateFrustrum((float)Width / (float)640, pos);
+
+#if jdk_shader_local330
+	if (OGL330::IsShader() && GMMeshShader->Enabled())
+		GMMeshShader->SetHighLight(HighLight, gMapManager.InBattleCastle());
+#endif
 
 	if (!CUIMng::Instance().m_CreditWin.IsShow())
 	{
@@ -1486,7 +1577,7 @@ bool NewRenderLogInScene(HDC hDC)
 	if (CCameraMove::GetInstancePtr()->IsTourMode())
 	{
 #ifndef PJH_NEW_SERVER_SELECT_MAP
-		// ÃˆÂ­Â¸Ã© ÃˆÃ¥Â¸Â®Â±Ã¢ (efeito de borrÃ£o)
+		// È­¸é Èå¸®±â (efeito de borrão)
 		EnableAlphaBlend4();
 		glColor4f(0.7f, 0.7f, 0.7f, 1.0f);
 		float fScale = (sinf(WorldTime * 0.0005f) + 1.f) * 0.00011f;
@@ -1496,17 +1587,17 @@ bool NewRenderLogInScene(HDC hDC)
 		glColor4f(fLumi * 0.3f, fLumi * 0.3f, fLumi * 0.7f, fLumi);
 		fScale = (sinf(WorldTime * 0.0015f) + 1.f) * 0.00021f;
 		RenderBitmapLocalRotate(BITMAP_CHROME + 4, 320.0f, 240.0f, 1150.0f, 1150.0f, fAngle, fScale * 512.f, fScale * 512.f, (512.f) / 512.f - fScale * 2 * 512.f, (512.f) / 512.f - fScale * 2 * 512.f);
-		// Ã€Â§Â¾Ã†Â·Â¡ Ã€ÃšÂ¸Â£Â±Ã¢ (corte superior/inferior)
+		// À§¾Æ·¡ ÀÚ¸£±â (corte superior/inferior)
 		EnableAlphaTest();
 		glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		RenderColor(0, 0, GetWindowsX, 25);
 		RenderColor(0, GetWindowsY - 25, GetWindowsX, 25);
-		// ÃˆÂ­Â¸Ã©Ã„Â¥ (efeito de vinheta?)
+		// È­¸éÄ¥ (efeito de vinheta?)
 		glColor4f(0.0f, 0.0f, 0.0f, 0.2f);
 		//RenderColor(0, 25, GetWindowsX, 430);
 #endif //PJH_NEW_SERVER_SELECT_MAP
 
-		// Â¹Ã‚Â·ÃŽÂ°Ã­ (logo MU com fade)
+		// ¹Â·Î°í (logo MU com fade)
 		g_fMULogoAlpha += 0.02f;
 		if (g_fMULogoAlpha > 10.0f) g_fMULogoAlpha = 10.0f;
 		EnableAlphaBlend();
@@ -1637,6 +1728,9 @@ loading_done:
 	g_ConsoleDebug->Write(MCD_NORMAL, "LoadingScene_End");
 }
 
+float vCameraFOV = 35.f;
+float vCameraAngleY = -48.5f;
+float vTargetDistance = 150.f;
 float CameraDistanceTarget = 1000.f;
 float CameraDistance = CameraDistanceTarget;
 
@@ -1661,8 +1755,12 @@ bool MoveMainCamera()
 		{
 			CameraZoom = 0;
 			AngleY3D = 0;
+			AngleZ3D = 0;
+			vCameraFOV = 35.0f;
+			vCameraAngleY = -48.5f;
+			vTargetDistance = 150.0f;
 		}
-		CameraFOV = 37.f + CameraZoom; //3D CAMERA
+		CameraFOV = ((SceneFlag == MAIN_SCENE) ? vCameraFOV : (37.f + CameraZoom)); //3D CAMERA
 		if (!g_pUIManager->IsInputEnable())
 		{
 			gCamera.Update();
@@ -1795,7 +1893,7 @@ bool MoveMainCamera()
 				}
 				else
 				{
-					CameraViewFar = 2000.f;
+					CameraViewFar = 2500.f;
 				}
 				break;
 			case 1: CameraViewFar = 2500.f; break;
@@ -1853,7 +1951,14 @@ bool MoveMainCamera()
 		{
 			CameraPosition[2] = g_fSpecialHeight = 1200.f + 1;
 		}
-		CameraPosition[2] += CameraDistance - 150.f;//700
+		if (SceneFlag == MAIN_SCENE)
+		{
+			CameraPosition[2] += CameraDistance - vTargetDistance;//700
+		}
+		else
+		{
+			CameraPosition[2] += CameraDistance - 150.f;//700
+		}
 		if (CCameraMove::GetInstancePtr()->IsTourMode())
 		{
 #ifdef PJH_NEW_SERVER_SELECT_MAP
@@ -1885,9 +1990,7 @@ bool MoveMainCamera()
 		}
 		else
 		{
-			CameraAngle[0] = -48.5f;
-			CameraAngle[0] += AngleY3D;
-			CameraPosition[2] += AngleZ3D;
+			CameraAngle[0] = vCameraAngleY;
 		}
 		CameraAngle[0] += EarthQuake;
 		if ((TerrainWall[iIndex] & TW_CAMERA_UP) == TW_CAMERA_UP)
@@ -2078,6 +2181,7 @@ void MoveMainScene()
 
 		g_pPartyManager->Update();
 		g_pNewUISystem->Update();
+		gInvasionInfo.UpdateMouse();
 
 		if (MouseLButton == true && false == g_pNewUISystem->CheckMouseUse() && g_dwMouseUseUIID == 0 && g_pNewUISystem->IsVisible(SEASON3B::INTERFACE_CHATINPUTBOX) == false)
 		{
@@ -2135,6 +2239,7 @@ void MoveMainScene()
 	UpdatePersonalShopTitleImp();
 	MoveHero();
 	MoveCharactersClient();
+	gHelperManager.UpdateHelpers();
 	ThePetProcess().UpdatePets();
 	MovePoints();
 	MovePlanes();
@@ -2172,7 +2277,7 @@ void MoveMainScene()
 	if (iCurrentHour > iLastSentHour && iCurrentHour > 0)
 	{
 		char szMessage[128];
-		sprintf(szMessage, "VocÃª estÃ¡ jogando a %d horas. Por favor, tome um descanso!", iCurrentHour);
+		sprintf(szMessage, "Você está jogando a %d horas. Por favor, tome um descanso!", iCurrentHour);
 		g_pChatListBox->AddText("", szMessage, SEASON3B::TYPE_UNION_MESSAGE);
 
 		iLastSentHour = iCurrentHour;
@@ -2217,6 +2322,11 @@ bool RenderMainScene()
 		{
 			g_Direction.GetCameraPosition(pos);
 		}
+	}
+
+	if (SceneFlag == MAIN_SCENE)
+	{
+		gCamera.UpdateSmoothCamera();
 	}
 
 	int Width, Height;
@@ -2266,6 +2376,11 @@ bool RenderMainScene()
 	BeginOpengl(0, 0, (m_Resolution > 2 ? GetWindowsX : Width), GetWindowsY);
 
 	CreateFrustrum((float)Width / (float)640, pos);
+
+#if jdk_shader_local330
+	if (OGL330::IsShader() && GMMeshShader->Enabled())
+		GMMeshShader->SetHighLight(HighLight, gMapManager.InBattleCastle());
+#endif
 
 	if (gMapManager.InBattleCastle())
 	{
@@ -2408,6 +2523,8 @@ bool RenderMainScene()
 	BeginBitmap();
 
 	RenderInfomation();
+	gInvasionInfo.Update();
+	gInvasionInfo.Draw();
 	gChaosMix->ChaosBoxMainProc();
 
 #ifdef ENABLE_EDIT
@@ -2439,7 +2556,7 @@ extern int  GrabScreen;
 
 void MoveCharacter(CHARACTER* c, OBJECT* o);
 
-float target_fps = 60;
+float target_fps = 120;
 float ms_per_frame = 1000.f / target_fps;
 void SetTargetFps(float targetFps)
 {
@@ -2461,7 +2578,7 @@ float GetFpsFromConfig()
 
 	std::ifstream file(szIniFilePath);
 	std::string line;
-	float fps = 64.0f;
+	float fps = 120.0f;
 
 	if (file.is_open()) {
 		while (std::getline(file, line)) {
@@ -2469,19 +2586,13 @@ float GetFpsFromConfig()
 				size_t pos = line.find('=');
 				if (pos != std::string::npos) {
 					try {
-						std::string val = line.substr(pos + 1);
-						val.erase(0, val.find_first_not_of(" \t\r\n"));
-						val.erase(val.find_last_not_of(" \t\r\n") + 1);
-						fps = std::stof(val);
-						if (fps > 64.0f) {
-							fps = 64.0f;
-						}
-						if (fps < 32.0f) {
-							fps = 32.0f;
+						fps = std::stof(line.substr(pos + 1));
+						if (fps > 240.0f) {
+							fps = 240.0f;
 						}
 					}
 					catch (...) {
-						fps = 64.0f;
+						fps = 120.0f;
 					}
 					break;
 				}
@@ -2495,7 +2606,9 @@ float GetFpsFromConfig()
 
 void MainScene(HDC hDC)
 {
-	if (gProtect->m_MainInfo.m_AntiBypassDLL == 1)
+	auto thread_tick = gsteady_clock->GetthreadTime();
+
+	if (gProtect->m_MainInfo.m_UseIntegratedAntiHack == 0 && gProtect->m_MainInfo.m_AntiBypassDLL == 1)
 	{
 		if (strlen(gProtect->m_MainInfo.PluginName1) > 0 || strlen(gProtect->m_MainInfo.PluginName2) > 0 ||
 			strlen(gProtect->m_MainInfo.PluginName3) > 0 || strlen(gProtect->m_MainInfo.PluginName4) > 0 ||
@@ -2508,7 +2621,7 @@ void MainScene(HDC hDC)
 		}
 	}
 
-	CalcFPS();
+	gsteady_clock->LoadInformationFps();
 
 	g_pNewKeyInput->ScanAsyncKeyState();
 
@@ -2537,7 +2650,7 @@ void MainScene(HDC hDC)
 	if (SceneFlag == LOG_IN_SCENE || SceneFlag == CHARACTER_SCENE)
 	{
 		double dDeltaTick = g_pTimer->GetTimeElapsed();
-		dDeltaTick = MIN(dDeltaTick, 200.0 * FPS_ANIMATION_FACTOR);
+		dDeltaTick = MIN(dDeltaTick, 200.0);
 		g_pTimer->ResetTimer();
 
 		CInput::Instance().Update();
@@ -2562,7 +2675,6 @@ void MainScene(HDC hDC)
 	}
 
 	g_PhysicsManager.Move(0.025f * FPS_ANIMATION_FACTOR);
-
 	MoveNotices();
 
 	if (PressKey(VK_SNAPSHOT))
@@ -2573,19 +2685,28 @@ void MainScene(HDC hDC)
 			GrabEnable = true;
 	}
 
-	constexpr int NumberOfWaterTextures = 32;
-	constexpr double timePerFrame = 1000 / REFERENCE_FPS;
-	int64_t time_since_last_render = current_tick_count - last_water_change;
-	while (time_since_last_render > timePerFrame)
+	if (checkNormalizer)
 	{
-		WaterTextureNumber++;
-		WaterTextureNumber %= NumberOfWaterTextures;
-		time_since_last_render -= timePerFrame;
-		last_water_change = current_tick_count;
+		if (ChatTime > 0)
+			ChatTime--;
+
+		if (MacroTime > 0)
+			MacroTime--;
 	}
 
-	if (MacroTime > 0) MacroTime--;
-	if (ChatTime > 0) ChatTime--;
+	static double sceneFrameAccumulator = 0.0;
+	sceneFrameAccumulator += FPS_VISUAL_FACTOR;
+	int sceneFrameSteps = static_cast<int>(sceneFrameAccumulator);
+	if (sceneFrameSteps > 5)
+	{
+		sceneFrameSteps = 5;
+	}
+	if (sceneFrameSteps > 0)
+	{
+		sceneFrameAccumulator -= sceneFrameSteps;
+		WaterTextureNumber = (WaterTextureNumber + sceneFrameSteps) % 32;
+		MoveSceneFrame += sceneFrameSteps;
+	}
 
 	if (Destroy) {
 		return;
@@ -2719,46 +2840,12 @@ void MainScene(HDC hDC)
 
 	if (Success)
 	{
-		glFlush();
+		CoreGLCompat::FlushPending();
 		SwapBuffers(hDC);
 	}
 
-	static bool fpsInit = false;
-	static LARGE_INTEGER freq, nextTime;
-
-	if (!fpsInit)
-	{
-		QueryPerformanceFrequency(&freq);
-		QueryPerformanceCounter(&nextTime);
-		fpsInit = true;
-		SetTargetFps(GetFpsFromConfig());
-	}
-
-	LARGE_INTEGER now;
-	QueryPerformanceCounter(&now);
-
-	float targetFps = GetFpsFromConfig();
-	if (targetFps != target_fps) {
-		SetTargetFps(targetFps);
-	}
-
-	LONGLONG ticksToWait = nextTime.QuadPart - now.QuadPart;
-	if (ticksToWait > 0)
-	{
-		DWORD ms = (DWORD)(ticksToWait * 1000 / freq.QuadPart);
-		if (ms > 0)
-			Sleep(ms);
-
-		do
-		{
-			QueryPerformanceCounter(&now);
-		} while (now.QuadPart < nextTime.QuadPart);
-	}
-	else
-	{
-		nextTime = now;
-	}
-	nextTime.QuadPart += (LONGLONG)(freq.QuadPart / target_fps);
+	uintmax_t DifTimer = gsteady_clock->thread_sleep(thread_tick);
+	TimeRemain = static_cast<int>(DifTimer);
 
 	//const uint64_t current_frame_time_ms = current_tick_count - last_render_tick_count;
 	//if (current_frame_time_ms < ms_per_frame)
@@ -3087,6 +3174,7 @@ void MainScene(HDC hDC)
 #ifdef ASG_ADD_MAP_KARUTAN
 		g_Karutan1.PlayBGM();
 #endif	// ASG_ADD_MAP_KARUTAN
+		gCustomWorld.UpdateMusic(gMapManager.WorldActive);
 	}
 }
 

@@ -358,6 +358,12 @@ struct PMSG_CLIENT_SECURITY_BREACH_RECV
 	BYTE code[4];
 };
 
+struct PMSG_MINIATURE_MODE_RECV
+{
+	PSBMSG_HEAD header; // C1:F3:32
+	BYTE state;
+};
+
 struct PMSG_SNS_DATA_RECV
 {
 	PWMSG_HEAD header; // C1:FB
@@ -818,6 +824,7 @@ struct PMSG_CHARACTER_INFO_SEND
 #if(GAMESERVER_EXTRA==1)
 	DWORD ViewReset;
 #endif
+	BYTE Camera3DSwitch;
 };
 
 struct PMSG_CHARACTER_REGEN_SEND
@@ -1136,6 +1143,7 @@ void CGCharacterNameChangeRecv(PMSG_CHARACTER_NAME_CHANGE_RECV* lpMsg, int aInde
 void CGOptionChangeSkinRecv(PMSG_OPTION_CHANGE_SKIN_RECV* lpMsg, int aIndex);
 void CGOptionDataRecv(PMSG_OPTION_DATA_RECV* lpMsg, int aIndex);
 void CGClientSecurityBreachRecv(PMSG_CLIENT_SECURITY_BREACH_RECV* lpMsg, int aIndex);
+void CGMiniatureModeRecv(PMSG_MINIATURE_MODE_RECV* lpMsg, int aIndex);
 void CGAcheronEnterRecv(int aIndex);
 void CGSNSDataRecv(PMSG_SNS_DATA_RECV* lpMsg, int aIndex);
 void CGSNSDataLogRecv(PMSG_SNS_DATA_LOG_RECV* lpMsg, int aIndex);

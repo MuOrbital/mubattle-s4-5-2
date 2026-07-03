@@ -1,4 +1,4 @@
-ï»¿///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -227,7 +227,7 @@ void gluPerspective2(float Fov,float Aspect,float ZNear,float ZFar)
 	//PerspectiveY = (float)ScreenCenterY/tanf(Fov*0.5f*3.141592f/180.f);
 }
 
-extern float g_fScreenRate_x;	// Â¡Ã˜
+extern float g_fScreenRate_x;	// ¡Ø
 extern float g_fScreenRate_y;
 
 DWORD ConvertWX(float a1)	// ConvertModelX (1.0
@@ -317,18 +317,21 @@ int  AlphaBlendType;
 
 void BindTexture(int tex)
 {
-	if(CachTexture != tex)
+	GLuint textureNumber = 0;
+	if (tex >= 0)
+	{
+		BITMAP_t *b = &Bitmaps[tex];
+		textureNumber = b->TextureNumber;
+	}
+	else
+	{
+		textureNumber = (GLuint)(-tex);
+	}
+
+	if(CachTexture != tex || CoreGLCompat::GetBoundTexture2D() != textureNumber)
 	{
       	CachTexture = tex;
-		if (tex >= 0)
-		{
-			BITMAP_t *b = &Bitmaps[tex];
-			glBindTexture(GL_TEXTURE_2D,b->TextureNumber);
-		}
-		else
-		{
-			glBindTexture(GL_TEXTURE_2D, -1 * tex);
-		}
+		glBindTexture(GL_TEXTURE_2D,textureNumber);
 	}
 }
 
@@ -337,12 +340,12 @@ bool TextureStream = false;
 extern  int test;
 void BindTextureStream(int tex)
 {
-	if(CachTexture != tex)
+	BITMAP_t *b = &Bitmaps[tex];
+	if(CachTexture != tex || CoreGLCompat::GetBoundTexture2D() != b->TextureNumber)
 	{
 		CachTexture = tex;
 		if(TextureStream)
 			glEnd();
-		BITMAP_t *b = &Bitmaps[tex];
 		glBindTexture(GL_TEXTURE_2D,b->TextureNumber);
 		if (TextureStream)
 		{

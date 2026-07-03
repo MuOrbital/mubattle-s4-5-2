@@ -23,6 +23,7 @@ struct NEW_HEALTH_BAR
     BYTE rate;
     DWORD life;
     DWORD maxLife;
+    DWORD updateTick;
     WORD topIndex[10];
     DWORD topDamage[10];
 };

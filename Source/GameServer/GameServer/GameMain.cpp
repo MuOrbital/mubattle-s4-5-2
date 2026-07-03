@@ -2,6 +2,7 @@
 #include "GameMain.h"
 #include "BattleSoccerManager.h"
 #include "CommandManager.h"
+#include "CustomAttack.h"
 #include "DSProtocol.h"
 #include "ESProtocol.h"
 #include "HackCheck.h"
@@ -105,6 +106,7 @@ bool DataServerConnect(DWORD wMsg) // OK
 	}
 
 	GDServerInfoSend();
+	gCustomAttack.DGCustomOffAttackResumeListSend();
 	return 1;
 }
 

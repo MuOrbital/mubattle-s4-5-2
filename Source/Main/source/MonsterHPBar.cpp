@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "MonsterHPBar.h"
 #include "ZzzCharacter.h"
 #include "ZzzInterface.h"
@@ -20,9 +20,37 @@ CMonsterBar::~CMonsterBar()
     this->UnloadImages();
 }
 
+static void ResetNewHealthBarSlot(NEW_HEALTH_BAR& bar)
+{
+    bar.index      = 0xFFFF;
+    bar.type       = 0;
+    bar.rate       = 0;
+    bar.life       = 0;
+    bar.maxLife    = 0;
+    bar.updateTick = 0;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bar.topIndex[i]  = (WORD)-1;
+        bar.topDamage[i] = 0;
+    }
+}
+
+static bool IsHealthBarOwnerLive(WORD index, BYTE type)
+{
+    for (int i = 0; i < MAX_CHARACTERS_CLIENT; i++)
+    {
+        CHARACTER* c = &CharactersClient[i];
+        if (c->Key == index && c->Object.Kind == type)
+        {
+            return c->Object.Live && !c->SafeZone;
+        }
+    }
+
+    return false;
+}
 void CMonsterBar::GCNewHealthBarRecv(PMSG_NEW_HEALTH_BAR_RECV* lpMsg)
 {
-    ClearNewHealthBar();
     for (int n = 0; n < lpMsg->count; n++)
     {
         PMSG_NEW_HEALTH_RECV* lpInfo = (PMSG_NEW_HEALTH_RECV*)(
@@ -36,40 +64,45 @@ void CMonsterBar::ClearNewHealthBar()
 {
     for (int n = 0; n < MAX_MAIN_VIEWPORT; n++)
     {
-        gNewHealthBar[n].index   = 0xFFFF;
-        gNewHealthBar[n].type    = 0;
-        gNewHealthBar[n].rate    = 0;
-        gNewHealthBar[n].life    = 0;
-        gNewHealthBar[n].maxLife = 0;
-        for (int i = 0; i < 10; i++)
-        {
-            gNewHealthBar[n].topIndex[i]  = (WORD)-1;
-            gNewHealthBar[n].topDamage[i] = 0;
-        }
+        ResetNewHealthBarSlot(gNewHealthBar[n]);
     }
 }
-
 void CMonsterBar::InsertNewHealthBar(WORD index, BYTE type, BYTE rate, DWORD life, DWORD maxLife, WORD* topIndex, DWORD* topDamage)
 {
+    int slot = -1;
+
     for (int n = 0; n < MAX_MAIN_VIEWPORT; n++)
     {
-        if (gNewHealthBar[n].index == 0xFFFF)
+        if (gNewHealthBar[n].index == index && gNewHealthBar[n].type == type)
         {
-            gNewHealthBar[n].index   = index;
-            gNewHealthBar[n].type    = type;
-            gNewHealthBar[n].rate    = rate;
-            gNewHealthBar[n].life    = life;
-            gNewHealthBar[n].maxLife = maxLife;
-            for (int i = 0; i < 10; i++)
-            {
-                gNewHealthBar[n].topIndex[i]  = topIndex[i];
-                gNewHealthBar[n].topDamage[i] = topDamage[i];
-            }
-            return;
+            slot = n;
+            break;
+        }
+
+        if (slot == -1 && gNewHealthBar[n].index == 0xFFFF)
+        {
+            slot = n;
         }
     }
-}
 
+    if (slot == -1)
+    {
+        return;
+    }
+
+    gNewHealthBar[slot].index      = index;
+    gNewHealthBar[slot].type       = type;
+    gNewHealthBar[slot].rate       = rate;
+    gNewHealthBar[slot].life       = life;
+    gNewHealthBar[slot].maxLife    = maxLife;
+    gNewHealthBar[slot].updateTick = GetTickCount();
+
+    for (int i = 0; i < 10; i++)
+    {
+        gNewHealthBar[slot].topIndex[i]  = topIndex[i];
+        gNewHealthBar[slot].topDamage[i] = topDamage[i];
+    }
+}
 NEW_HEALTH_BAR* CMonsterBar::GetNewHealthBar(WORD index, BYTE type)
 {
     for (int n = 0; n < MAX_MAIN_VIEWPORT; n++)
@@ -83,10 +116,10 @@ NEW_HEALTH_BAR* CMonsterBar::GetNewHealthBar(WORD index, BYTE type)
     return 0;
 }
 
-void FormatNumber(DWORD value, char* output)
+void FormatNumber(QWORD value, char* output)
 {
     char temp[50];
-    sprintf(temp, "%u", value);
+    sprintf(temp, "%I64u", value);
 
     int len    = (int)strlen(temp);
     int commas = (len - 1) / 3;
@@ -114,7 +147,7 @@ static bool IsSpecialMonster(int monsterIndex)
 {
     switch (monsterIndex)
     {
-    case 77: case 275: case 295: case 309:
+    case 77: case 900: case 295: case 309:
     case 349: case 361: case 459: case 561:
         return true;
     default:
@@ -127,6 +160,26 @@ void CMonsterBar::RenderHPBar()
     NEW_HEALTH_BAR* lpHealthBar;
     char Text[100];
 
+    DWORD currentTick = GetTickCount();
+
+    for (int n = 0; n < MAX_MAIN_VIEWPORT; n++)
+    {
+        if (gNewHealthBar[n].index == 0xFFFF)
+        {
+            continue;
+        }
+
+        if (!IsHealthBarOwnerLive(gNewHealthBar[n].index, gNewHealthBar[n].type))
+        {
+            ResetNewHealthBarSlot(gNewHealthBar[n]);
+            continue;
+        }
+
+        if (gNewHealthBar[n].updateTick != 0 && (currentTick - gNewHealthBar[n].updateTick) > 15000)
+        {
+            gNewHealthBar[n].updateTick = currentTick;
+        }
+    }
     const int   FixedPosX            = (int)((float)GetWindowsX / 1.95f);
     const int   FixedPosY            = 5;
     const float FixedWidth           = 400.0f;

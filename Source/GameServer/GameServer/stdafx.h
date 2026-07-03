@@ -2,11 +2,11 @@
 extern int Conectar;
 
 #if(GAMESERVER_NOMBRE == 0)
-#define GAMESERVER_CLIENT "MUBATTLE SEASON 4"
+#define GAMESERVER_CLIENT "MuOnline SEASON 4"
 #elif(GAMESERVER_NOMBRE == 1)
-#define GAMESERVER_CLIENT "MUBATTLE SEASON 4"
+#define GAMESERVER_CLIENT "MuOnline SEASON 4"
 #else
-#define GAMESERVER_CLIENT "MUBATTLE SEASON 4"
+#define GAMESERVER_CLIENT "MuOnline SEASON 4"
 #endif
 
 #if(PROTECT_STATE==0)
@@ -63,7 +63,7 @@ extern int Conectar;
 #endif
 
 #ifndef PROTECT_STATE
-#define PROTECT_STATE 1
+#define PROTECT_STATE 0
 #endif
 
 #ifndef ENCRYPT_STATE

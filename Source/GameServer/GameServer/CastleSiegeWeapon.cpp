@@ -219,16 +219,20 @@ bool CCastleSiegeWeapon::Attack(LPOBJ lpObj,LPOBJ lpTarget) // OK
 		damage = gServerInfo.m_CastleSiegeDefensiveWeaponDamage;
 	}
 
+	int LifeDamage = 0;
+
 	if((lpTarget->Life-damage) < 0)
 	{
+		LifeDamage = ((lpTarget->Life<0)?0:(int)lpTarget->Life);
 		lpTarget->Life = 0;
 	}
 	else
 	{
+		LifeDamage = damage;
 		lpTarget->Life -= damage;
 	}
 
-	gObjectManager.CharacterLifeCheck(lpObj,lpTarget,damage,0,0,0,0,0);
+	gObjectManager.CharacterLifeCheck(lpObj,lpTarget,damage,0,0,0,0,0,LifeDamage);
 	return 1;
 }
 

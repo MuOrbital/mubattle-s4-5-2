@@ -52,6 +52,13 @@ T& TheWorld( int type )
 #include "GMUnitedMarketPlace.h"
 #define g_UnitedMarketPlace TheWorld<GMUnitedMarketPlace>(WD_79UNITEDMARKETPLACE)
 
+#include "GMAcheron.h"
+#include "GMDeventer.h"
+#include "GMUrukMountain.h"
+#include "GMZoneNars.h"
+#include "GMFerea.h"
+#include "GMNixiesLake.h"
+
 #ifdef ASG_ADD_MAP_KARUTAN
 #include "GMKarutan1.h"
 #define g_Karutan1 TheWorld<CGMKarutan1>(WD_80KARUTAN1)

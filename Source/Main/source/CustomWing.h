@@ -1,11 +1,8 @@
 // CustomWing.h: interface for the CCustomWing class.
 //
 //////////////////////////////////////////////////////////////////////
-
 #pragma once
-
 #include "Lua.h"
-
 struct CUSTOM_WING_INFO
 {
 	int ItemIndex;
@@ -30,17 +27,16 @@ struct CUSTOM_WING_INFO
 	int NewOptionValue4;
 	int ModelType;
 	char ModelName[32];
-
 	//CapeInfos
 	int IsCape;
 };
-
 class CCustomWing
 {
 public:
 	CCustomWing();
 	virtual ~CCustomWing();
 	void Init();
+	void RestartLua();
 	CUSTOM_WING_INFO* GetInfoByItem(int ItemIndex);
 	BOOL CheckCustomWingByItem(int ItemIndex);
 	BOOL CheckCustomWingByModelType(int ItemIndex, int ModelType);
@@ -54,9 +50,7 @@ public:
 	int CheckCustomWingIsCape(int ItemIndex);
 public:
 	std::map<int, CUSTOM_WING_INFO> m_CustomWingInfo;
-
 private:
 	Lua m_Lua;
 };
-
 extern CCustomWing gCustomWing;

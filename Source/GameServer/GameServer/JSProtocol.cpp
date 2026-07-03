@@ -265,6 +265,8 @@ void JGAccountLevelRecv(SDHP_ACCOUNT_LEVEL_RECV* lpMsg) // OK
 		memcpy(gObj[lpMsg->index].AccountExpireDate,lpMsg->AccountExpireDate,sizeof(gObj[lpMsg->index].AccountExpireDate));
 		gNotice.GCNoticeSend(lpMsg->index,1,0,0,0,0,0,gMessage.GetMessage((248+gObj[lpMsg->index].AccountLevel)),gObj[lpMsg->index].AccountExpireDate);
 	}
+
+	gCustomAttack.OnAccountLevelChange(&gObj[lpMsg->index]);
 }
 
 void JGAccountAlreadyConnectedRecv(SDHP_ACCOUNT_ALREADY_CONNECTED_RECV* lpMsg) // OK

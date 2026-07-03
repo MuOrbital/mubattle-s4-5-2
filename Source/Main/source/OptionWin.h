@@ -14,8 +14,9 @@
 #define	OW_BTN_MAX				4
 
 #define OW_SLD_EFFECT_VOL		0
-#define OW_SLD_RENDER_LV		1
-#define OW_SLD_MAX				2
+#define OW_SLD_MUSIC_VOL		1
+#define OW_SLD_RENDER_LV		2
+#define OW_SLD_MAX				3
 
 class COptionWin : public CWin  
 {

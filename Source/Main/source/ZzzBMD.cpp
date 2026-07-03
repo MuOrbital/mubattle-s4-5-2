@@ -5,6 +5,7 @@
 #include "ZzzOpenglUtil.h"
 #include "ZzzInfomation.h"
 #include "ZzzBMD.h"
+#include "MuCrypto/MuCrypto.h"
 #include "ZzzObject.h"
 #include "ZzzCharacter.h"
 #include "zzzlodterrain.h"
@@ -181,6 +182,33 @@ float BoneScale = 1.f;
 
 void BMD::Transform(float(*BoneMatrix)[3][4], vec3_t BoundingBoxMin, vec3_t BoundingBoxMax, OBB_t* OBB, bool Translate, float _Scale)
 {
+	bool gpuTransform = false;
+#if jdk_shader_local330
+	if (OGL330::IsShader() && !m_bForceCpuTransform)
+	{
+		m_fRequestScale = (_Scale != 0.0f) ? _Scale : BoneScale;
+		m_bCpuTransformPending = true;
+		m_pLastBoneMatrix = BoneMatrix;
+		VectorCopy(BoundingBoxMin, m_vLastBoundingBoxMin);
+		VectorCopy(BoundingBoxMax, m_vLastBoundingBoxMax);
+		m_pLastOBB = OBB;
+		m_bLastTranslate = Translate;
+		m_fLastTransformScale = _Scale;
+
+		VectorCopy(BoundingBoxMin, OBB->StartPos);
+		OBB->XAxis[0] = BoundingBoxMax[0] - BoundingBoxMin[0];
+		OBB->YAxis[1] = BoundingBoxMax[1] - BoundingBoxMin[1];
+		OBB->ZAxis[2] = BoundingBoxMax[2] - BoundingBoxMin[2];
+		VectorAdd(OBB->StartPos, BodyOrigin, OBB->StartPos);
+		OBB->XAxis[1] = OBB->XAxis[2] = 0.0f;
+		OBB->YAxis[0] = OBB->YAxis[2] = 0.0f;
+		OBB->ZAxis[0] = OBB->ZAxis[1] = 0.0f;
+
+		GMMeshShader->AddBoneTransform(this, BoneMatrix, Translate);
+		return;
+	}
+#endif
+
 	// transform
 	vec3_t LightPosition;
 
@@ -262,18 +290,21 @@ void BMD::Transform(float(*BoneMatrix)[3][4], vec3_t BoundingBoxMin, vec3_t Boun
 				VectorAdd(vp, BodyOrigin, vp);
 		}
 
-		for (int j = 0; j < m->NumNormals; j++)
+		if (!gpuTransform)
 		{
-			Normal_t* sn = &m->Normals[j];
-			float* tn = NormalTransform[i][j];
-			VectorRotate(sn->Normal, BoneMatrix[sn->Node], tn);
-			if (LightEnable)
+			for (int j = 0; j < m->NumNormals; j++)
 			{
-				float Luminosity;
-				Luminosity = DotProduct(tn, LightPosition) * 0.8f + 0.4f;
-
-				if (Luminosity < 0.2f) Luminosity = 0.2f;
-				IntensityTransform[i][j] = Luminosity;
+				Normal_t* sn = &m->Normals[j];
+				float* tn = NormalTransform[i][j];
+				VectorRotate(sn->Normal, BoneMatrix[sn->Node], tn);
+				if (LightEnable)
+				{
+					float Luminosity;
+					Luminosity = DotProduct(tn, LightPosition) * 0.8f + 0.4f;
+	
+					if (Luminosity < 0.2f) Luminosity = 0.2f;
+					IntensityTransform[i][j] = Luminosity;
+				}
 			}
 		}
 	}
@@ -301,7 +332,24 @@ void BMD::Transform(float(*BoneMatrix)[3][4], vec3_t BoundingBoxMin, vec3_t Boun
 	OBB->YAxis[2] = 0.f;
 	OBB->ZAxis[0] = 0.f;
 	OBB->ZAxis[1] = 0.f;
+#if jdk_shader_local330
+	m_bCpuTransformPending = false;
+#endif
 }
+
+#if jdk_shader_local330
+void BMD::EnsureCpuTransform()
+{
+	if (!m_bCpuTransformPending || m_bForceCpuTransform || m_pLastBoneMatrix == NULL || m_pLastOBB == NULL)
+	{
+		return;
+	}
+
+	m_bForceCpuTransform = true;
+	Transform(m_pLastBoneMatrix, m_vLastBoundingBoxMin, m_vLastBoundingBoxMax, m_pLastOBB, m_bLastTranslate, m_fLastTransformScale);
+	m_bForceCpuTransform = false;
+}
+#endif
 
 
 // vResultPosition = (BoneTransformMatrix * vRelativePosition) * BMD::BodyScale + vObjectPosition;
@@ -415,7 +463,7 @@ bool BMD::PlayAnimation(float* AnimationFrame, float* PriorAnimationFrame, unsig
 	}
 
 	const int priorAnimationFrame = (int)*AnimationFrame;
-	*AnimationFrame += Speed * FPS_ANIMATION_FACTOR;
+	*AnimationFrame += Speed * FPS_VISUAL_FACTOR;
 	if (priorAnimationFrame != (int)*AnimationFrame)
 	{
 		*PriorAction = CurrentAction;
@@ -935,6 +983,42 @@ void BMD::RenderMesh(int i,int RenderFlag,float Alpha,int BlendMesh,float BlendM
     Mesh_t *m = &Meshs[i];
 	if(m->NumTriangles == 0) return;
 
+#if jdk_shader_local330
+	if (OGL330::IsShader() && (RenderFlag & (RENDER_WAVE | RENDER_WAVE_EXT)) != 0 && GMMeshShader->HasPendingMeshes())
+	{
+		GMMeshShader->FlushAllMesh();
+		OGL330::SwitchStatePipeline();
+	}
+
+	if (OGL330::IsShader() && (RenderFlag & RENDER_WAVE) == 0 && (RenderFlag & RENDER_WAVE_EXT) == 0)
+	{
+		if (New_Meshs.size() != static_cast<size_t>(NumMeshs) || New_Meshs[i].VAO == 0)
+		{
+			LoadMeshToVAO();
+			UploadAllToGPU();
+		}
+
+		if (New_Meshs.size() == static_cast<size_t>(NumMeshs) && New_Meshs[i].VAO != 0)
+		{
+			const bool batching = GMMeshShader->IsBatching();
+			GMMeshShader->AddMeshCommand(this, i, RenderFlag, Alpha, BlendMesh, BlendMeshLight, BlendMeshTexCoordU, BlendMeshTexCoordV, MeshTexture);
+			if (!batching)
+			{
+				GMMeshShader->FlushAllMesh();
+				OGL330::SwitchStatePipeline();
+			}
+			return;
+		}
+	}
+#endif
+
+#if jdk_shader_local330
+	if (OGL330::IsShader())
+	{
+		EnsureCpuTransform();
+	}
+#endif
+
 	float Wave = (int)WorldTime%10000 * 0.0001f;
 
 	int Texture = IndexTexture[m->Texture];
@@ -1353,6 +1437,17 @@ void BMD::RenderMeshAlternative( int iRndExtFlag, int iParam, int i,int RenderFl
 
     Mesh_t *m = &Meshs[i];
 	if(m->NumTriangles == 0) return;
+#if jdk_shader_local330
+	if (OGL330::IsShader())
+	{
+		if (GMMeshShader->HasPendingMeshes())
+		{
+			GMMeshShader->FlushAllMesh();
+			OGL330::SwitchStatePipeline();
+		}
+		EnsureCpuTransform();
+	}
+#endif
 	float Wave = (int)WorldTime%10000 * 0.0001f;
 
 	int Texture = IndexTexture[m->Texture];
@@ -1689,6 +1784,12 @@ void BMD::RenderMeshEffect ( int i, int iType, int iSubType, vec3_t Angle, VOID*
 
     Mesh_t *m = &Meshs[i];
 	if(m->NumTriangles <= 0) return;
+#if jdk_shader_local330
+	if (OGL330::IsShader())
+	{
+		EnsureCpuTransform();
+	}
+#endif
 
     vec3_t angle, Light;
 	int iEffectCount = 0;
@@ -1846,6 +1947,7 @@ void BMD::RenderBody(int Flag,float Alpha,int BlendMesh,float BlendMeshLight,flo
 {
 	if(NumMeshs == 0) return;
 
+
 	int iBlendMesh = BlendMesh;
 	BeginRender(Alpha);
 	if(!LightEnable)
@@ -1904,6 +2006,7 @@ void BMD::RenderBody(int Flag,float Alpha,int BlendMesh,float BlendMeshLight,flo
         }
 	}
 	EndRender();
+
 }
 
 void BMD::RenderBodyAlternative( int iRndExtFlag, int iParam, int Flag,float Alpha,int BlendMesh,float BlendMeshLight,float BlendMeshTexCoordU,float BlendMeshTexCoordV,int HiddenMesh,int Texture)
@@ -1934,6 +2037,17 @@ void BMD::RenderMeshTranslate(int i,int RenderFlag,float Alpha,int BlendMesh,flo
 
     Mesh_t *m = &Meshs[i];
 	if(m->NumTriangles == 0) return;
+#if jdk_shader_local330
+	if (OGL330::IsShader())
+	{
+		if (GMMeshShader->HasPendingMeshes())
+		{
+			GMMeshShader->FlushAllMesh();
+			OGL330::SwitchStatePipeline();
+		}
+		EnsureCpuTransform();
+	}
+#endif
 	float Wave = (int)WorldTime%10000 * 0.0001f;
 
 	int Texture = IndexTexture[m->Texture];
@@ -2326,6 +2440,32 @@ void BMD::RenderBodyShadow(const int blendMesh, const int hiddenMesh, const int 
 		return;
 	}
 
+#if jdk_shader_local330
+	if (OGL330::IsShader())
+	{
+		DisableTexture();
+		DisableDepthMask();
+		BeginRender(1.0f);
+
+		int startMesh = (startMeshNumber == -1) ? 0 : startMeshNumber;
+		int endMesh = (endMeshNumber == -1) ? NumMeshs : endMeshNumber;
+		Vector(0.0f, 0.0f, 0.0f, BodyLight);
+		const float shadowAlpha = (gMapManager.WorldActive == WD_7ATLANSE) ? 0.2f : 0.7f;
+
+		for (int i = startMesh; i < endMesh; ++i)
+		{
+			if (i != hiddenMesh)
+			{
+				RenderMesh(i, RENDER_TEXTURE | RENDER_SHADOWMAP, shadowAlpha);
+			}
+		}
+
+		EndRender();
+		EnableDepthMask();
+		return;
+	}
+#endif
+
 	EnableAlphaTest(false);
 
 	glColor4f(0.0f, 0.0f, 0.0f, 0.5f); // 50% opacity for shadows
@@ -2547,6 +2687,14 @@ void BMD::Release()
 		}
 	}
 
+#if jdk_shader_local330
+	if (OGL330::IsShader() && !New_Meshs.empty())
+	{
+		ReadMemoryGPU();
+		New_Meshs.clear();
+	}
+#endif
+
 	SAFE_DELETE_ARRAY(Meshs);
 	SAFE_DELETE_ARRAY(Bones);
 	SAFE_DELETE_ARRAY(Actions);
@@ -2751,6 +2899,13 @@ bool BMD::Open(char *DirName,char *ModelFileName)
 	}
     delete [] Data;
     Init(false);
+#if jdk_shader_local330
+	if (OGL330::IsShader() && NumMeshs > 0)
+	{
+		LoadMeshToVAO();
+		UploadAllToGPU();
+	}
+#endif
 	return true;
 }
 
@@ -2865,6 +3020,22 @@ bool BMD::Open2(char *DirName,char *ModelFileName, bool bReAlloc)
 		Data = pbyDec;
 		DataPtr = 0;
 	}
+	else if (Version == 0x0E)
+	{
+		long lSize = *((long *)(Data + DataPtr)); DataPtr += sizeof(long);
+		long lDecSize = MuFileDecrypt(NULL, Data + DataPtr, lSize);
+		if (lDecSize <= 0)
+		{
+			delete [] Data;
+			m_bCompletedAlloc = false;
+			return false;
+		}
+		BYTE *pbyDec = new BYTE[lDecSize];
+		MuFileDecrypt(pbyDec, Data + DataPtr, lSize);
+		delete [] Data;
+		Data = pbyDec;
+		DataPtr = 0;
+	}
 
 	memcpy(Name,Data+DataPtr,32);DataPtr+=32;
 
@@ -2974,6 +3145,13 @@ bool BMD::Open2(char *DirName,char *ModelFileName, bool bReAlloc)
 
     delete [] Data;
     Init(false);
+#if jdk_shader_local330
+	if (OGL330::IsShader() && NumMeshs > 0)
+	{
+		LoadMeshToVAO();
+		UploadAllToGPU();
+	}
+#endif
 
 	m_bCompletedAlloc = true;
     return true;
@@ -3136,6 +3314,328 @@ void BMD::CreateBoundingBox()
 	}
 }
 
+#if jdk_shader_local330
+void BMD::LoadMeshToVAO()
+{
+	if (New_Meshs.size())
+	{
+		ReadMemoryGPU();
+		New_Meshs.clear();
+	}
+
+	New_Meshs.reserve(NumMeshs);
+
+	for (int i = 0; i < NumMeshs; ++i)
+	{
+		VAOMesh NewMesh;
+		Mesh_t* OldMesh = &Meshs[i];
+
+		NewMesh.NoneBlendMesh = OldMesh->NoneBlendMesh;
+		NewMesh.Texture = OldMesh->Texture;
+		NewMesh.IBuffer.reserve(OldMesh->NumTriangles * 3);
+		NewMesh.BoneContainer.reserve(NumBones);
+
+		ExtendVertex(OldMesh, &NewMesh);
+
+		if (OldMesh->m_csTScript)
+		{
+			NewMesh.m_csTScript = new TextureScript(*(OldMesh->m_csTScript));
+		}
+
+		New_Meshs.push_back(NewMesh);
+	}
+}
+
+void BMD::UploadAllToGPU()
+{
+	for (size_t i = 0; i < New_Meshs.size(); ++i)
+	{
+		VAOMesh& NewMesh = New_Meshs[i];
+
+		if (NewMesh.VAO != 0 || NewMesh.VBuffer.empty() || NewMesh.IBuffer.empty())
+		{
+			continue;
+		}
+
+		glGenVertexArrays(1, &NewMesh.VAO);
+		glBindVertexArray(NewMesh.VAO);
+
+		glGenBuffers(1, &NewMesh.VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, NewMesh.VBO);
+		glBufferData(GL_ARRAY_BUFFER, NewMesh.VBuffer.size() * sizeof(VertexBMD), &NewMesh.VBuffer[0], GL_STATIC_DRAW);
+
+		glGenBuffers(1, &NewMesh.IBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NewMesh.IBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, NewMesh.IBuffer.size() * sizeof(GLuint), &NewMesh.IBuffer[0], GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexBMD), (void*)offsetof(VertexBMD, m_vPos));
+
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexBMD), (void*)offsetof(VertexBMD, m_vNorm));
+
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexBMD), (void*)offsetof(VertexBMD, m_vTex));
+
+		glEnableVertexAttribArray(3);
+		glVertexAttribIPointer(3, 1, GL_UNSIGNED_INT, sizeof(VertexBMD), (void*)offsetof(VertexBMD, m_iBone));
+
+		NewMesh.VertexCount = static_cast<GLuint>(NewMesh.VBuffer.size());
+		NewMesh.IndexCount = static_cast<GLuint>(NewMesh.IBuffer.size());
+
+		NewMesh.VBuffer.clear();
+		NewMesh.IBuffer.clear();
+
+		glBindVertexArray(0);
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void BMD::ReadMemoryGPU()
+{
+	for (unsigned int i = 0; i < New_Meshs.size(); ++i)
+	{
+		VAOMesh& NewMesh = New_Meshs[i];
+
+		if (NewMesh.VBO)
+		{
+			glDeleteBuffers(1, &NewMesh.VBO);
+			NewMesh.VBO = 0;
+		}
+
+		if (NewMesh.IBO)
+		{
+			glDeleteBuffers(1, &NewMesh.IBO);
+			NewMesh.IBO = 0;
+		}
+
+		if (NewMesh.VAO)
+		{
+			glDeleteVertexArrays(1, &NewMesh.VAO);
+			NewMesh.VAO = 0;
+		}
+
+		if (NewMesh.m_csTScript)
+		{
+			SAFE_DELETE(NewMesh.m_csTScript);
+		}
+
+		NewMesh.VBuffer.clear();
+		NewMesh.IBuffer.clear();
+		NewMesh.BoneContainer.clear();
+	}
+}
+
+void BMD::ExtendVertex(Mesh_t* oM, VAOMesh* nM)
+{
+	Temp_Vec tbuf;
+	tbuf.reserve(oM->NumVertices);
+
+	for (int i = 0; i < oM->NumVertices; ++i)
+	{
+		tbuf.push_back(TempVertex(i, -1, -1));
+	}
+
+	for (int i = 0; i < oM->NumTriangles; ++i)
+	{
+		Triangle_t* pTri = &oM->Triangles[i];
+		const int polygon = min(3, static_cast<int>(pTri->Polygon));
+
+		for (int j = 0; j < polygon; ++j)
+		{
+			short vIndex = pTri->VertexIndex[j];
+			short tIndex = pTri->TexCoordIndex[j];
+			short nIndex = pTri->NormalIndex[j];
+
+			if (vIndex < 0 || vIndex >= oM->NumVertices)
+			{
+				continue;
+			}
+
+			if (tbuf[vIndex].t == -1)
+			{
+				tbuf[vIndex].t = tIndex;
+				tbuf[vIndex].n = nIndex;
+				nM->IBuffer.push_back(static_cast<GLuint>(vIndex));
+			}
+			else if ((tbuf[vIndex].t == tIndex) && (tbuf[vIndex].n == nIndex))
+			{
+				nM->IBuffer.push_back(static_cast<GLuint>(vIndex));
+			}
+			else
+			{
+				nM->IBuffer.push_back(static_cast<GLuint>(tbuf.size()));
+				tbuf.push_back(TempVertex(vIndex, tIndex, nIndex));
+			}
+		}
+	}
+
+	VertexBMD Nvertex;
+	nM->VBuffer.reserve(tbuf.size());
+
+	for (int i = 0; i < static_cast<int>(tbuf.size()); ++i)
+	{
+		TempVertex& tp = tbuf[i];
+		short indexBone = oM->Vertices[tp.v].Node;
+		VectorCopy(oM->Vertices[tp.v].Position, Nvertex.m_vPos);
+
+		bool isbone = false;
+		for (int boneIndex = 0; boneIndex < static_cast<int>(nM->BoneContainer.size()); ++boneIndex)
+		{
+			if (nM->BoneContainer[boneIndex] == indexBone)
+			{
+				isbone = true;
+				break;
+			}
+		}
+
+		if (!isbone)
+		{
+			nM->BoneContainer.push_back(indexBone);
+		}
+
+		Nvertex.m_iBone = static_cast<GLuint>(indexBone * 3);
+
+		Nvertex.m_vTex[0] = 0.0f;
+		Nvertex.m_vTex[1] = 0.0f;
+		if (tp.t >= 0 && tp.t < oM->NumTexCoords && oM->TexCoords != NULL)
+		{
+			Nvertex.m_vTex[0] = oM->TexCoords[tp.t].TexCoordU;
+			Nvertex.m_vTex[1] = oM->TexCoords[tp.t].TexCoordV;
+		}
+
+		Vector(0.0f, 0.0f, 0.0f, Nvertex.m_vNorm);
+		if (tp.n >= 0 && tp.n < oM->NumNormals && oM->Normals != NULL)
+		{
+			VectorCopy(oM->Normals[tp.n].Normal, Nvertex.m_vNorm);
+		}
+
+		nM->VBuffer.push_back(Nvertex);
+	}
+}
+
+void BMD::TranstoVertices(vec3_t(*outVertex)[MAX_VERTICES], float(*matBone)[3][4], bool Translate)
+{
+	for (int i = 0; i < NumMeshs; i++)
+	{
+		Mesh_t* m = &Meshs[i];
+
+		for (int j = 0; j < m->NumVertices; j++)
+		{
+			Vertex_t* v = &m->Vertices[j];
+			float* vp = outVertex[i][j];
+
+			if (BoneScale == 1.0f)
+			{
+				VectorTransform(v->Position, matBone[v->Node], vp);
+				if (Translate)
+				{
+					VectorScale(vp, BodyScale, vp);
+				}
+			}
+			else
+			{
+				VectorRotate(v->Position, matBone[v->Node], vp);
+				vp[0] = vp[0] * BoneScale + matBone[v->Node][0][3];
+				vp[1] = vp[1] * BoneScale + matBone[v->Node][1][3];
+				vp[2] = vp[2] * BoneScale + matBone[v->Node][2][3];
+
+				if (Translate)
+				{
+					VectorScale(vp, BodyScale, vp);
+				}
+			}
+
+			if (Translate)
+			{
+				VectorAdd(vp, BodyOrigin, vp);
+			}
+		}
+	}
+}
+
+void BMD::OutAllAnimVertices(vec3_t(*outVertex)[MAX_VERTICES], const OBJECT& oSelf)
+{
+	if (NumBones < 1 || NumBones > MAX_BONES)
+	{
+		return;
+	}
+
+	vec34_t* arrBonesTMLocal = new vec34_t[NumBones];
+	vec3_t Temp;
+	Vector(0.0f, 0.0f, 0.0f, Temp);
+	memset(arrBonesTMLocal, 0, sizeof(vec34_t) * NumBones);
+
+	Animation(arrBonesTMLocal, oSelf.AnimationFrame, oSelf.PriorAnimationFrame, oSelf.PriorAction, const_cast<OBJECT&>(oSelf).Angle, Temp, false, false);
+	TranstoVertices(outVertex, arrBonesTMLocal, true);
+
+	delete[] arrBonesTMLocal;
+}
+
+bool _VAOMesh::SendIndexBone(GLuint Shaderid, const float* Bone, bool bTrans, vec3_t vTrans, float Scale, bool AppScale, float ReqScale)
+{
+	GLint loc = glGetUniformLocation(Shaderid, "u_Bones");
+	if (loc < 0)
+	{
+		return false;
+	}
+
+	std::vector<float> palette;
+	if (!BuildBonePalette(palette, Bone, bTrans, vTrans, Scale, AppScale, ReqScale))
+	{
+		return false;
+	}
+
+	glUniform4fv(loc, static_cast<GLsizei>(palette.size() / 4), &palette[0]);
+	return true;
+}
+
+bool _VAOMesh::BuildBonePalette(std::vector<float>& outPalette, const float* Bone, bool bTrans, vec3_t vTrans, float Scale, bool AppScale, float ReqScale) const
+{
+	outPalette.clear();
+	if (!Bone || BoneContainer.empty() || BoneContainer.size() > MAX_BONES)
+	{
+		return false;
+	}
+
+	float ResultScale = Scale;
+	vec3_t vResult;
+	Vector(0.0f, 0.0f, 0.0f, vResult);
+
+	if (bTrans == true)
+	{
+		VectorCopy(vTrans, vResult);
+	}
+	else
+	{
+		ResultScale = 1.0f;
+	}
+
+	float ScalePre = ResultScale;
+	if (AppScale == true)
+	{
+		ResultScale = ReqScale * ResultScale;
+	}
+
+	outPalette.reserve(BoneContainer.size() * 12);
+	for (int i = 0; i < static_cast<int>(BoneContainer.size()); ++i)
+	{
+		int iMatIdx = BoneContainer[i] * 12;
+		for (int j = 0; j < 3; ++j)
+		{
+			const float* vTarget = Bone + iMatIdx + j * 4;
+			outPalette.push_back(vTarget[0] * ResultScale);
+			outPalette.push_back(vTarget[1] * ResultScale);
+			outPalette.push_back(vTarget[2] * ResultScale);
+			outPalette.push_back(vTarget[3] * (AppScale ? ScalePre : ResultScale) + vResult[j]);
+		}
+	}
+
+	return true;
+}
+#endif
 BMD::~BMD()
 {	
 	Release();

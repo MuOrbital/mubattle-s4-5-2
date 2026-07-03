@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Global Debug|Win32">
@@ -207,10 +207,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/libpath:""NPGGuard"" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>imm32.lib;vfw32.lib;dsound.lib;dxguid.lib;jpeglib.lib;opengl32.lib;glu32.lib;winmm.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;version.lib;glprocs.lib;Jpeglib.lib;ShareMemory.lib;SimpleModulus.lib;wzAudio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imm32.lib;vfw32.lib;dsound.lib;dxguid.lib;jpeglib.lib;opengl32.lib;winmm.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;version.lib;glprocs.lib;Jpeglib.lib;ShareMemory.lib;SimpleModulus.lib;wzAudio.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\lib;$(MU_SDK)\DXSDK\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\lib;$(MU_SDK)\DXSDK\Lib;%(AdditionalLibraryDirectories);$(SolutionDir)..\MHP-Server - VS 2010\MHPClient\HackClient;$(SolutionDir)..\MHP-Server - VS 2010\MHPVerify\HackVerify</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc.lib;libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
@@ -272,10 +272,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/libpath:""NPGGuard"" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>imm32.lib;vfw32.lib;dsound.lib;dxguid.lib;jpeglib.lib;opengl32.lib;glu32.lib;winmm.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;version.lib;glprocs.lib;Jpeglib.lib;ShareMemory.lib;SimpleModulus.lib;wzAudio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imm32.lib;vfw32.lib;dsound.lib;dxguid.lib;jpeglib.lib;opengl32.lib;winmm.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;version.lib;glprocs.lib;Jpeglib.lib;ShareMemory.lib;SimpleModulus.lib;wzAudio.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\lib;$(MU_SDK)\DXSDK\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\lib;$(MU_SDK)\DXSDK\Lib;%(AdditionalLibraryDirectories);$(SolutionDir)..\MHP-Server - VS 2010\MHPClient\HackClient;$(SolutionDir)..\MHP-Server - VS 2010\MHPVerify\HackVerify</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc.lib;libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
@@ -324,7 +324,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>
       </AdditionalOptions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -336,10 +336,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>imm32.lib;vfw32.lib;dsound.lib;dxguid.lib;jpeglib.lib;opengl32.lib;glu32.lib;winmm.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;version.lib;glprocs.lib;Jpeglib.lib;ShareMemory.lib;SimpleModulus.lib;wzAudio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imm32.lib;vfw32.lib;dsound.lib;dxguid.lib;jpeglib.lib;opengl32.lib;winmm.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;version.lib;glprocs.lib;Jpeglib.lib;ShareMemory.lib;SimpleModulus.lib;wzAudio.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\lib;$(MU_SDK)\DXSDK\Lib;%(AdditionalLibraryDirectories);C:\Libraries\boost_1_75_0\stage\lib;$(SolutionDir)\Dependencies\Lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\lib;$(MU_SDK)\DXSDK\Lib;%(AdditionalLibraryDirectories);C:\Libraries\boost_1_75_0\stage\lib;$(SolutionDir)\Dependencies\Lib;$(SolutionDir)..\MHP-Server - VS 2010\MHPClient\HackClient;$(SolutionDir)..\MHP-Server - VS 2010\MHPVerify\HackVerify</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
@@ -388,7 +388,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>
       </AdditionalOptions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -400,10 +400,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>imm32.lib;vfw32.lib;dsound.lib;dxguid.lib;jpeglib.lib;opengl32.lib;glu32.lib;winmm.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;version.lib;glprocs.lib;Jpeglib.lib;ShareMemory.lib;SimpleModulus.lib;wzAudio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imm32.lib;vfw32.lib;dsound.lib;dxguid.lib;jpeglib.lib;opengl32.lib;winmm.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;version.lib;glprocs.lib;Jpeglib.lib;ShareMemory.lib;SimpleModulus.lib;wzAudio.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\lib;$(MU_SDK)\DXSDK\Lib;%(AdditionalLibraryDirectories);C:\Libraries\boost_1_75_0\stage\lib;$(SolutionDir)\Dependencies\Lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\lib;$(MU_SDK)\DXSDK\Lib;%(AdditionalLibraryDirectories);C:\Libraries\boost_1_75_0\stage\lib;$(SolutionDir)\Dependencies\Lib;$(SolutionDir)..\MHP-Server - VS 2010\MHPClient\HackClient;$(SolutionDir)..\MHP-Server - VS 2010\MHPVerify\HackVerify</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
@@ -453,7 +453,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>
       </AdditionalOptions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -465,10 +465,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>imm32.lib;vfw32.lib;dsound.lib;dxguid.lib;jpeglib.lib;opengl32.lib;glu32.lib;winmm.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;version.lib;glprocs.lib;Jpeglib.lib;ShareMemory.lib;SimpleModulus.lib;wzAudio.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imm32.lib;vfw32.lib;dsound.lib;dxguid.lib;jpeglib.lib;opengl32.lib;winmm.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;version.lib;glprocs.lib;Jpeglib.lib;ShareMemory.lib;SimpleModulus.lib;wzAudio.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\lib;$(MU_SDK)\DXSDK\Lib;%(AdditionalLibraryDirectories);C:\Libraries\boost_1_75_0\stage\lib;$(SolutionDir)\Dependencies\Lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\lib;$(MU_SDK)\DXSDK\Lib;%(AdditionalLibraryDirectories);C:\Libraries\boost_1_75_0\stage\lib;$(SolutionDir)\Dependencies\Lib;$(SolutionDir)..\MHP-Server - VS 2010\MHPClient\HackClient;$(SolutionDir)..\MHP-Server - VS 2010\MHPVerify\HackVerify</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
@@ -517,7 +517,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>
       </AdditionalOptions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -529,10 +529,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>imm32.lib;vfw32.lib;dsound.lib;dxguid.lib;jpeglib.lib;opengl32.lib;glu32.lib;winmm.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;version.lib;glprocs.lib;Jpeglib.lib;ShareMemory.lib;SimpleModulus.lib;wzAudio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imm32.lib;vfw32.lib;dsound.lib;dxguid.lib;jpeglib.lib;opengl32.lib;winmm.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;version.lib;glprocs.lib;Jpeglib.lib;ShareMemory.lib;SimpleModulus.lib;wzAudio.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\lib;$(MU_SDK)\DXSDK\Lib;%(AdditionalLibraryDirectories);C:\Libraries\boost_1_75_0\stage\lib;$(SolutionDir)\Dependencies\Lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\lib;$(MU_SDK)\DXSDK\Lib;%(AdditionalLibraryDirectories);C:\Libraries\boost_1_75_0\stage\lib;$(SolutionDir)\Dependencies\Lib;$(SolutionDir)..\MHP-Server - VS 2010\MHPClient\HackClient;$(SolutionDir)..\MHP-Server - VS 2010\MHPVerify\HackVerify</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
@@ -589,6 +589,12 @@
     <ClCompile Include="source\Builder.cpp" />
     <ClCompile Include="source\Button.cpp" />
     <ClCompile Include="source\Camera3D.cpp" />
+    <ClCompile Include="source\InvasionInfo.cpp" />
+    <ClCompile Include="source\New_RenderBMD.cpp" />
+    <ClCompile Include="source\New_ModelBMD.cpp" />
+    <ClCompile Include="source\MU_OpenGL.cpp" />
+    <ClCompile Include="source\CShaderGL.cpp" />
+    <ClCompile Include="source\CoreGLCompat.cpp" />
     <ClCompile Include="source\CameraMove.cpp" />
     <ClCompile Include="source\CBTMessageBox.cpp" />
     <ClCompile Include="source\CComGem.cpp" />
@@ -617,6 +623,15 @@
     <ClCompile Include="source\CSPetSystem.cpp" />
     <ClCompile Include="source\CSQuest.cpp" />
     <ClCompile Include="source\CSWaterTerrain.cpp" />
+    <ClCompile Include="source\CustomCape.cpp" />
+    <ClCompile Include="source\CustomWorld.cpp" />
+
+    <ClCompile Include="source\GMAcheron.cpp" />
+    <ClCompile Include="source\GMDeventer.cpp" />
+    <ClCompile Include="source\GMFerea.cpp" />
+    <ClCompile Include="source\GMNixiesLake.cpp" />
+    <ClCompile Include="source\GMUrukMountain.cpp" />
+    <ClCompile Include="source\GMZoneNars.cpp" />
     <ClCompile Include="source\CustomEffects.cpp" />
     <ClCompile Include="source\CustomJewel.cpp" />
     <ClCompile Include="source\CustomSetEffect.cpp" />
@@ -713,6 +728,9 @@
     <ClCompile Include="source\GM_PK_Field.cpp" />
     <ClCompile Include="source\GM_Raklion.cpp" />
     <ClCompile Include="source\GOBoid.cpp" />
+    <ClCompile Include="source\HelperManager.cpp" />
+    <ClCompile Include="source\HelperSystem.cpp" />
+    <ClCompile Include="source\HelperView.cpp" />
     <ClCompile Include="source\GuildCache.cpp" />
     <ClCompile Include="source\GuildManager.cpp" />
     <ClCompile Include="source\HackCheck.cpp" />
@@ -758,6 +776,9 @@
     <ClCompile Include="source\MonsterEffect.cpp" />
     <ClCompile Include="source\MonsterGlow.cpp" />
     <ClCompile Include="source\MonsterHPBar.cpp" />
+    <ClCompile Include="source\MHPIntegration.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="source\MonsterName.cpp" />
     <ClCompile Include="source\Monsters.cpp" />
     <ClCompile Include="source\MoveCommandData.cpp" />
@@ -895,6 +916,7 @@
     <ClCompile Include="source\SMD.cpp" />
     <ClCompile Include="source\SMD2BMD.cpp" />
     <ClCompile Include="source\SocketSystem.cpp" />
+    <ClCompile Include="source\steady_clock.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Global Debug|Win32'">Create</PrecompiledHeader>
@@ -980,6 +1002,7 @@
     <ClCompile Include="source\XboxInput.cpp" />
     <ClCompile Include="source\ZzzAI.cpp" />
     <ClCompile Include="source\ZzzBMD.cpp" />
+    <ClCompile Include="source\MuCrypto\MuCrypto.cpp" />
     <ClCompile Include="source\ZzzCharacter.cpp" />
     <ClCompile Include="source\ZzzEffect.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Global Release|Win32'">MaxSpeed</Optimization>
@@ -1081,7 +1104,12 @@
     <ClInclude Include="source\Builder.h" />
     <ClInclude Include="source\Button.h" />
     <ClInclude Include="source\Camera3D.h" />
+    <ClInclude Include="source\InvasionInfo.h" />
     <ClInclude Include="source\CameraMove.h" />
+    <ClInclude Include="source\New_RenderBMD.h" />
+    <ClInclude Include="source\New_ModelBMD.h" />
+    <ClInclude Include="source\MU_OpenGL.h" />
+    <ClInclude Include="source\CShaderGL.h" />
     <ClInclude Include="source\CBTMessageBox.h" />
     <ClInclude Include="source\CComGem.h" />
     <ClInclude Include="source\CCRC32.h" />
@@ -1109,6 +1137,15 @@
     <ClInclude Include="source\CSPetSystem.h" />
     <ClInclude Include="source\CSQuest.h" />
     <ClInclude Include="source\CSWaterTerrain.h" />
+    <ClInclude Include="source\CustomCape.h" />
+    <ClInclude Include="source\CustomWorld.h" />
+    <ClInclude Include="source\CustomWorldEffectCompat.h" />
+    <ClInclude Include="source\GMAcheron.h" />
+    <ClInclude Include="source\GMDeventer.h" />
+    <ClInclude Include="source\GMFerea.h" />
+    <ClInclude Include="source\GMNixiesLake.h" />
+    <ClInclude Include="source\GMUrukMountain.h" />
+    <ClInclude Include="source\GMZoneNars.h" />
     <ClInclude Include="source\CustomEffects.h" />
     <ClInclude Include="source\CustomJewel.h" />
     <ClInclude Include="source\CustomSetEffect.h" />
@@ -1218,6 +1255,9 @@
     <ClInclude Include="source\GM_PK_Field.h" />
     <ClInclude Include="source\GM_Raklion.h" />
     <ClInclude Include="source\GOBoid.h" />
+    <ClInclude Include="source\HelperManager.h" />
+    <ClInclude Include="source\HelperSystem.h" />
+    <ClInclude Include="source\HelperView.h" />
     <ClInclude Include="source\GuildCache.h" />
     <ClInclude Include="source\GuildManager.h" />
     <ClInclude Include="source\HackCheck.h" />
@@ -1259,6 +1299,7 @@
     <ClInclude Include="source\LuaUser.h" />
     <ClInclude Include="source\MapManager.h" />
     <ClInclude Include="source\MatchEvent.h" />
+    <ClInclude Include="source\MHPIntegration.h" />
     <ClInclude Include="source\Math\ZzzMathLib.h" />
     <ClInclude Include="source\MemScript.h" />
     <ClInclude Include="source\MiniMap.h" />
@@ -1412,6 +1453,7 @@
     <ClInclude Include="source\Slider.h" />
     <ClInclude Include="source\SMD.h" />
     <ClInclude Include="source\SocketSystem.h" />
+    <ClInclude Include="source\steady_clock.h" />
     <ClInclude Include="source\Sprite.h" />
     <ClInclude Include="source\stdafx.h" />
     <ClInclude Include="source\StreamPacketEngine.h" />
@@ -1478,6 +1520,7 @@
     <ClInclude Include="source\XboxInput.h" />
     <ClInclude Include="source\ZzzAI.h" />
     <ClInclude Include="source\ZzzBMD.h" />
+    <ClInclude Include="source\MuCrypto\MuCrypto.h" />
     <ClInclude Include="source\ZzzCharacter.h" />
     <ClInclude Include="source\ZzzEffect.h" />
     <ClInclude Include="source\ZzzInfomation.h" />

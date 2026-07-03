@@ -13,6 +13,7 @@
 #include "Viewport.h"
 #include "Message.h"
 #include "CommandManager.h"
+#include "DSProtocol.h"
 #include "MapManager.h"
 #include "Party.h"
 #include "GameMain.h"
@@ -62,6 +63,11 @@ void CCustomAttack::ReadCustomAttackInfo(char* section,char* path) // OK
 
 	//CustomOffAttack
 	this->m_CustomAttackOfflineGPGain = GetPrivateProfileInt(section,"CustomAttackOfflineGPGain",0,path);
+
+	this->m_CustomOffAttackAutoResume[0] = GetPrivateProfileInt(section, "CustomOffAttackAutoResume_AL0", 0, path);
+	this->m_CustomOffAttackAutoResume[1] = GetPrivateProfileInt(section, "CustomOffAttackAutoResume_AL1", 0, path);
+	this->m_CustomOffAttackAutoResume[2] = GetPrivateProfileInt(section, "CustomOffAttackAutoResume_AL2", 0, path);
+	this->m_CustomOffAttackAutoResume[3] = GetPrivateProfileInt(section, "CustomOffAttackAutoResume_AL3", 0, path);
 }
 
 void CCustomAttack::CommandCustomAttack(LPOBJ lpObj,char* arg) // OK
@@ -180,6 +186,8 @@ bool CCustomAttack::CommandCustomAttackOffline(LPOBJ lpObj, char* arg) // OK
 	lpObj->AttackCustomOffline = 1;
 	
 	lpObj->AttackCustomOfflineTime = 0;
+
+	this->DGCustomOffAttackResumeSaveSend(lpObj->Index, 1);
 	
 	closesocket(lpObj->PerSocketContext->Socket);
 
@@ -325,6 +333,7 @@ void CCustomAttack::OnAttackClose(LPOBJ lpObj) // OK
 
 	if(lpObj->AttackCustomOffline == 1)
 	{
+		this->DGCustomOffAttackResumeSaveSend(lpObj->Index, 0);
 		lpObj->AttackCustomOffline = 2;
 		lpObj->AttackCustomOfflineTime = 5;
 	}
@@ -338,6 +347,7 @@ void CCustomAttack::OnAttackSecondProc(LPOBJ lpObj) // OK
 		{
 			if((--lpObj->AttackCustomOfflineTime) == 0)
 			{
+				this->DGCustomOffAttackResumeSaveSend(lpObj->Index, 0);
 				gObjDel(lpObj->Index);
 				lpObj->AttackCustomOffline = 0;
 				lpObj->AttackCustomOfflineTime = 0;
@@ -356,10 +366,33 @@ void CCustomAttack::OnAttackAlreadyConnected(LPOBJ lpObj) // OK
 {
 	if(lpObj->AttackCustomOffline != 0)
 	{
+		if(gGameServerLogOut == 0 && gGameServerDisconnect == 0)
+		{
+			this->DGCustomOffAttackResumeSaveSend(lpObj->Index, 0);
+		}
+
 		gObjDel(lpObj->Index);
 		lpObj->AttackCustomOffline = 0;
 		lpObj->AttackCustomOfflineTime = 0;
 		lpObj->AttackCustomOfflineMoneyDelay = 0;
+	}
+}
+
+void CCustomAttack::OnAccountLevelChange(LPOBJ lpObj) // OK
+{
+	if(OBJECT_RANGE(lpObj->Index) == 0 || lpObj->Type != OBJECT_USER)
+	{
+		return;
+	}
+
+	if(lpObj->AttackCustom != 0 && this->m_CustomAttackAutoResume[lpObj->AccountLevel] == 0)
+	{
+		this->OnAttackClose(lpObj);
+	}
+
+	if(lpObj->AttackCustomOffline != 0 && (this->m_CustomOffAttackAutoResume[lpObj->AccountLevel] == 0 || gMapManager.GetMapCustomOffAttack(lpObj->Map) == 0))
+	{
+		this->OnAttackClose(lpObj);
 	}
 }
 
@@ -772,6 +805,7 @@ void CCustomAttack::DGCustomAttackResumeSend(int aIndex) // OK
 
 	pMsg.header.set(0xF5, sizeof(pMsg));
 	pMsg.index = aIndex;
+	memcpy(pMsg.account, lpObj->Account, sizeof(pMsg.account));
 	memcpy(pMsg.name, lpObj->Name, sizeof(pMsg.name));
 
 	gDataServerConnection.DataSend((BYTE*)&pMsg, sizeof(pMsg));
@@ -787,8 +821,20 @@ void CCustomAttack::DGCustomAttackResumeRecv(SDHP_CARESUME_RECV* lpMsg) // OK
 		return;
 	}
 
-	if (strcmp(lpMsg->name, lpObj->Name) != 0)
+	if (strcmp(lpMsg->account, lpObj->Account) != 0 || strcmp(lpMsg->name, lpObj->Name) != 0)
 	{
+		return;
+	}
+
+	if(this->m_CustomAttackAutoResume[lpObj->AccountLevel] == 0)
+	{
+		lpObj->AttackCustom = 0;
+		lpObj->AttackCustomSkill = 0;
+		lpObj->AttackCustomDelay = 0;
+		lpObj->AttackCustomZoneX = 0;
+		lpObj->AttackCustomZoneY = 0;
+		lpObj->AttackCustomZoneMap = 0;
+		this->DGCustomAttackResumeSaveSend(lpObj->Index);
 		return;
 	}
 
@@ -821,6 +867,8 @@ void CCustomAttack::DGCustomAttackResumeSaveSend(int Index)
 
 	pMsg.index = lpObj->Index;
 
+	memcpy(pMsg.account, lpObj->Account, sizeof(pMsg.account));
+
 	memcpy(pMsg.name, lpObj->Name, sizeof(pMsg.name));
 
 	pMsg.active = lpObj->AttackCustom;
@@ -834,4 +882,143 @@ void CCustomAttack::DGCustomAttackResumeSaveSend(int Index)
 	pMsg.map = lpObj->AttackCustomZoneMap;
 
 	gDataServerConnection.DataSend((BYTE*)&pMsg, sizeof(pMsg));
+}
+
+void CCustomAttack::DGCustomOffAttackResumeListSend()
+{
+	SDHP_OFFATTACK_LIST_SEND pMsg;
+
+	pMsg.header.set(0xF8, sizeof(pMsg));
+
+	gDataServerConnection.DataSend((BYTE*)&pMsg, sizeof(pMsg));
+}
+
+void CCustomAttack::DGCustomOffAttackResumeRecv(SDHP_OFFATTACK_RESUME_RECV* lpMsg)
+{
+	if(CHECK_RANGE(lpMsg->accountLevel, 4) == 0 || this->m_CustomOffAttackAutoResume[lpMsg->accountLevel] == 0)
+	{
+		return;
+	}
+
+	for(int n=OBJECT_START_USER;n < MAX_OBJECT;n++)
+	{
+		if(gObj[n].Connected != OBJECT_OFFLINE && (strcmp(gObj[n].Account, lpMsg->account) == 0 || strcmp(gObj[n].Name, lpMsg->name) == 0))
+		{
+			return;
+		}
+	}
+
+	int index = gObjAddSearch(INVALID_SOCKET, "127.0.0.1");
+
+	if(index < 0 || gObjAdd(INVALID_SOCKET, "127.0.0.1", index) < 0)
+	{
+		return;
+	}
+
+	LPOBJ lpObj = &gObj[index];
+
+	lpObj->Connected = OBJECT_LOGGED;
+	lpObj->Socket = INVALID_SOCKET;
+	lpObj->LoginMessageSend = 0;
+	lpObj->LoginMessageCount = 0;
+	lpObj->AccountLevel = lpMsg->accountLevel;
+
+	memcpy(lpObj->Account, lpMsg->account, sizeof(lpObj->Account));
+	memcpy(lpObj->AccountExpireDate, lpMsg->accountExpireDate, sizeof(lpObj->AccountExpireDate));
+
+	CUSTOM_OFFATTACK_RESUME_INFO info;
+	memset(&info, 0, sizeof(info));
+	memcpy(info.account, lpMsg->account, sizeof(info.account));
+	memcpy(info.name, lpMsg->name, sizeof(info.name));
+	info.skill = lpMsg->skill;
+	info.map = lpMsg->map;
+	info.posx = lpMsg->posx;
+	info.posy = lpMsg->posy;
+	info.autobuff = lpMsg->autobuff;
+	info.accountLevel = lpMsg->accountLevel;
+	memcpy(info.accountExpireDate, lpMsg->accountExpireDate, sizeof(info.accountExpireDate));
+
+	this->m_CustomOffAttackResumeInfo[index] = info;
+
+	GDCharacterInfoSend(index, lpMsg->name);
+}
+
+void CCustomAttack::DGCustomOffAttackResumeSaveSend(int Index,int active)
+{
+	if(OBJECT_RANGE(Index) == 0)
+	{
+		return;
+	}
+
+	LPOBJ lpObj = &gObj[Index];
+
+	if(strcmp(lpObj->Account, "") == 0 || strcmp(lpObj->Name, "") == 0)
+	{
+		return;
+	}
+
+	if(active != 0 && (CHECK_RANGE(lpObj->AccountLevel, 4) == 0 || this->m_CustomOffAttackAutoResume[lpObj->AccountLevel] == 0))
+	{
+		return;
+	}
+
+	SDHP_OFFATTACK_SAVE_SEND pMsg;
+	memset(&pMsg, 0, sizeof(pMsg));
+
+	pMsg.header.set(0xF7, sizeof(pMsg));
+	memcpy(pMsg.account, lpObj->Account, sizeof(pMsg.account));
+	memcpy(pMsg.name, lpObj->Name, sizeof(pMsg.name));
+	pMsg.active = active;
+	pMsg.skill = lpObj->AttackCustomSkill;
+	pMsg.map = lpObj->AttackCustomZoneMap;
+	pMsg.posx = lpObj->AttackCustomZoneX;
+	pMsg.posy = lpObj->AttackCustomZoneY;
+	pMsg.autobuff = lpObj->AttackCustomAutoBuff;
+	pMsg.accountLevel = lpObj->AccountLevel;
+	memcpy(pMsg.accountExpireDate, lpObj->AccountExpireDate, sizeof(pMsg.accountExpireDate));
+
+	gDataServerConnection.DataSend((BYTE*)&pMsg, sizeof(pMsg));
+}
+
+bool CCustomAttack::ApplyCustomOffAttackResume(LPOBJ lpObj)
+{
+	std::map<int,CUSTOM_OFFATTACK_RESUME_INFO>::iterator it = this->m_CustomOffAttackResumeInfo.find(lpObj->Index);
+
+	if(it == this->m_CustomOffAttackResumeInfo.end())
+	{
+		return 0;
+	}
+
+	CUSTOM_OFFATTACK_RESUME_INFO info = it->second;
+	this->m_CustomOffAttackResumeInfo.erase(it);
+
+	if(strcmp(info.account, lpObj->Account) != 0 || strcmp(info.name, lpObj->Name) != 0)
+	{
+		return 0;
+	}
+
+	if(CHECK_RANGE(lpObj->AccountLevel, 4) == 0 || this->m_CustomOffAttackAutoResume[lpObj->AccountLevel] == 0)
+	{
+		this->DGCustomOffAttackResumeSaveSend(lpObj->Index, 0);
+		return 0;
+	}
+
+	lpObj->Socket = INVALID_SOCKET;
+	lpObj->AttackCustom = 1;
+	lpObj->AttackCustomSkill = info.skill;
+	lpObj->AttackCustomDelay = GetTickCount();
+	lpObj->AttackCustomZoneX = info.posx;
+	lpObj->AttackCustomZoneY = info.posy;
+	lpObj->AttackCustomZoneMap = info.map;
+	lpObj->AttackCustomAutoBuff = info.autobuff;
+	lpObj->AttackCustomOffline = 1;
+	lpObj->AttackCustomOfflineTime = 0;
+	lpObj->AttackCustomOfflineMoneyDelay = GetTickCount();
+	lpObj->AttackCustomTime = this->m_CustomAttackTime[lpObj->AccountLevel] * 600;
+
+	this->DGCustomOffAttackResumeSaveSend(lpObj->Index, 1);
+
+	LogAdd(LOG_BLACK, "[CustomOffAttackAutoResume][%s][%s] resumed at map:%d x:%d y:%d skill:%d", lpObj->Account, lpObj->Name, lpObj->Map, lpObj->X, lpObj->Y, lpObj->AttackCustomSkill);
+
+	return 1;
 }

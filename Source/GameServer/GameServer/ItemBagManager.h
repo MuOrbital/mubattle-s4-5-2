@@ -98,6 +98,7 @@ public:
 	bool DropItemByItemIndex(int ItemIndex,int ItemLevel,LPOBJ lpObj,int map,int x,int y);
 	bool DropItemByMonsterClass(int MonsterClass,LPOBJ lpObj,int map,int x,int y);
 	bool DropItemBySpecialValue(int SpecialValue,LPOBJ lpObj,int map,int x,int y);
+	int GetBagIndexByMonsterClass(int MonsterClass);
 public:
 	std::map<int,ITEM_BAG_MANAGER_INFO> m_ItemBagManagerInfo;
 };

@@ -15,6 +15,7 @@
 #include "DSPlaySound.h"
 #include "UIControls.h"
 #include "NewUISystem.h"
+#include "Winmain.h"
 
 #define	OW_BTN_GAP		25
 #define	OW_SLD_GAP		48
@@ -68,6 +69,7 @@ void COptionWin::Create()
 		m_aSlider[i].Create(&iiThumb, &iiBack, &iiGauge, &rcGauge);
 
 	m_aSlider[OW_SLD_EFFECT_VOL].SetSlideRange(9);
+	m_aSlider[OW_SLD_MUSIC_VOL].SetSlideRange(10);
 	m_aSlider[OW_SLD_RENDER_LV].SetSlideRange(4);
 
 	SetPosition((rInput.GetScreenWidth() - m_winBack.GetWidth()) / 2,
@@ -135,6 +137,7 @@ void COptionWin::UpdateDisplay()
 	m_aBtn[OW_BTN_WHISPER_ALARM].SetCheck(g_pOption->IsWhisperSound());
 	m_aBtn[OW_BTN_SLIDE_HELP].SetCheck(g_pOption->IsSlideHelp());
 	m_aSlider[OW_SLD_EFFECT_VOL].SetSlidePos(g_pOption->GetVolumeLevel());
+	m_aSlider[OW_SLD_MUSIC_VOL].SetSlidePos(g_pOption->GetMusicVolumeLevel());
 	m_aSlider[OW_SLD_RENDER_LV].SetSlidePos(g_pOption->GetRenderLevel());
 }
 
@@ -168,6 +171,16 @@ void COptionWin::UpdateWhileActive(double dDeltaTick)
 		{
 			g_pOption->SetVolumeLevel(nSlidePos);
 			::SetEffectVolumeLevel(g_pOption->GetVolumeLevel());
+		}
+	}
+	else if (m_aSlider[OW_SLD_MUSIC_VOL].GetState())
+	{
+		int nSlidePos = m_aSlider[OW_SLD_MUSIC_VOL].GetSlidePos();
+
+		if(g_pOption->GetMusicVolumeLevel() != nSlidePos)
+		{
+			g_pOption->SetMusicVolumeLevel(nSlidePos);
+			::SetMusicVolumeLevel(g_pOption->GetMusicVolumeLevel());
 		}
 	}
 	else if (m_aSlider[OW_SLD_RENDER_LV].GetState())
@@ -206,8 +219,8 @@ void COptionWin::RenderControls()
 	}
 
 	int nTextPosY;
-	const char* apszSldText[OW_SLD_MAX] = { GlobalText[389], GlobalText[1840] };
-	int anVal[OW_SLD_MAX] = { g_pOption->GetVolumeLevel(), g_pOption->GetRenderLevel() * 2 + 5};
+	const char* apszSldText[OW_SLD_MAX] = { GlobalText[389], "Music Volume", GlobalText[1840] };
+	int anVal[OW_SLD_MAX] = { g_pOption->GetVolumeLevel(), g_pOption->GetMusicVolumeLevel(), g_pOption->GetRenderLevel() * 2 + 5};
 	
 	char szVal[3];
 

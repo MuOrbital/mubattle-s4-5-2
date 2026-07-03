@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Controller.h"
+#include "Camera3D.h"
 #include "ChaosGenesis.h"
+#include "InvasionInfo.h"
 #include "Interfaces.h"
 // ----------------------------------------------------------------------------------------------
 Controller	gController;
@@ -42,15 +44,23 @@ LRESULT CALLBACK Controller::MouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 	{
 		MOUSEHOOKSTRUCTEX* Mouse = (MOUSEHOOKSTRUCTEX*)lParam;
 
+		gInvasionInfo.Mouse(Mouse, wParam);
+
 		switch (wParam)
 		{
 		case WM_MOUSEMOVE:
+			gCamera.Move(Mouse);
 			break;
 		case WM_MBUTTONDOWN:
+			gCamera.SetIsMove(1);
+			gCamera.SetCursorX(Mouse->pt.x);
+			gCamera.SetCursorY(Mouse->pt.y);
 			break;
 		case WM_MBUTTONUP:
+			gCamera.SetIsMove(0);
 			break;
 		case WM_MOUSEWHEEL:
+			gCamera.Zoom(Mouse);
 			if (SceneFlag == MAIN_SCENE)
 			{
 				gInterface.m_Lua.Generic_Call("ScrollMouse", "i>", Mouse->mouseData);

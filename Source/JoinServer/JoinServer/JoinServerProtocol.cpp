@@ -52,6 +52,12 @@ void JoinServerProtocolCore(int index,BYTE head,BYTE* lpMsg,int size) // OK
 	PROTECT_FINAL
 }
 
+static void NormalizeExpiredAccountLevel(char* account)
+{
+	gQueryManager.ExecQuery("UPDATE MEMB_INFO SET AccountLevel=0 WHERE memb___id='%s' AND AccountLevel<>0 AND AccountExpireDate IS NOT NULL AND GETDATE()>AccountExpireDate", account);
+	gQueryManager.Close();
+}
+
 void GJServerInfoRecv(SDHP_SERVER_INFO_RECV* lpMsg,int index) // OK
 {
 	SDHP_SERVER_INFO_SEND pMsg;
@@ -179,6 +185,8 @@ void GJConnectAccountRecv(SDHP_CONNECT_ACCOUNT_RECV* lpMsg, int index) // OK
 	pMsg.BlockCode = (BYTE)gQueryManager.GetAsInteger("bloc_code");
 
 	gQueryManager.Close();
+
+	NormalizeExpiredAccountLevel(lpMsg->account);
 
 	if (gQueryManager.ExecQuery("EXEC WZ_GetAccountLevel '%s'", lpMsg->account) == 0 || gQueryManager.Fetch() == SQL_NO_DATA)
 	{
@@ -440,6 +448,8 @@ void GJMapServerMoveAuthRecv(SDHP_MAP_SERVER_MOVE_AUTH_RECV* lpMsg,int index) //
 
 	pMsg.y = AccountInfo.Y;
 
+	NormalizeExpiredAccountLevel(lpMsg->account);
+
 	if(gQueryManager.ExecQuery("EXEC WZ_GetAccountLevel '%s'",lpMsg->account) == 0 || gQueryManager.Fetch() == SQL_NO_DATA)
 	{
 		gQueryManager.Close();
@@ -490,6 +500,8 @@ void GJAccountLevelRecv(SDHP_ACCOUNT_LEVEL_RECV* lpMsg,int index) // OK
 
 	memcpy(pMsg.account,lpMsg->account,sizeof(pMsg.account));
 
+	NormalizeExpiredAccountLevel(lpMsg->account);
+
 	if(gQueryManager.ExecQuery("EXEC WZ_GetAccountLevel '%s'",lpMsg->account) == 0 || gQueryManager.Fetch() == SQL_NO_DATA)
 	{
 		gQueryManager.Close();
@@ -517,6 +529,8 @@ void GJAccountLevelVipRecv(SDHP_ACCOUNT_LEVEL_RECV* lpMsg, int index) // OK
 	pMsg.index = lpMsg->index;
 
 	memcpy(pMsg.account, lpMsg->account, sizeof(pMsg.account));
+
+	NormalizeExpiredAccountLevel(lpMsg->account);
 
 	if (gQueryManager.ExecQuery("EXEC WZ_GetAccountLevel '%s'", lpMsg->account) == 0 || gQueryManager.Fetch() == SQL_NO_DATA)
 	{

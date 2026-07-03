@@ -134,6 +134,7 @@ public:
 	BOOL			m_bFixForm;
 	bool			Foot[2];
 	bool			SafeZone;
+	bool			MiniatureMode;
 	bool			Change;
 	bool			HideShadow;
 	bool			m_bIsSelected;

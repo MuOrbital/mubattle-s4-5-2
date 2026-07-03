@@ -2,8 +2,7 @@
 ;==================================================
 ; Verify Settings
 ;==================================================
-CustomerName = 
-CustomerHardwareId = 
+CustomerName = muonline
 
 ;==================================================
 ; Server Settings

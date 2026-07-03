@@ -38,6 +38,7 @@
 #include "IllusionTemple.h"
 #include "ImperialGuardian.h"
 #include "InvasionManager.h"
+#include "ItemBagManager.h"
 #include "InventoryEquipment.h"
 #include "ItemOption.h"
 #include "JewelOfHarmonyOption.h"
@@ -61,6 +62,7 @@
 #include "Party.h"
 #include "PartyMatching.h"
 #include "PentagramSystem.h"
+#include "Pets.h"
 #include "Quest.h"
 #include "QuestObjective.h"
 #include "QuestWorld.h"
@@ -1167,7 +1169,7 @@ void CObjectManager::CharacterCalcExperienceSplit(LPOBJ lpObj,LPOBJ lpMonster,in
 	}
 }
 
-void CObjectManager::CharacterCalcExperienceAlone(LPOBJ lpObj,LPOBJ lpMonster,int damage,int flag,bool type,int AttackDamage) // OK
+void CObjectManager::CharacterCalcExperienceAlone(LPOBJ lpObj,LPOBJ lpMonster,QWORD damage,int flag,bool type,int AttackDamage) // OK
 {
 	if(lpMonster->Type != OBJECT_MONSTER)
 	{
@@ -1192,13 +1194,15 @@ void CObjectManager::CharacterCalcExperienceAlone(LPOBJ lpObj,LPOBJ lpMonster,in
 
 	level = ((level<0)?0:level);
 
-	damage = ((damage>lpMonster->MaxLife)?(int)lpMonster->MaxLife:damage);
+	QWORD MaxLife = ((lpMonster->MaxLife<1)?1:(QWORD)lpMonster->MaxLife);
+
+	damage = ((damage>MaxLife)?MaxLife:damage);
 
 	QWORD experience = level+(level/4);
 
 	if(gMasterSkillTree.CheckMasterLevel(lpObj) == 0)
 	{
-		experience = ((damage*experience)/(int)lpMonster->MaxLife)*gServerInfo.m_AddExperienceRate[lpObj->AccountLevel];
+		experience = ((damage*experience)/MaxLife)*gServerInfo.m_AddExperienceRate[lpObj->AccountLevel];
 
 		experience = (experience*(lpObj->ExperienceRate+lpObj->EffectOption.AddExperienceRate))/100;
 
@@ -1212,7 +1216,7 @@ void CObjectManager::CharacterCalcExperienceAlone(LPOBJ lpObj,LPOBJ lpMonster,in
 	}
 	else
 	{
-		experience = ((damage*experience)/(int)lpMonster->MaxLife)*gServerInfo.m_AddMasterExperienceRate[lpObj->AccountLevel];
+		experience = ((damage*experience)/MaxLife)*gServerInfo.m_AddMasterExperienceRate[lpObj->AccountLevel];
 
 		experience = (experience*(lpObj->MasterExperienceRate+lpObj->EffectOption.AddMasterExperienceRate))/100;
 
@@ -1858,6 +1862,11 @@ void CObjectManager::CharacterMakePreviewCharSet(int aIndex) // OK
 	else if(TempInventory[8] == 123)
 	{
 		lpObj->CharSet[16] |= 0x60;
+	}
+
+	if(lpObj->MiniatureMode != 0)
+	{
+		lpObj->CharSet[17] |= 0x10;
 	}
 }
 
@@ -3886,6 +3895,8 @@ void CObjectManager::CharacterCalcAttribute(int aIndex) // OK
 	gMuunSystem.CalcMuunOption(lpObj,0);
 	#endif
 
+	gCustomPet.CalcCustomPetOption(lpObj,0);
+
 	if(Right->m_Index >= GET_ITEM(4,0) && Right->m_Index < GET_ITEM(5,0) && Right->m_Index != GET_ITEM(4,15) && Right->m_Slot == 0)
 	{
 		if(Left->m_Index == GET_ITEM(4,7) && Left->m_Level > 0)
@@ -4376,7 +4387,7 @@ bool CObjectManager::CharacterInfoSet(BYTE* aRecv,int aIndex) // OK
 	return 1;
 }
 
-void CObjectManager::CharacterLifeCheck(LPOBJ lpObj,LPOBJ lpTarget,int damage,int DamageType,int flag,int type,int skill,int ShieldDamage) // OK
+void CObjectManager::CharacterLifeCheck(LPOBJ lpObj,LPOBJ lpTarget,int damage,int DamageType,int flag,int type,int skill,int ShieldDamage,int HitDamage) // OK
 {
 	if(lpObj->Connected != OBJECT_ONLINE)
 	{
@@ -4395,9 +4406,14 @@ void CObjectManager::CharacterLifeCheck(LPOBJ lpObj,LPOBJ lpTarget,int damage,in
 		SummonIndex = lpObj->SummonIndex;
 	}
 
-	if(gObj[SummonIndex].Type == OBJECT_USER && lpTarget->Type == OBJECT_MONSTER && damage > 0)
+	if(gObj[SummonIndex].Type == OBJECT_USER && lpTarget->Type == OBJECT_MONSTER)
 	{
-		gObjMonsterSetHitDamage(lpTarget,SummonIndex,damage);
+		int MonsterHitDamage = ((HitDamage<0)?damage:HitDamage);
+
+		if(MonsterHitDamage > 0)
+		{
+			gObjMonsterSetHitDamage(lpTarget,SummonIndex,MonsterHitDamage);
+		}
 	}
 
 	if(lpTarget->Type == OBJECT_MONSTER && OBJECT_RANGE(lpTarget->SummonIndex) != 0 && damage > 0)
@@ -4501,6 +4517,11 @@ void CObjectManager::CharacterLifeCheck(LPOBJ lpObj,LPOBJ lpTarget,int damage,in
 			if(lpTarget->Map == MAP_RAKLION2)
 			{
 				gRaklion.RaklionMonsterDieProc(lpTarget,&gObj[SummonIndex]);
+			}
+
+			if(gItemBagManager.GetBagIndexByMonsterClass(lpTarget->Class) != -1)
+			{
+				gObjMonsterDieGiveItem(lpTarget,&gObj[SummonIndex]);
 			}
 
 			if(gObj[SummonIndex].Type == OBJECT_USER)

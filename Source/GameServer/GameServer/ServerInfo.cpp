@@ -70,6 +70,7 @@
 #include "Path.h"
 #include "PcPoint.h"
 #include "PentagramSystem.h"
+#include "Pets.h"
 #include "Quest.h"
 #include "QuestObjective.h"
 #include "QuestReward.h"
@@ -281,7 +282,7 @@ void CServerInfo::ReadCustomInfo() // OK
 
 	gCustomPick.Load(gPath.GetFullPath("Custom\\CustomPick.txt"));
 
-	//gCustomRanking.Load(gPath.GetFullPath("Custom\\CustomRanking.txt"));
+	gCustomRanking.Load(gPath.GetFullPath("Custom\\CustomRanking.txt"));
 
 	ObjBotBuff.MakeBot();
 
@@ -455,6 +456,8 @@ void CServerInfo::ReadItemInfo() // OK
 	gSocketItemType.Load(gPath.GetFullPath("Item\\SocketItemType.txt"));
 
 	#endif
+
+	gCustomPet.Load(gPath.GetFullPath("Item\\PetItemOption.txt"));
 
 	LogAdd(LOG_BLUE,"[ServerInfo] Item loaded successfully");
 }
@@ -3220,6 +3223,11 @@ void CServerInfo::ReadCustomInfo(char* section,char* path) // OK
 	this->m_AnnounceChaosMix = GetPrivateProfileInt(section,"AnnounceChaosMix",0,path);
 
 	GetPrivateProfileString(section,"AnnounceChaosMixText","",this->m_AnnounceChaosMixText,sizeof(this->m_AnnounceChaosMixText),path);
+
+	this->m_Camera3DSwitch[0] = GetPrivateProfileInt(section,"Camera3DSwitch_AL0",1,path);
+	this->m_Camera3DSwitch[1] = GetPrivateProfileInt(section,"Camera3DSwitch_AL1",1,path);
+	this->m_Camera3DSwitch[2] = GetPrivateProfileInt(section,"Camera3DSwitch_AL2",1,path);
+	this->m_Camera3DSwitch[3] = GetPrivateProfileInt(section,"Camera3DSwitch_AL3",1,path);
 }
 
 void CServerInfo::ReadEventInfo(char* section,char* path) // OK

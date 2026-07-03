@@ -41,14 +41,14 @@ public:
 
 public:
 	void Register( BoostSmart_Ptr( BaseMap ) pMap );
-	void UnRegister( ENUM_WORLD type );
+	void UnRegister( int type );
 
 public:
 	BaseMap& GetMap( int type );
 	
 private:
-	bool FindMap( ENUM_WORLD type );
-	BaseMap& FindBaseMap( ENUM_WORLD type );
+	bool FindMap( int type );
+	BaseMap& FindBaseMap( int type );
 	void Init();
 	void Destroy();
 	MapProcess();

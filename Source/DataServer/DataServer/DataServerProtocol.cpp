@@ -764,15 +764,134 @@ void DataServerProtocolCore(int index,BYTE head,BYTE* lpMsg,int size) // OK
 		case 0xE1:
 			CSDataRecv(index,head,lpMsg,size);
 			break;
+		case 0xF4:
+			switch (((lpMsg[0] == 0xC1) ? lpMsg[3] : lpMsg[4]))
+			{
+			case 0x00:
+				GDCustomRankingRecv((SDHP_CUSTOM_RANKING_RECV*)lpMsg, index);
+				break;
+			case 0x01:
+				GDRankingPlayerInfoRecv((SDHP_RANKING_CHARACTER_INFO_RECV*)lpMsg, index);
+				break;
+			}
+			break;
 		case 0xF5:
 			GDCustomAttackResumeRecv((SDHP_CARESUME_RECV*)lpMsg, index);
 			break;
 		case 0xF6:
 			GDCustomAttackSaveRecv((SDHP_CARESUME_SAVE_RECV*)lpMsg);
 			break;
+		case 0xF7:
+			GDCustomOffAttackSaveRecv((SDHP_OFFATTACK_SAVE_RECV*)lpMsg);
+			break;
+		case 0xF8:
+			GDCustomOffAttackListRecv((SDHP_OFFATTACK_LIST_RECV*)lpMsg, index);
+			break;
 	}
 
 	PROTECT_FINAL
+}
+
+void GDCustomRankingRecv(SDHP_CUSTOM_RANKING_RECV* lpMsg, int index)
+{
+	BYTE send[4096];
+	PMSG_CUSTOM_RANKING_SEND pMsg;
+	memset(&pMsg, 0, sizeof(pMsg));
+
+	pMsg.header.set(0xF4, 0);
+	pMsg.index = lpMsg->index;
+	pMsg.type = lpMsg->type;
+
+	int size = sizeof(pMsg);
+	CUSTOM_RANKING_DATA info;
+
+	if (gQueryManager.ExecQuery("EXEC WZ_CustomRanking %d", lpMsg->type) != 0)
+	{
+		while (gQueryManager.Fetch() != SQL_NO_DATA)
+		{
+			memset(&info, 0, sizeof(info));
+			gQueryManager.GetAsString("VALUE1", info.szName, sizeof(info.szName));
+			info.Score = gQueryManager.GetAsInteger("VALUE2");
+			info.Class = (BYTE)gQueryManager.GetAsInteger("VALUE3");
+			info.Vip = (BYTE)gQueryManager.GetAsInteger("VALUE4");
+
+			if ((size + sizeof(info)) >= sizeof(send))
+			{
+				break;
+			}
+
+			memcpy(&send[size], &info, sizeof(info));
+			size += sizeof(info);
+			pMsg.count++;
+		}
+	}
+
+	gQueryManager.Close();
+
+	pMsg.header.size[0] = SET_NUMBERHB(size);
+	pMsg.header.size[1] = SET_NUMBERLB(size);
+	memcpy(send, &pMsg, sizeof(pMsg));
+
+	gSocketManager.DataSend(index, send, size);
+}
+
+void GDRankingPlayerInfoRecv(SDHP_RANKING_CHARACTER_INFO_RECV* lpMsg, int index)
+{
+	SDHP_RANKING_CHARACTER_INFO_SEND pMsg;
+	memset(&pMsg, 0, sizeof(pMsg));
+
+	pMsg.header.set(0xF6, sizeof(pMsg));
+	pMsg.index = lpMsg->index;
+	pMsg.characterIndex = lpMsg->characterIndex;
+	memcpy(pMsg.name, lpMsg->name, sizeof(pMsg.name));
+	memset(pMsg.Inventory, 0xFF, sizeof(pMsg.Inventory));
+
+	char escapedName[(sizeof(pMsg.name) * 2) + 1] = { 0 };
+	int escapedIndex = 0;
+
+	for (int n = 0; n < (int)sizeof(pMsg.name) && pMsg.name[n] != 0 && escapedIndex < (int)sizeof(escapedName) - 1; n++)
+	{
+		if (pMsg.name[n] == '\'' && escapedIndex < (int)sizeof(escapedName) - 2)
+		{
+			escapedName[escapedIndex++] = '\'';
+			escapedName[escapedIndex++] = '\'';
+		}
+		else
+		{
+			escapedName[escapedIndex++] = pMsg.name[n];
+		}
+	}
+
+	if (pMsg.name[0] != 0 &&
+		gQueryManager.ExecQuery("SELECT Class,CtlCode,Inventory FROM Character WHERE Name='%s'", escapedName) != 0 &&
+		gQueryManager.Fetch() != SQL_NO_DATA)
+	{
+		BYTE Inventory[INVENTORY_SIZE][16];
+		memset(Inventory, 0xFF, sizeof(Inventory));
+
+		pMsg.DBClass = (BYTE)gQueryManager.GetAsInteger("Class");
+		pMsg.CtlCode = (BYTE)gQueryManager.GetAsInteger("CtlCode");
+		gQueryManager.GetAsBinary("Inventory", Inventory[0], sizeof(Inventory));
+		pMsg.result = 1;
+
+		for (int i = 0; i < RANKING_INVENTORY_SLOTS; i++)
+		{
+			if (Inventory[i][0] == 0xFF && (Inventory[i][7] & 0x80) == 0x80 &&
+				(Inventory[i][9] & 0xF0) == 0xF0)
+			{
+				continue;
+			}
+
+			pMsg.Inventory[i][0] = Inventory[i][0];
+			pMsg.Inventory[i][1] = Inventory[i][1];
+			pMsg.Inventory[i][2] = Inventory[i][7];
+			pMsg.Inventory[i][3] = Inventory[i][8];
+			pMsg.Inventory[i][4] = Inventory[i][9];
+		}
+	}
+
+	gQueryManager.Close();
+	gSocketManager.DataSend(index, (BYTE*)&pMsg, sizeof(pMsg));
 }
 
 void GDServerInfoRecv(SDHP_SERVER_INFO_RECV* lpMsg,int index) // OK
@@ -3086,9 +3205,11 @@ void GDCustomAttackResumeRecv(SDHP_CARESUME_RECV* lpMsg, int index)
 
 	pMsg.index = lpMsg->index;
 
+	memcpy(pMsg.account, lpMsg->account, sizeof(pMsg.account));
+
 	memcpy(pMsg.name, lpMsg->name, sizeof(pMsg.name));
 
-	if (gQueryManager.ExecQuery("SELECT * FROM CustomAttack WHERE Name='%s'", lpMsg->name) == 0 || gQueryManager.Fetch() == SQL_NO_DATA)
+	if (gQueryManager.ExecQuery("SELECT TOP 1 * FROM CustomAttack WHERE Account='%s' OR Name='%s' ORDER BY CASE WHEN Account='%s' THEN 0 ELSE 1 END", lpMsg->account, lpMsg->name, lpMsg->account) == 0 || gQueryManager.Fetch() == SQL_NO_DATA)
 	{
 		gQueryManager.Close();
 	}
@@ -3106,23 +3227,79 @@ void GDCustomAttackResumeRecv(SDHP_CARESUME_RECV* lpMsg, int index)
 
 		gQueryManager.Close();
 
+		gQueryManager.ExecQuery("UPDATE CustomAttack SET Account='%s',Name='%s' WHERE Account='%s' OR Name='%s'", lpMsg->account, lpMsg->name, lpMsg->account, lpMsg->name);
+		gQueryManager.Close();
+
 		gSocketManager.DataSend(index, (BYTE*)&pMsg, sizeof(pMsg));
 	}
 }
 
 void GDCustomAttackSaveRecv(SDHP_CARESUME_SAVE_RECV* lpMsg)
 {
-	if (gQueryManager.ExecQuery("SELECT * FROM CustomAttack WHERE Name='%s'", lpMsg->name) == 0 || gQueryManager.Fetch() == SQL_NO_DATA)
+	if (gQueryManager.ExecQuery("SELECT TOP 1 * FROM CustomAttack WHERE Account='%s' OR Name='%s' ORDER BY CASE WHEN Account='%s' THEN 0 ELSE 1 END", lpMsg->account, lpMsg->name, lpMsg->account) == 0 || gQueryManager.Fetch() == SQL_NO_DATA)
 	{
 		gQueryManager.Close();
-		gQueryManager.ExecQuery("INSERT INTO CustomAttack (Name,Active,Skill,Map,PosX,PosY) VALUES ('%s',%d,%d,%d,%d,%d)", lpMsg->name, lpMsg->active, lpMsg->skill, lpMsg->map, lpMsg->posx, lpMsg->posy);
+		gQueryManager.ExecQuery("INSERT INTO CustomAttack (Account,Name,Active,Skill,Map,PosX,PosY) VALUES ('%s','%s',%d,%d,%d,%d,%d)", lpMsg->account, lpMsg->name, lpMsg->active, lpMsg->skill, lpMsg->map, lpMsg->posx, lpMsg->posy);
 		gQueryManager.Close();
 
 	}
 	else
 	{
 		gQueryManager.Close();
-		gQueryManager.ExecQuery("Update CustomAttack SET Active = %d, Skill = %d, Map = %d, PosX = %d, PosY = %d WHERE Name = '%s'", lpMsg->active, lpMsg->skill, lpMsg->map, lpMsg->posx, lpMsg->posy);
+		gQueryManager.ExecQuery("UPDATE CustomAttack SET Account='%s',Name='%s',Active=%d,Skill=%d,Map=%d,PosX=%d,PosY=%d WHERE Account='%s' OR Name='%s'", lpMsg->account, lpMsg->name, lpMsg->active, lpMsg->skill, lpMsg->map, lpMsg->posx, lpMsg->posy, lpMsg->account, lpMsg->name);
 		gQueryManager.Close();
 	}
+}
+
+void GDCustomOffAttackSaveRecv(SDHP_OFFATTACK_SAVE_RECV* lpMsg)
+{
+	if (gQueryManager.ExecQuery("SELECT TOP 1 * FROM CustomOffAttack WHERE Account='%s' OR Name='%s' ORDER BY CASE WHEN Account='%s' THEN 0 ELSE 1 END", lpMsg->account, lpMsg->name, lpMsg->account) == 0 || gQueryManager.Fetch() == SQL_NO_DATA)
+	{
+		gQueryManager.Close();
+		gQueryManager.ExecQuery("INSERT INTO CustomOffAttack (Account,Name,Active,Skill,Map,PosX,PosY,AutoBuff,AccountLevel,AccountExpireDate,UpdateDate) VALUES ('%s','%s',%d,%d,%d,%d,%d,%d,%d,'%s',GETDATE())", lpMsg->account, lpMsg->name, lpMsg->active, lpMsg->skill, lpMsg->map, lpMsg->posx, lpMsg->posy, lpMsg->autobuff, lpMsg->accountLevel, lpMsg->accountExpireDate);
+		gQueryManager.Close();
+	}
+	else
+	{
+		gQueryManager.Close();
+		gQueryManager.ExecQuery("UPDATE CustomOffAttack SET Account='%s',Name='%s',Active=%d,Skill=%d,Map=%d,PosX=%d,PosY=%d,AutoBuff=%d,AccountLevel=%d,AccountExpireDate='%s',UpdateDate=GETDATE() WHERE Account='%s' OR Name='%s'", lpMsg->account, lpMsg->name, lpMsg->active, lpMsg->skill, lpMsg->map, lpMsg->posx, lpMsg->posy, lpMsg->autobuff, lpMsg->accountLevel, lpMsg->accountExpireDate, lpMsg->account, lpMsg->name);
+		gQueryManager.Close();
+	}
+}
+
+void GDCustomOffAttackListRecv(SDHP_OFFATTACK_LIST_RECV* lpMsg,int index)
+{
+	gQueryManager.ExecQuery("UPDATE O SET Active=0,UpdateDate=GETDATE() FROM CustomOffAttack O INNER JOIN MEMB_INFO M ON M.memb___id=O.Account WHERE O.Active=1 AND ((M.AccountLevel<>0 AND M.AccountExpireDate IS NOT NULL AND GETDATE()>M.AccountExpireDate) OR (M.AccountLevel=0 AND O.AccountLevel<>0))");
+	gQueryManager.Close();
+
+	gQueryManager.ExecQuery("UPDATE MEMB_INFO SET AccountLevel=0 WHERE AccountLevel<>0 AND AccountExpireDate IS NOT NULL AND GETDATE()>AccountExpireDate");
+	gQueryManager.Close();
+
+	if (gQueryManager.ExecQuery("SELECT O.Account,O.Name,O.Skill,O.Map,O.PosX,O.PosY,O.AutoBuff,M.AccountLevel,M.AccountExpireDate FROM CustomOffAttack O INNER JOIN MEMB_INFO M ON M.memb___id=O.Account WHERE O.Active=1") == 0)
+	{
+		gQueryManager.Close();
+		return;
+	}
+
+	while (gQueryManager.Fetch() != SQL_NO_DATA)
+	{
+		SDHP_OFFATTACK_RESUME_SEND pMsg;
+		memset(&pMsg, 0, sizeof(pMsg));
+
+		pMsg.header.set(0xF8, sizeof(pMsg));
+
+		gQueryManager.GetAsString("Account", pMsg.account, sizeof(pMsg.account));
+		gQueryManager.GetAsString("Name", pMsg.name, sizeof(pMsg.name));
+		pMsg.skill = (WORD)gQueryManager.GetAsInteger("Skill");
+		pMsg.map = (WORD)gQueryManager.GetAsInteger("Map");
+		pMsg.posx = (WORD)gQueryManager.GetAsInteger("PosX");
+		pMsg.posy = (WORD)gQueryManager.GetAsInteger("PosY");
+		pMsg.autobuff = (WORD)gQueryManager.GetAsInteger("AutoBuff");
+		pMsg.accountLevel = (WORD)gQueryManager.GetAsInteger("AccountLevel");
+		gQueryManager.GetAsString("AccountExpireDate", pMsg.accountExpireDate, sizeof(pMsg.accountExpireDate));
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, sizeof(pMsg));
+	}
+
+	gQueryManager.Close();
 }

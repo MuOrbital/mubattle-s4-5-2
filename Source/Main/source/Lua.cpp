@@ -214,9 +214,9 @@ bool Lua::Generic_Call(const char* func, const char* sig, ...)
 
 		default:
 		{
-			//sprintf_s(buffer, "luacall_Generic_Call invalid option (%c)", *(sig - 1));
-			//MessageBox(NULL, buffer, "Lua Error", MB_OK);
-			//this->m_critical.unlock();
+			sprintf_s(buffer, "luacall_Generic_Call invalid option (%c)", *(sig - 1));
+			MessageBox(NULL, buffer, "Lua Error", MB_OK);
+			this->m_critical.unlock();
 			return false;
 		}
 		}
@@ -230,9 +230,9 @@ bool Lua::Generic_Call(const char* func, const char* sig, ...)
 
 	if (lua_pcall(this->m_luaState, nArg, nRes, 0) != 0)
 	{
-		//sprintf_s(buffer, "luacall_Generic_Call error running function '%s': '%s'", func, lua_tolstring(this->m_luaState, -1, 0));
-		//MessageBox(NULL, buffer, "Lua Error", MB_OK);
-		//this->m_critical.unlock();
+		sprintf_s(buffer, "luacall_Generic_Call error running function '%s': '%s'", func, lua_tolstring(this->m_luaState, -1, 0));
+		MessageBox(NULL, buffer, "Lua Error", MB_OK);
+		this->m_critical.unlock();
 		return false;
 	}
 

@@ -207,6 +207,19 @@ bool CItemBagManager::DropItemByMonsterClass(int MonsterClass,LPOBJ lpObj,int ma
 	return 0;
 }
 
+int CItemBagManager::GetBagIndexByMonsterClass(int MonsterClass) // OK
+{
+	for(std::map<int,ITEM_BAG_MANAGER_INFO>::iterator it=this->m_ItemBagManagerInfo.begin();it != this->m_ItemBagManagerInfo.end();it++)
+	{
+		if(it->second.MonsterClass != -1 && it->second.MonsterClass == MonsterClass)
+		{
+			return it->second.Index;
+		}
+	}
+
+	return -1;
+}
+
 bool CItemBagManager::DropItemBySpecialValue(int SpecialValue,LPOBJ lpObj,int map,int x,int y) // OK
 {
 	for(std::map<int,ITEM_BAG_MANAGER_INFO>::iterator it=this->m_ItemBagManagerInfo.begin();it != this->m_ItemBagManagerInfo.end();it++)

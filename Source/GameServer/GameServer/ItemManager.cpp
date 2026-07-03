@@ -1,4 +1,4 @@
-ï»¿// ItemManager.cpp: implementation of the CItemManager class.
+// ItemManager.cpp: implementation of the CItemManager class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -2048,6 +2048,11 @@ void CItemManager::UpdateInventoryViewport(int aIndex,int slot) // OK
 
 	gObjectManager.CharacterMakePreviewCharSet(aIndex);
 
+	if(slot == 8)
+	{
+		gViewport.GCViewportSimplePlayerNewsSend(&gObj[aIndex]);
+	}
+
 	this->GCItemChangeSend(aIndex,slot);
 }
 
@@ -3491,7 +3496,7 @@ void CItemManager::CGItemDropRecv(PMSG_ITEM_DROP_RECV* lpMsg, int aIndex) // OK
 	}
 
 	// ====================== BLOQUEIO LUA - PlayerDropItem ======================
-	// Bloqueia QUALQUER item (0 a 15, 0 a 511) se a funÃ§Ã£o Lua retornar 1
+	// Bloqueia QUALQUER item (0 a 15, 0 a 511) se a função Lua retornar 1
 	int luaResult = gLuaGameServer.PlayerDropItem(aIndex, lpMsg->x, lpMsg->y, lpMsg->slot);
 
 	if (luaResult == 1)
@@ -3501,7 +3506,7 @@ void CItemManager::CGItemDropRecv(PMSG_ITEM_DROP_RECV* lpMsg, int aIndex) // OK
 	}
 	// ===========================================================================
 
-	// VerificaÃ§Ãµes normais de seguranÃ§a (exc, set, harmony, etc.)
+	// Verificações normais de segurança (exc, set, harmony, etc.)
 	if ((lpItem->m_Index < GET_ITEM(12, 0) && lpItem->m_Level > 4) ||
 		lpItem->IsExcItem() != 0 || lpItem->IsSetItem() != 0 || lpItem->IsJewelOfHarmonyItem() != 0)
 	{
@@ -3509,7 +3514,7 @@ void CItemManager::CGItemDropRecv(PMSG_ITEM_DROP_RECV* lpMsg, int aIndex) // OK
 		return;
 	}
 
-	// ====================== LÃ“GICA NORMAL DE DROP ======================
+	// ====================== LÓGICA NORMAL DE DROP ======================
 	if (gItemBagManager.DropItemByItemIndex(lpItem->m_Index, lpItem->m_Level, lpObj, lpObj->Map, lpMsg->x, lpMsg->y) != 0)
 	{
 		this->InventoryDelItem(aIndex, lpMsg->slot);

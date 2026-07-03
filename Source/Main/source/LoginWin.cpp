@@ -229,7 +229,7 @@ void CLoginWin::RenderControls()
     g_pRenderText->SetBgColor(0);
     g_pRenderText->SetTextColor(CLRDW_WHITE);
     g_pRenderText->RenderText(int((CWin::GetXPos() + 30) / g_fScreenRate_x),
-        int((CWin::GetYPos() + 113) / g_fScreenRate_y), "SEU LOGIN");
+        int((CWin::GetYPos() + 113) / g_fScreenRate_y), "Login");
     g_pRenderText->RenderText(int((CWin::GetXPos() + 30) / g_fScreenRate_x),
         int((CWin::GetYPos() + 139) / g_fScreenRate_y), GlobalText[451]);
 
@@ -238,7 +238,7 @@ void CLoginWin::RenderControls()
     sprintf(szServerName, szServerName);
 
     g_pRenderText->RenderText(int((CWin::GetXPos() + 111) / g_fScreenRate_x),
-        int((CWin::GetYPos() + 80) / g_fScreenRate_y), szServerName);
+        int((CWin::GetYPos() + 80) / g_fScreenRate_y), "MuOnline");
 }
 void CLoginWin::RequestLogin()
 {

@@ -1,0 +1,9 @@
+// Index   Nome             Coluna 1       Coluna 2
+0
+
+0         "Reset Diario"         "Personagem"   "Resets"
+1         "Reset Semanal"        "Personagem"   "Resets"
+2         "Reset Mensal"         "Personagem"   "Resets"
+3         "Reset Geral"          "Personagem"   "Resets"
+4         "Master Resets"   	 "Personagem"   "MResets"
+end

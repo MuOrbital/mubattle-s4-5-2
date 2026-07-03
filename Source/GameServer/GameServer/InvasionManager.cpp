@@ -22,6 +22,8 @@ CInvasionManager gInvasionManager;
 
 CInvasionManager::CInvasionManager() // OK
 {
+	this->m_ClientSyncTick = GetTickCount();
+
 	for (int n = 0; n < MAX_INVASION; n++)
 	{
 		INVASION_INFO* lpInfo = &this->m_InvasionInfo[n];
@@ -103,6 +105,7 @@ void CInvasionManager::Load(char* path) // OK
 		this->m_InvasionInfo[n].RespawnInfo[18].clear();
 		this->m_InvasionInfo[n].RespawnInfo[19].clear();
 		this->m_InvasionInfo[n].MonsterInfo.clear();
+		this->m_InvasionInfo[n].total_data_monster.clear();
 	}
 
 	try
@@ -286,6 +289,34 @@ void CInvasionManager::MainProc() // OK
 			break;
 		}
 	}
+
+	DWORD currentTick = GetTickCount();
+
+	if ((currentTick - this->m_ClientSyncTick) >= 5000)
+	{
+		this->m_ClientSyncTick = currentTick;
+
+		for (int n = 0; n < MAX_INVASION; n++)
+		{
+			INVASION_INFO* lpInfo = &this->m_InvasionInfo[n];
+
+			if (lpInfo->CountNotify == 0)
+			{
+				continue;
+			}
+
+			this->EnsureNotifyMonsterInfo(lpInfo);
+
+			if (lpInfo->State == INVASION_STATE_START && lpInfo->total_data_monster.empty() == 0)
+			{
+				this->SendInfoInvasion(lpInfo, 1, -1);
+			}
+			else
+			{
+				this->SendInfoInvasion(lpInfo, 0, -1);
+			}
+		}
+	}
 }
 
 void CInvasionManager::ProcState_BLANK(INVASION_INFO* lpInfo) // OK
@@ -356,10 +387,19 @@ void CInvasionManager::SetState_EMPTY(INVASION_INFO* lpInfo) // OK
 	this->ClearMonster(lpInfo);
 
 	this->CheckSync(lpInfo);
+
+	lpInfo->total_data_monster.clear();
+
+	if(lpInfo->CountNotify == 1)
+	{
+		this->SendInfoInvasion(lpInfo, 0, -1);
+	}
 }
 
 void CInvasionManager::SetState_START(INVASION_INFO* lpInfo) // OK
 {
+	lpInfo->total_data_monster.clear();
+
 	for (int n = 0; n < MAX_INVASION_RESPAWN_GROUP; n++)
 	{
 		if (lpInfo->RespawnInfo[n].empty() == 0)
@@ -379,6 +419,13 @@ void CInvasionManager::SetState_START(INVASION_INFO* lpInfo) // OK
 	lpInfo->RemainTime = lpInfo->InvasionTime;
 
 	lpInfo->TargetTime = (int)(time(0) + lpInfo->RemainTime);
+
+	this->RebuildNotifyMonsterInfo(lpInfo);
+
+	if(lpInfo->CountNotify == 1)
+	{
+		this->SendInfoInvasion(lpInfo, 1, -1);
+	}
 }
 
 void CInvasionManager::CheckSync(INVASION_INFO* lpInfo) // OK
@@ -587,7 +634,13 @@ void CInvasionManager::SetMonster(INVASION_INFO* lpInfo, INVASION_RESPWAN_INFO* 
 			gObjDel(index);
 			continue;
 		}
+
+		if(lpInfo->CountNotify == 1)
+		{
+			this->AddNotifyMonsterInfo(lpInfo, lpMsbInfo->MonsterClass, 1);
+		}
 	}
+
 }
 
 void CInvasionManager::MonsterDieProc(LPOBJ lpObj, LPOBJ lpTarget) // OK
@@ -614,37 +667,27 @@ void CInvasionManager::MonsterDieProc(LPOBJ lpObj, LPOBJ lpTarget) // OK
 		{
 			int monsterIndex = lpInfo->MonsterIndex[i];
 
+			if (monsterIndex == lpObj->Index)
+			{
+				continue;
+			}
+
 			if (OBJECT_RANGE(monsterIndex) && gObj[monsterIndex].Live != 0)
 			{
 				liveCount++;
 			}
 		}
 
-		if (liveCount > 0)
-			liveCount--;
-
 		if (lpInfo->CountNotify == 1)
 		{
-			if (liveCount <= 0)
-			{
-				gNotice.GCNoticeSendToAll(0, 0, 0, 0, 0, 0,
-					gMessage.GetMessage(675), lpInfo->AlertMessage);
+			this->RebuildNotifyMonsterInfo(lpInfo);
 
-				lpInfo->RemainTime = 5;
-				lpInfo->TargetTime = (int)(time(0) + 5);
-			}
-			else
+			type_count_monster::iterator it = lpInfo->total_data_monster.find(lpObj->Class);
+
+			if(it != lpInfo->total_data_monster.end())
 			{
-				gNotice.GCNoticeSendToAll(0, 0, 0, 0, 0, 0,
-					gMessage.GetMessage(674), lpInfo->AlertMessage, liveCount);
-			}
-		}
-		else
-		{
-			if (liveCount <= 0)
-			{
-				lpInfo->RemainTime = 5;
-				lpInfo->TargetTime = (int)(time(0) + 5);
+				it->second.Monster_Kill++;
+				this->SendInfoKill(&it->second, lpInfo->Index);
 			}
 		}
 
@@ -655,6 +698,11 @@ void CInvasionManager::MonsterDieProc(LPOBJ lpObj, LPOBJ lpTarget) // OK
 				gNotice.GCNoticeSendToAll(0, 0, 0, 0, 0, 0,
 					gMessage.GetMessage(lpInfo->BossMessage), lpTarget->Name);
 			}
+		}
+
+		if (liveCount <= 0)
+		{
+			this->SetState(lpInfo, INVASION_STATE_EMPTY);
 		}
 
 		break;
@@ -703,4 +751,235 @@ const char* CInvasionManager::GetInvasionName(int index)
 		return "Custom";
 	}
 	return this->m_InvasionInfo[index].AlertMessage;
+}
+
+void CInvasionManager::SendPlayerInfo(int index)
+{
+	for(int n=0;n < MAX_INVASION;n++)
+	{
+		INVASION_INFO* lpInfo = &this->m_InvasionInfo[n];
+
+		if(lpInfo->CountNotify == 0)
+		{
+			continue;
+		}
+
+		this->EnsureNotifyMonsterInfo(lpInfo);
+
+		if(lpInfo->State == INVASION_STATE_START && lpInfo->total_data_monster.empty() == 0)
+		{
+			this->SendInfoInvasion(lpInfo, 1, index);
+		}
+		else
+		{
+			this->SendInfoInvasion(lpInfo, 0, index);
+		}
+	}
+}
+
+void CInvasionManager::SendInfoKill(INVASION_INFO_MONSTER* lpInfo,int index)
+{
+	PMSG_INVASION_KILL_INFO pMsg;
+
+	pMsg.Head.set(0x4E, 0x3E, sizeof(pMsg));
+	pMsg.Index = index;
+	pMsg.MonsterIndex = lpInfo->MonsterIndex;
+	pMsg.MonsterCount = lpInfo->MonsterCount;
+	pMsg.Monster_Kill = lpInfo->Monster_Kill;
+
+	DataSendAll((BYTE*)&pMsg, sizeof(pMsg));
+}
+
+void CInvasionManager::AddNotifyMonsterInfo(INVASION_INFO* lpInfo,int MonsterClass,int MonsterCount)
+{
+	if(lpInfo == 0 || lpInfo->CountNotify == 0 || MonsterClass < 0 || MonsterCount <= 0)
+	{
+		return;
+	}
+
+	type_count_monster::iterator it = lpInfo->total_data_monster.find(MonsterClass);
+
+	if(it == lpInfo->total_data_monster.end())
+	{
+		INVASION_INFO_MONSTER info;
+		info.MonsterIndex = MonsterClass;
+		info.Monster_Kill = 0;
+		info.MonsterCount = MonsterCount;
+		lpInfo->total_data_monster.insert(type_count_monster::value_type(MonsterClass, info));
+	}
+	else
+	{
+		it->second.MonsterCount += MonsterCount;
+	}
+}
+
+void CInvasionManager::EnsureNotifyMonsterInfo(INVASION_INFO* lpInfo)
+{
+	if(lpInfo == 0 || lpInfo->CountNotify == 0 || lpInfo->State != INVASION_STATE_START || lpInfo->total_data_monster.empty() == 0)
+	{
+		return;
+	}
+
+	this->RebuildNotifyMonsterInfo(lpInfo);
+}
+
+void CInvasionManager::RebuildNotifyMonsterInfo(INVASION_INFO* lpInfo)
+{
+	if(lpInfo == 0 || lpInfo->CountNotify == 0 || lpInfo->State != INVASION_STATE_START)
+	{
+		return;
+	}
+
+	type_count_monster killInfo;
+
+	for(type_count_monster::iterator it = lpInfo->total_data_monster.begin(); it != lpInfo->total_data_monster.end(); it++)
+	{
+		killInfo.insert(type_count_monster::value_type(it->first, it->second));
+	}
+
+	lpInfo->total_data_monster.clear();
+
+	for(std::vector<INVASION_MONSTER_INFO>::iterator it = lpInfo->MonsterInfo.begin(); it != lpInfo->MonsterInfo.end(); it++)
+	{
+		this->AddNotifyMonsterInfo(lpInfo, it->MonsterClass, this->GetNotifyMonsterCount(lpInfo, &(*it)));
+	}
+
+	for(int n = 0; n < MAX_INVASION_MONSTER; n++)
+	{
+		if(OBJECT_RANGE(lpInfo->MonsterIndex[n]) == 0)
+		{
+			continue;
+		}
+
+		int MonsterClass = gObj[lpInfo->MonsterIndex[n]].Class;
+
+		if(lpInfo->total_data_monster.find(MonsterClass) == lpInfo->total_data_monster.end())
+		{
+			this->AddNotifyMonsterInfo(lpInfo, MonsterClass, 1);
+		}
+	}
+
+	for(type_count_monster::iterator it = lpInfo->total_data_monster.begin(); it != lpInfo->total_data_monster.end(); it++)
+	{
+		type_count_monster::iterator kill = killInfo.find(it->first);
+
+		if(kill != killInfo.end())
+		{
+			it->second.Monster_Kill = ((kill->second.Monster_Kill > it->second.MonsterCount) ? it->second.MonsterCount : kill->second.Monster_Kill);
+		}
+	}
+}
+
+int CInvasionManager::GetNotifyMonsterCount(INVASION_INFO* lpInfo,INVASION_MONSTER_INFO* lpMonsterInfo)
+{
+	if(lpInfo == 0 || lpMonsterInfo == 0)
+	{
+		return 0;
+	}
+
+	int MonsterCount = 0;
+
+	for(int n = 0; n < MAX_INVASION_RESPAWN_GROUP; n++)
+	{
+		if(lpInfo->RespawnInfo[n].empty() != 0)
+		{
+			continue;
+		}
+
+		int GroupCount = 0;
+
+		for(std::vector<INVASION_RESPWAN_INFO>::iterator ri = lpInfo->RespawnInfo[n].begin(); ri != lpInfo->RespawnInfo[n].end(); ri++)
+		{
+			if(lpMonsterInfo->Group != ri->Group)
+			{
+				continue;
+			}
+
+			int CandidateCount = 0;
+
+			for(int m = 0; m < gMonsterSetBase.m_count; m++)
+			{
+				MONSTER_SET_BASE_INFO* lpMsbInfo = &gMonsterSetBase.m_MonsterSetBaseInfo[m];
+
+				if(lpMsbInfo->Type == 3 && lpMsbInfo->MonsterClass == lpMonsterInfo->MonsterClass && lpMsbInfo->Map == ri->Map && lpMsbInfo->Value == ri->Value)
+				{
+					CandidateCount++;
+				}
+			}
+
+			if(CandidateCount > GroupCount)
+			{
+				GroupCount = CandidateCount;
+			}
+		}
+
+		MonsterCount += GroupCount;
+	}
+
+	return ((MonsterCount > 0) ? MonsterCount : 1);
+}
+
+void CInvasionManager::SendInfoInvasion(INVASION_INFO* lpInfo,int status,int index)
+{
+	PMSG_INVASION_INFO pMsg;
+	memset(&pMsg, 0, sizeof(pMsg));
+
+	if(status == 1)
+	{
+		this->EnsureNotifyMonsterInfo(lpInfo);
+
+		BYTE send[2048];
+		int size = sizeof(pMsg);
+
+		pMsg.Head.set(0x4E, 0x3F, 0);
+		pMsg.Index = lpInfo->Index;
+		pMsg.RemainTime = lpInfo->RemainTime;
+		strncpy_s(pMsg.Name, this->GetInvasionName(lpInfo->Index), sizeof(pMsg.Name)-1);
+		pMsg.count = 0;
+
+		for(type_count_monster::iterator it=lpInfo->total_data_monster.begin();it != lpInfo->total_data_monster.end();it++)
+		{
+			INVASION_INFO_MONSTER info;
+			info.MonsterIndex = it->second.MonsterIndex;
+			info.MonsterCount = it->second.MonsterCount;
+			info.Monster_Kill = it->second.Monster_Kill;
+
+			memcpy(&send[size], &info, sizeof(info));
+			size += sizeof(info);
+			pMsg.count++;
+		}
+
+		pMsg.Head.size[0] = SET_NUMBERHB(size);
+		pMsg.Head.size[1] = SET_NUMBERLB(size);
+
+		memcpy(send, &pMsg, sizeof(pMsg));
+
+		if(index != -1)
+		{
+			DataSend(index, send, size);
+		}
+		else
+		{
+			DataSendAll(send, size);
+		}
+	}
+	else
+	{
+		int size = sizeof(pMsg);
+
+		pMsg.Head.set(0x4E, 0x3F, size);
+		pMsg.Index = lpInfo->Index;
+		pMsg.RemainTime = 0;
+		pMsg.count = 0;
+		strncpy_s(pMsg.Name, this->GetInvasionName(lpInfo->Index), sizeof(pMsg.Name)-1);
+
+		if(index != -1)
+		{
+			DataSend(index, (BYTE*)&pMsg, size);
+		}
+		else
+		{
+			DataSendAll((BYTE*)&pMsg, size);
+		}
+	}
 }

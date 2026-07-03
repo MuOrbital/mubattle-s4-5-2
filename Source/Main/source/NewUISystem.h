@@ -297,6 +297,7 @@ namespace SEASON3B
 		CNewUIMiniMap* GetUI_pNewUIMiniMap() const;
 #endif
 		CNewUIGensRanking* GetUI_NewGensRanking() const;
+		CNewUIRankingTop* GetUI_NewUIRankingTop() const;
 		CNewUIUnitedMarketPlaceWindow*	GetUI_pNewUnitedMarketPlaceWindow() const;
 		//CNewUIUnitedMarketPlaceWindow*	GetUI_pNewUnitedMarketPlaceFrame() const;
 #ifdef LEM_ADD_LUCKYITEM
@@ -386,6 +387,7 @@ namespace SEASON3B
 #define g_pNewUIStamina SEASON3B::CNewUISystem::GetInstance()->GetUI_pNewUIStamina()
 #endif //PBG_MOD_STAMINA_UI
 #define g_pNewUIGensRanking SEASON3B::CNewUISystem::GetInstance()->GetUI_NewGensRanking()
+#define gNewUIRankingTop SEASON3B::CNewUISystem::GetInstance()->GetUI_NewUIRankingTop()
 #ifdef LEM_ADD_LUCKYITEM
 #define g_pLuckyItemWnd	SEASON3B::CNewUISystem::GetInstance()->Get_pNewUILuckyItemWnd()
 #endif // LEM_ADD_LUCKYITEM

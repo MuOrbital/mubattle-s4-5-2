@@ -12,7 +12,7 @@ void gObjMonsterInitHitDamage(LPOBJ lpObj);
 void gObjMonsterSetHitDamage(LPOBJ lpObj,int aIndex,int damage);
 int gObjMonsterDelHitDamageUser(LPOBJ lpObj);
 int gObjMonsterGetTopHitDamageUser(LPOBJ lpObj);
-int gObjMonsterGetTopHitDamageParty(LPOBJ lpObj,int PartyNumber,int* TopHitDamageUser);
+QWORD gObjMonsterGetTopHitDamageParty(LPOBJ lpObj,int PartyNumber,int* TopHitDamageUser);
 int gObjAddMonster(int map);
 int gObjAddSummon();
 int gObjSummonSetEnemy(LPOBJ lpObj,int aIndex);

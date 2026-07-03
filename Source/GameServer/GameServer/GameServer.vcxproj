@@ -386,6 +386,7 @@
     <ClInclude Include="CustomStartItem.h" />
     <ClInclude Include="CustomStore.h" />
     <ClInclude Include="CustomWing.h" />
+    <ClInclude Include="Pets.h" />
     <ClInclude Include="DarkSpirit.h" />
     <ClInclude Include="DefaultClassInfo.h" />
     <ClInclude Include="DevilSquare.h" />
@@ -622,6 +623,7 @@
     <ClCompile Include="CustomStartItem.cpp" />
     <ClCompile Include="CustomStore.cpp" />
     <ClCompile Include="CustomWing.cpp" />
+    <ClCompile Include="Pets.cpp" />
     <ClCompile Include="DarkSpirit.cpp" />
     <ClCompile Include="DefaultClassInfo.cpp" />
     <ClCompile Include="DevilSquare.cpp" />

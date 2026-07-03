@@ -3,6 +3,10 @@
 
 #include "TextureScript.h"
 
+#if jdk_shader_local330
+#include "New_ModelBMD.h"
+#endif
+
 #define MAX_BONES    200
 #define MAX_MESH     50
 #define MAX_VERTICES 15000
@@ -131,6 +135,51 @@ typedef struct _Triangle_t3 : public Triangle_t
 	short	   m_ivIndexAdditional[4];
 } Triangle_t3;
 
+#if jdk_shader_local330
+typedef struct _VertexBMD
+{
+	vec3_t m_vPos;
+	vec3_t m_vNorm;
+	vec2_t m_vTex;
+	GLuint m_iBone;
+} VertexBMD;
+
+typedef struct _VAOMesh
+{
+	bool NoneBlendMesh;
+	short Texture;
+	GLuint VAO;
+	GLuint VBO;
+	GLuint IBO;
+	GLuint VertexCount;
+	GLuint IndexCount;
+	TextureScript* m_csTScript;
+	std::vector<VertexBMD> VBuffer;
+	std::vector<GLuint> IBuffer;
+	std::vector<short> BoneContainer;
+
+	bool SendIndexBone(GLuint Shaderid, const float* Bone, bool bTrans, vec3_t vTrans, float Scale, bool AppScale = false, float ReqScale = 0.0f);
+	bool BuildBonePalette(std::vector<float>& outPalette, const float* Bone, bool bTrans, vec3_t vTrans, float Scale, bool AppScale = false, float ReqScale = 0.0f) const;
+
+	_VAOMesh() : NoneBlendMesh(true), Texture(0), VAO(0), VBO(0), IBO(0), VertexCount(0), IndexCount(0), m_csTScript(NULL)
+	{
+	}
+} VAOMesh;
+
+typedef struct _TempVertex
+{
+	short v;
+	short t;
+	short n;
+
+	_TempVertex() : v(-1), t(-1), n(-1) {}
+	_TempVertex(short x, short y, short z) : v(x), t(y), n(z) {}
+} TempVertex;
+
+typedef std::vector<TempVertex> Temp_Vec;
+typedef std::vector<VAOMesh> ShaderMesh;
+#endif
+
 typedef struct _Mesh_t
 {
     bool          NoneBlendMesh;
@@ -216,6 +265,19 @@ public:
 	char				iBillType;
 
 	bool				m_bCompletedAlloc;
+
+#if jdk_shader_local330
+	float				m_fRequestScale;
+	ShaderMesh			New_Meshs;
+	bool				m_bCpuTransformPending;
+	bool				m_bForceCpuTransform;
+	float				(*m_pLastBoneMatrix)[3][4];
+	vec3_t				m_vLastBoundingBoxMin;
+	vec3_t				m_vLastBoundingBoxMax;
+	OBB_t*				m_pLastOBB;
+	bool				m_bLastTranslate;
+	float				m_fLastTransformScale;
+#endif
 	
 	BMD() : NumBones(0), NumActions(0), NumMeshs(0), 
 		Meshs(NULL), Bones(NULL), Actions(NULL), Textures(NULL), IndexTexture(NULL)
@@ -227,6 +289,17 @@ public:
 		iBillType = -1;
 		bOffLight = false;
 		m_bCompletedAlloc = false;
+#if jdk_shader_local330
+		m_fRequestScale = 0.0f;
+		m_bCpuTransformPending = false;
+		m_bForceCpuTransform = false;
+		m_pLastBoneMatrix = NULL;
+		Vector(0.0f, 0.0f, 0.0f, m_vLastBoundingBoxMin);
+		Vector(0.0f, 0.0f, 0.0f, m_vLastBoundingBoxMax);
+		m_pLastOBB = NULL;
+		m_bLastTranslate = false;
+		m_fLastTransformScale = 0.0f;
+#endif
 	}
 
 ~BMD();
@@ -237,6 +310,17 @@ public:
 	bool Open2(char *DirName,char *FileName, bool bReAlloc = true);
 	bool Save2(char *DirName,char *FileName);
 	void Release();
+
+#if jdk_shader_local330
+	void LoadMeshToVAO();
+	void UploadAllToGPU();
+	void ReadMemoryGPU();
+	void ExtendVertex(Mesh_t* oM, VAOMesh* nM);
+	void TranstoVertices(vec3_t(*outVertex)[MAX_VERTICES], float(*matBone)[3][4], bool Translate = false);
+	void OutAllAnimVertices(vec3_t(*outVertex)[MAX_VERTICES], const OBJECT& oSelf);
+	void EnsureCpuTransform();
+#endif
+
     void CreateBoundingBox();
 
     //transform

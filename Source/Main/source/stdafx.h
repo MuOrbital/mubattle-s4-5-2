@@ -65,12 +65,22 @@
 #include <algorithm>
 #include <vector>
 #include <queue>
+#include <thread>
+#include <chrono>
+#include <random>
+#include <cmath>
+#include <fstream>
+#include <unordered_map>
+#include <filesystem>
+#include <iostream>
+#include <sstream>
 
 #pragma warning( pop )
 
 //opengl
 #include <gl/glew.h>
 #include <gl/gl.h>
+#include "CoreGLCompat.h"
 
 //patch
 //winmain
@@ -90,6 +100,11 @@
 #include "NewUICommon.h"
 #include "./Math/ZzzMathLib.h"
 #include "ZzzOpenglUtil.h"
+#include "steady_clock.h"
+#if jdk_shader_local330
+#include "CShaderGL.h"
+#include "MU_OpenGL.h"
+#endif
 
 #include "Widescreen.h"
 #include "Console.h"

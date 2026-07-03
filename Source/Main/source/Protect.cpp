@@ -14,6 +14,11 @@ CProtect::~CProtect() // OK
 {
 }
 
+extern "C" const MAIN_FILE_INFO* MHPIntegrationGetMainInfo()
+{
+	return ((gProtect == 0) ? 0 : &gProtect->m_MainInfo);
+}
+
 bool CProtect::ReadMainFile(char* Path) // OK
 {
 	CCRC32 CRC32;

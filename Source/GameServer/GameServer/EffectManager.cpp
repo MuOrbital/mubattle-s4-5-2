@@ -1631,6 +1631,7 @@ void CEffectManager::PeriodicEffect(LPOBJ lpObj,CEffect* lpEffect) // OK
 	int shield = 0;
 	int absorb = 0;
 	int effect = 0;
+	int LifeDamage = 0;
 
 	switch(lpEffect->m_index)
 	{
@@ -1685,13 +1686,17 @@ void CEffectManager::PeriodicEffect(LPOBJ lpObj,CEffect* lpEffect) // OK
 	{
 		shield = gAttack.GetShieldDamage(lpTarget,lpObj,damage);
 
-		if(lpObj->Life < (damage-shield))
+		int LifeDamageValue = damage-shield;
+
+		if(lpObj->Life < LifeDamageValue)
 		{
+			LifeDamage = ((lpObj->Life<0)?0:(int)lpObj->Life);
 			lpObj->Life = 0;
 		}
 		else
 		{
-			lpObj->Life -= damage-shield;
+			LifeDamage = ((LifeDamageValue<0)?0:LifeDamageValue);
+			lpObj->Life -= LifeDamageValue;
 		}
 
 		if(lpObj->Shield < shield)
@@ -1707,10 +1712,12 @@ void CEffectManager::PeriodicEffect(LPOBJ lpObj,CEffect* lpEffect) // OK
 	{
 		if(lpObj->Life < damage)
 		{
+			LifeDamage = ((lpObj->Life<0)?0:(int)lpObj->Life);
 			lpObj->Life = 0;
 		}
 		else
 		{
+			LifeDamage = damage;
 			lpObj->Life -= damage;
 		}
 	}
@@ -1726,7 +1733,7 @@ void CEffectManager::PeriodicEffect(LPOBJ lpObj,CEffect* lpEffect) // OK
 
 	if(damage > 0)
 	{
-		gObjectManager.CharacterLifeCheck(lpTarget,lpObj,(damage-shield),effect,0,0,0,shield);
+		gObjectManager.CharacterLifeCheck(lpTarget,lpObj,(damage-shield),effect,0,0,0,shield,LifeDamage);
 	}
 
 	if(absorb > 0)

@@ -393,15 +393,12 @@ bool SEASON3B::CNewUIHotKey::UpdateKeyEvent()
 		return false;
 	}
 #endif // PBG_ADD_INGAMESHOP_UI_MAINFRAME
-	//if (g_pNewUISystem->IsVisible(SEASON3B::INTERFACE_INVENTORY) == false)
-	//{
-	//	if (SEASON3B::IsPress(VK_F6))
-	//	{
-	//		g_pNewUISystem->Show(INTERFACE_RANKING_TOP);  // Use Show ao invés de Toggle
-	//		PlayBuffer(SOUND_CLICK01);
-	//		return false;
-	//	}
-	//}
+	if (g_pNewUISystem->IsVisible(SEASON3B::INTERFACE_INVENTORY) == false && SEASON3B::IsPress(VK_F8))
+	{
+		g_pNewUISystem->Toggle(INTERFACE_RANKING_TOP);
+		PlayBuffer(SOUND_CLICK01);
+		return false;
+	}
 
 	CheckDoubleControlForAutoPVP();
 

@@ -660,7 +660,7 @@ void ChatGoldMessageAll(char* String)
 	free(Packet);
 }
 
-void FormatDamageNumber(int damage, char* outBuffer, size_t bufferSize)
+void FormatDamageNumber(QWORD damage, char* outBuffer, size_t bufferSize)
 {
 	if (damage >= 1000000000)
 	{
@@ -676,6 +676,6 @@ void FormatDamageNumber(int damage, char* outBuffer, size_t bufferSize)
 	}
 	else
 	{
-		sprintf_s(outBuffer, bufferSize, "%d", damage);
+		sprintf_s(outBuffer, bufferSize, "%I64u", damage);
 	}
 }

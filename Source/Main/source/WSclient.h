@@ -200,6 +200,21 @@ typedef struct
 	BYTE          LevelVip;
 	int           TotalScore;
 }PCREATE_RANKING_INFO, * LPPCREATE_RANKING_INFO;
+#pragma pack(push, 1)
+typedef struct
+{
+	PBMSG_HEADER Header;
+	BYTE SubCode;
+	int characterIndex;
+	BYTE result;
+	BYTE PlayerClass;
+	BYTE CtlCode;
+	BYTE Equipment[EQUIPMENT_LENGTH];
+	WORD PetIndex;
+	WORD WingIndex;
+	char Name[MAX_ID_SIZE];
+} PHEADER_RANKING_CHARACTER, * LPPHEADER_RANKING_CHARACTER;
+#pragma pack(pop)
 
 #define CLASS_SUMMONER_CARD		0x01
 #define CLASS_DARK_LORD_CARD	0x02
@@ -506,6 +521,7 @@ typedef struct
 	DWORD		 wMinusPoint;
 	DWORD		 wMaxMinusPoint;
 	DWORD		 ViewReset;
+	BYTE		 Camera3DSwitch;
 } PRECEIVE_JOIN_MAP_SERVER, * LPPRECEIVE_JOIN_MAP_SERVER;
 
 //receive revival

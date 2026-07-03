@@ -19,7 +19,7 @@ void LuaBMD::RegisterClassBMD(lua_State * lua)
 	luaBMD.fun("SetLight", &BMDClass::SetLight);
 	luaBMD.fun("RenderBody", &BMDClass::RenderBody);
 	luaBMD.fun("RenderMesh", &BMDClass::RenderMesh);
-	luaBMD.fun("glColor3fv", &BMDClass::glColor3f);
+	luaBMD.fun("glColor3fv", &BMDClass::ApplyBodyColor);
 	luaBMD.fun("BeginRender", &BMDClass::BeginRender);
 	luaBMD.fun("EndRender", &BMDClass::EndRender);
 	luaBMD.fun("setMesh", &BMDClass::setMesh);

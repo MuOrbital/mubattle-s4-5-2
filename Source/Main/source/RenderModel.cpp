@@ -18,8 +18,11 @@ CRenderModel::~CRenderModel()
 int CRenderModel::RenderModelBodyLua(int ItemIndex, BMD* BMDStruct, OBJECT* ObjectStruct)
 {
 	int retorno = 0;
+	vec3_t bodyLight;
+	VectorCopy(BMDStruct->BodyLight, bodyLight);
 
 	gRenderModel.m_Lua.Generic_Call("RenderModelBody", "iii>i", BMDStruct, ObjectStruct, ItemIndex, &retorno);
+	VectorCopy(bodyLight, BMDStruct->BodyLight);
 
 	return retorno;
 }
@@ -27,8 +30,11 @@ int CRenderModel::RenderModelBodyLua(int ItemIndex, BMD* BMDStruct, OBJECT* Obje
 int CRenderModel::RenderModelBodyColorLua(int ItemIndex, BMD* BMDStruct, OBJECT* ObjectStruct)
 {
 	int retorno = 0;
+	vec3_t bodyLight;
+	VectorCopy(BMDStruct->BodyLight, bodyLight);
 
 	gRenderModel.m_Lua.Generic_Call("RenderModelBodyColor", "iii>i", BMDStruct, ObjectStruct, ItemIndex, &retorno);
+	VectorCopy(bodyLight, BMDStruct->BodyLight);
 
 	return retorno;
 }
@@ -36,8 +42,11 @@ int CRenderModel::RenderModelBodyColorLua(int ItemIndex, BMD* BMDStruct, OBJECT*
 int CRenderModel::RenderModelBodyColor2Lua(int ItemIndex, BMD* BMDStruct, OBJECT* ObjectStruct)
 {
 	int retorno = 0;
+	vec3_t bodyLight;
+	VectorCopy(BMDStruct->BodyLight, bodyLight);
 
 	gRenderModel.m_Lua.Generic_Call("RenderModelBodyColor2", "iii>i", BMDStruct, ObjectStruct, ItemIndex, &retorno);
+	VectorCopy(bodyLight, BMDStruct->BodyLight);
 
 	return retorno;
 }

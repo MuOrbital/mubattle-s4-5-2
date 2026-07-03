@@ -1,8 +1,8 @@
-ï»¿///////////////////////////////////////////////////////////////////////////////
-// AIÂ°Ã¼Â·Ãƒ Ã‡Ã”Â¼Ã¶
-// Ã…Â¸Ã„ÃÂ¹Ã¦Ã‡Ã¢Ã€Â¸Â·ÃŽ Â¹Ã¦Ã‡Ã¢ Ã†Â²Â±Ã¢, Â±Ã¦ÃƒÂ£Â±Ã¢, fpsÂ±Â¸Ã‡ÃÂ±Ã¢ ÂµÃ®ÂµÃ®
+///////////////////////////////////////////////////////////////////////////////
+// AI°ü·Ã ÇÔ¼ö
+// Å¸ÄÏ¹æÇâÀ¸·Î ¹æÇâ Æ²±â, ±æÃ£±â, fps±¸ÇÏ±â µîµî
 //
-// *** Ã‡Ã”Â¼Ã¶ Â·Â¹ÂºÂ§: 2
+// *** ÇÔ¼ö ·¹º§: 2
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -314,7 +314,7 @@ void SetAction_Fenrir_Damage(CHARACTER* c, OBJECT* o)
 		SetAction(o, PLAYER_FENRIR_DAMAGE_ONE_LEFT);
 	else if(c->Weapon[0].Type != -1 && c->Weapon[1].Type != -1 && c->Weapon[0].Type ==MODEL_BOW+15)
 		SetAction(o, PLAYER_FENRIR_DAMAGE_ONE_LEFT);
-	else	// Â¸Ã‡Â¼Ã•
+	else	// ¸Ç¼Õ
 		SetAction(o, PLAYER_FENRIR_DAMAGE);
 #ifdef PBG_ADD_NEWCHAR_MONK_ANI
 	}
@@ -812,13 +812,8 @@ CTimer* g_WorldTime = new CTimer();
 double   FPS;
 int hFPSDLL;
 
-float   FPS_ANIMATION_FACTOR;
 double   FPS_AVG;
 double   WorldTime = 0.0;
-
-std::random_device rd;
-std::mt19937 gen(rd());
-std::uniform_real_distribution<> distrib(0.0, 1.0);
 
 //extern "C" __declspec(dllexport) void ExternalCalcFPS(double currentTime, double lastTime, int frameCount)
 //{
@@ -838,59 +833,8 @@ std::uniform_real_distribution<> distrib(0.0, 1.0);
 //	}
 //}
 
-bool rand_fps_check(int reference_frames)
-{
-	// return rand() % reference_frames == 0;
-	const auto animation_factor = min(1.0, static_cast<double>(FPS_ANIMATION_FACTOR));
-	const auto rand_value = distrib(gen);// *1.5;
-	const auto chance = reference_frames == 1
-		? animation_factor
-		: (1.0 / reference_frames) * animation_factor;
-
-	return rand_value <= chance;
-}
-
 void CalcFPS()
 {
-	static int timeinit = 0;
-	static double start, last;
-	static int frame = 0;
-	if (!timeinit)
-	{
-		start = g_WorldTime->GetTimeElapsed();
-		timeinit = 1;
-	}
-
-	frame++;
-	WorldTime = g_WorldTime->GetTimeElapsed();
-
-	const double differenceMs = WorldTime - last;
-	if (differenceMs <= 0)
-	{
-		FPS = 0.01;
-	}
-	else
-	{
-		FPS = 1000 / differenceMs;
-	}
-
-
-	FPS_ANIMATION_FACTOR = minf(static_cast<float>(REFERENCE_FPS / FPS), 1.5f);
-
-
-	const double diffSinceStart = WorldTime - start;
-	if (diffSinceStart > 2000.0 || frame > 25)
-	{
-		FPS_AVG = (1000 * frame) / diffSinceStart;
-		start = WorldTime;
-		frame = 0;
-	}
-
-	last = WorldTime;
-
-	if (SceneFlag == MAIN_SCENE)
-	{
-		gSkillManager.CalcSkillDelay(static_cast<int>(differenceMs));
-	}
+	gsteady_clock->LoadInformationFps();
 }
 

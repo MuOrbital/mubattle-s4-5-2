@@ -78,7 +78,7 @@ public:
 		m_Struct->RenderMesh(i, RenderFlag, Alpha, BlendMesh, BlendMeshLight, BlendMeshTexCoordU, BlendMeshTexCoordV, MeshTexture);
 	};
 
-	void glColor3f() const 
+	void ApplyBodyColor() const 
 	{
 		if (!m_Struct) 
 		{

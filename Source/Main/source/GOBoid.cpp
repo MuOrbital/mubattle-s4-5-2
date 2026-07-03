@@ -21,9 +21,31 @@
 #include "DSPlaySound.h"
 #include "MapManager.h"
 #include "CameraMove.h"
+#include "HelperManager.h"
 #include <NewUISystem.h>
 
 int EnableEvent = 0;
+bool g_bMiniatureMode = false;
+
+static bool IsMiniatureOwner(OBJECT* Owner)
+{
+	if (Owner == NULL || CharactersClient == NULL)
+	{
+		return false;
+	}
+
+	for (int i = 0; i < MAX_CHARACTERS_CLIENT; ++i)
+	{
+		CHARACTER* c = &CharactersClient[i];
+
+		if (&c->Object == Owner)
+		{
+			return c->MiniatureMode;
+		}
+	}
+
+	return false;
+}
 
 static  const   BYTE    BOID_FLY    = 0;
 static  const   BYTE    BOID_DOWN   = 1;
@@ -258,6 +280,11 @@ bool MoveBug ( OBJECT* o, bool bForceRender )
 		case MODEL_FENRIR_BLUE:
 		case MODEL_FENRIR_RED:
 		case MODEL_FENRIR_GOLD:
+			if (IsMiniatureOwner(o->Owner))
+			{
+				WorkdMovimentMiniature(o, 180.f, 8);
+				break;
+			}
 			if ((TerrainWall[TERRAIN_INDEX_REPEAT((int)floor(o->Owner->Position[0] / 100.0f), (int)floor(o->Owner->Position[1] / 100.0f))] & 1) == 1)
 			{
 				if (gProtect && gProtect->m_MainInfo.m_MountMiniSafeZone != 0 && g_pOption->m_MiniSafeZone)
@@ -606,17 +633,17 @@ bool MoveBug ( OBJECT* o, bool bForceRender )
 				break;
 			}
 
-            if ( o->Owner->Teleport==TELEPORT_BEGIN || o->Owner->Teleport==TELEPORT )
-            {
-                o->Alpha -= 0.1f;
-                if ( o->Alpha<0 ) o->Alpha = 0.f;
-            }
-            else
-            {
-                o->Alpha = 1.f;
-            }
+			if (o->Owner->Teleport == TELEPORT_BEGIN || o->Owner->Teleport == TELEPORT)
+			{
+				o->Alpha -= 0.1f;
+				if (o->Alpha < 0) o->Alpha = 0.f;
+			}
+			else
+			{
+				o->Alpha = 1.f;
+			}
 
-            VectorCopy ( o->Owner->Position, o->Position );
+			VectorCopy(o->Owner->Position, o->Position);
 
             if ( o->Type==MODEL_PEGASUS )
             {
@@ -847,6 +874,8 @@ bool RenderBug ( OBJECT* o, bool bForceRender )
 		
 void RenderBugs()
 {
+	gHelperManager.RenderHelpers();
+
 	for ( int i=0; i<MAX_BUTTERFLES; i++ )
 	{
 		OBJECT *o = &Butterfles[i];

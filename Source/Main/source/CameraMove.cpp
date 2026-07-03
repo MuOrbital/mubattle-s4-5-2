@@ -231,9 +231,12 @@ UPDATE_WAY_POINT_ENTRY:
 				}
 				else
 				{
-					//m_CurrentCameraPos[0] += (fDirVector[0] * cameraMoveAccel);
-					//m_CurrentCameraPos[1] += (fDirVector[1] * cameraMoveAccel);
-					//m_CurrentCameraPos[2] = RequestTerrainHeight(m_CurrentCameraPos[0], m_CurrentCameraPos[1]);
+					if (gProtect->m_MainInfo.m_SelectServerCustom == 0)
+					{
+						m_CurrentCameraPos[0] += (fDirVector[0] * cameraMoveAccel);
+						m_CurrentCameraPos[1] += (fDirVector[1] * cameraMoveAccel);
+						m_CurrentCameraPos[2] = RequestTerrainHeight(m_CurrentCameraPos[0], m_CurrentCameraPos[1]);
+					}
 
 					if (m_fCurrentDistanceLevel < pTargetWayPoint->fCameraDistanceLevel)
 					{
@@ -264,10 +267,12 @@ UPDATE_WAY_POINT_ENTRY:
 			}
 			else
 			{
-				//m_CurrentCameraPos[0] += (fDirVector[0] * 3.f);
-				//m_CurrentCameraPos[1] += (fDirVector[1] * 3.f);
-				//m_CurrentCameraPos[2] = RequestTerrainHeight(m_CurrentCameraPos[0], m_CurrentCameraPos[1]);
-
+				if (gProtect->m_MainInfo.m_SelectServerCustom == 0)
+				{
+					m_CurrentCameraPos[0] += (fDirVector[0] * 3.f);
+					m_CurrentCameraPos[1] += (fDirVector[1] * 3.f);
+					m_CurrentCameraPos[2] = RequestTerrainHeight(m_CurrentCameraPos[0], m_CurrentCameraPos[1]);
+				}
 				if (fabs(m_fCameraStartDistanceLevel - m_fCurrentDistanceLevel) > 0.2f)
 					m_fCurrentDistanceLevel += (m_fCameraStartDistanceLevel - m_fCurrentDistanceLevel) * 0.2f;
 				else
@@ -600,12 +605,12 @@ UPDATE_WAY_POINT_ENTRY:
 			}
 			if (IsTourPaused())
 			{
-				if (m_fForceSpeed > 0)
+				if (m_fForceSpeed > 0 && gProtect->m_MainInfo.m_SelectServerCustom == 0)
 				{
-					//m_CurrentCameraPos[0] += (fDirVector[0] * targetCameraAcc * m_fForceSpeed);
-					//m_CurrentCameraPos[1] += (fDirVector[1] * targetCameraAcc * m_fForceSpeed);
-					//m_vTourCameraPos[0] += (fTourDirVector[0] * targetCameraAcc * m_fForceSpeed);
-					//m_vTourCameraPos[1] += (fTourDirVector[1] * targetCameraAcc * m_fForceSpeed);
+					m_CurrentCameraPos[0] += (fDirVector[0] * targetCameraAcc * m_fForceSpeed);
+					m_CurrentCameraPos[1] += (fDirVector[1] * targetCameraAcc * m_fForceSpeed);
+					m_vTourCameraPos[0] += (fTourDirVector[0] * targetCameraAcc * m_fForceSpeed);
+					m_vTourCameraPos[1] += (fTourDirVector[1] * targetCameraAcc * m_fForceSpeed);
 				}
 				else if (m_fForceSpeed < 0)
 				{
@@ -617,10 +622,13 @@ UPDATE_WAY_POINT_ENTRY:
 			}
 			else
 			{
-				//m_CurrentCameraPos[0] += (fDirVector[0] * targetCameraAcc);
-				//m_CurrentCameraPos[1] += (fDirVector[1] * targetCameraAcc);
-				//m_vTourCameraPos[0] += (fTourDirVector[0] * targetCameraAcc);
-				//m_vTourCameraPos[1] += (fTourDirVector[1] * targetCameraAcc);
+				if (gProtect->m_MainInfo.m_SelectServerCustom == 0)
+				{
+					m_CurrentCameraPos[0] += (fDirVector[0] * targetCameraAcc);
+					m_CurrentCameraPos[1] += (fDirVector[1] * targetCameraAcc);
+					m_vTourCameraPos[0] += (fTourDirVector[0] * targetCameraAcc);
+					m_vTourCameraPos[1] += (fTourDirVector[1] * targetCameraAcc);
+				}
 			}
 			m_vTourCameraPos[2] = -300;//RequestTerrainHeight(m_CurrentCameraPos[0],m_CurrentCameraPos[1]);
 			m_fCurrentDistanceLevel = pOriginWayPoint->fCameraDistanceLevel * fSubDistance / (fOrgDistance + fSubDistance)

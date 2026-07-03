@@ -27,5 +27,5 @@ void RenderFishs ( void );
 
 
 
-
+extern bool g_bMiniatureMode;
 #endif// __GOBOID_H__

@@ -281,6 +281,7 @@ public:
 	int m_MossMerchantEventTime;
 	int m_RaklionEvent;
 	int m_DisableWingMixSU;
+	int m_Camera3DSwitch[MAX_ACCOUNT_LEVEL];
 	int m_ChaosItemMixRate[MAX_ACCOUNT_LEVEL];
 	int m_DevilSquareMixRate1[MAX_ACCOUNT_LEVEL];
 	int m_DevilSquareMixRate2[MAX_ACCOUNT_LEVEL];

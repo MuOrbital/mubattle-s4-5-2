@@ -90,6 +90,7 @@ SEASON3B::CNewUISystem::CNewUISystem()
 	m_pNewGensRanking = NULL;
 #endif //PBG_ADD_GENSRANKING
 	m_pNewUnitedMarketPlaceWindow = NULL;
+	m_NewUIRankTop = NULL;
 }
 
 SEASON3B::CNewUISystem::~CNewUISystem()
@@ -472,6 +473,10 @@ bool SEASON3B::CNewUISystem::LoadMainSceneInterface()
 	if (m_pNewGensRanking->Create(m_pNewUIMng, 640, 480) == false)
 		return false;
 
+	m_NewUIRankTop = new CNewUIRankingTop;
+	if (m_NewUIRankTop->Create(m_pNewUIMng, setPosCenterX(366), 100) == false)
+		return false;
+
 	m_pNewUnitedMarketPlaceWindow = new CNewUIUnitedMarketPlaceWindow;
 	if (m_pNewUnitedMarketPlaceWindow->Create(m_pNewUIMng, m_pNewUI3DRenderMng, GWidescreen.WidescreenPosX1, 0) == false)
 		return false;
@@ -569,6 +574,7 @@ void SEASON3B::CNewUISystem::UnloadMainSceneInterface()
 	SAFE_DELETE(m_pNewUIStamina);
 #endif //PBG_MOD_STAMINA_UI
 	SAFE_DELETE(m_pNewGensRanking);
+	SAFE_DELETE(m_NewUIRankTop);
 	SAFE_DELETE(m_pNewUnitedMarketPlaceWindow);
 #ifdef LEM_FIX_LUCKYITEM_UICLASS_SAFEDELETE
 	SAFE_DELETE(m_pNewUILuckyItemWnd);
@@ -2217,6 +2223,11 @@ CNewUIGensRanking* SEASON3B::CNewUISystem::GetUI_NewGensRanking() const
 	return m_pNewGensRanking;
 }
 #endif //PBG_ADD_GENSRANKING
+
+CNewUIRankingTop* SEASON3B::CNewUISystem::GetUI_NewUIRankingTop() const
+{
+	return m_NewUIRankTop;
+}
 
 CNewUIUnitedMarketPlaceWindow* SEASON3B::CNewUISystem::GetUI_pNewUnitedMarketPlaceWindow() const
 {

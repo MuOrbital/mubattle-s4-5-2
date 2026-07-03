@@ -1,4 +1,4 @@
-﻿///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 
@@ -63,10 +63,13 @@
 #pragma comment(lib, "glew32.lib")
 #include "AutoClick.h"
 #include "CustomWing.h"
+#include "CustomWorld.h"
+#include "HelperSystem.h"
 #include "CustomEffects.h"
 #include "MonsterGlow.h"
 #include "MonsterName.h"
 #include "RenderModel.h"
+#include "MHPIntegration.h"
 #include <rpc.h>
 #include <rpcdce.h>
 #pragma comment(lib, "rpcrt4.lib")
@@ -148,6 +151,178 @@ char g_szStartupLogin[50] = { 0 };
 char g_szStartupPassword[50] = { 0 };
 int  g_iStartupAutoLogin = 0;
 
+#define MUSIC_HELPER_COPYDATA_ID 0x4D554D53
+#define MUSIC_HELPER_CLASS_NAME "MuOnlineMusicHelperWindow"
+#define WM_MUSIC_HELPER_QUERY (WM_APP + 0x4D1)
+
+enum MUSIC_HELPER_COMMAND
+{
+	MUSIC_HELPER_PLAY = 1,
+	MUSIC_HELPER_STOP = 2,
+	MUSIC_HELPER_VOLUME = 3,
+	MUSIC_HELPER_QUIT = 4,
+	MUSIC_HELPER_POSITION = 5
+};
+
+struct MUSIC_HELPER_PACKET
+{
+	DWORD command;
+	int value;
+	char name[MAX_PATH];
+};
+
+static HANDLE g_hMusicHelperProcess = NULL;
+static HWND g_hMusicHelperWnd = NULL;
+static DWORD g_dwMusicHelperProcessId = 0;
+static HANDLE g_hMusicHelperParentProcess = NULL;
+static char g_szMusicHelperCurrentFile[MAX_PATH] = { 0 };
+
+static int ClampMusicVolumeLevel(int level)
+{
+	if (level < 0)
+		return 0;
+	if (level > 10)
+		return 10;
+	return level;
+}
+
+static void ApplyWzMusicVolumeLevel(int level)
+{
+	level = ClampMusicVolumeLevel(level);
+	wzAudioSetMixerMode(_mmInternalVolume);
+	wzAudioSetVolume(level * 10);
+}
+
+static void BuildMusicHelperWindowName(char* buffer, size_t bufferSize, DWORD parentProcessId)
+{
+	sprintf_s(buffer, bufferSize, "MuOnlineMusicHelper_%lu", parentProcessId);
+}
+
+static bool GetMusicHelperExePath(char* helperPath, size_t helperPathSize)
+{
+	if (GetModuleFileNameA(NULL, helperPath, (DWORD)helperPathSize) == 0)
+		return false;
+
+	return true;
+}
+
+static HWND FindMusicHelperWindow()
+{
+	char windowName[64] = { 0 };
+	BuildMusicHelperWindowName(windowName, sizeof(windowName), GetCurrentProcessId());
+	return FindWindowA(MUSIC_HELPER_CLASS_NAME, windowName);
+}
+
+static bool StartMusicHelper()
+{
+	if (g_hMusicHelperWnd != NULL && IsWindow(g_hMusicHelperWnd) != FALSE)
+		return true;
+
+	g_hMusicHelperWnd = FindMusicHelperWindow();
+	if (g_hMusicHelperWnd != NULL)
+		return true;
+
+	char helperPath[MAX_PATH] = { 0 };
+	if (GetMusicHelperExePath(helperPath, sizeof(helperPath)) == false)
+		return false;
+
+	char commandLine[MAX_PATH + 64] = { 0 };
+	sprintf_s(commandLine, sizeof(commandLine), "\"%s\" --music-helper %lu", helperPath, GetCurrentProcessId());
+
+	STARTUPINFOA si;
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&si, sizeof(si));
+	ZeroMemory(&pi, sizeof(pi));
+	si.cb = sizeof(si);
+	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.wShowWindow = SW_HIDE;
+
+	if (CreateProcessA(helperPath, commandLine, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi) == FALSE)
+		return false;
+
+	g_hMusicHelperProcess = pi.hProcess;
+	g_dwMusicHelperProcessId = pi.dwProcessId;
+	CloseHandle(pi.hThread);
+
+	for (int n = 0; n < 50; ++n)
+	{
+		g_hMusicHelperWnd = FindMusicHelperWindow();
+		if (g_hMusicHelperWnd != NULL)
+			return true;
+
+		Sleep(100);
+	}
+
+	return false;
+}
+
+static bool SendMusicHelperCommand(DWORD command, int value, const char* name)
+{
+	if (StartMusicHelper() == false)
+		return false;
+
+	MUSIC_HELPER_PACKET packet;
+	ZeroMemory(&packet, sizeof(packet));
+	packet.command = command;
+	packet.value = value;
+	if (name != NULL)
+		strncpy_s(packet.name, name, sizeof(packet.name) - 1);
+
+	COPYDATASTRUCT cds;
+	ZeroMemory(&cds, sizeof(cds));
+	cds.dwData = MUSIC_HELPER_COPYDATA_ID;
+	cds.cbData = sizeof(packet);
+	cds.lpData = &packet;
+
+	DWORD_PTR result = 0;
+	if (SendMessageTimeoutA(g_hMusicHelperWnd, WM_COPYDATA, (WPARAM)g_hWnd, (LPARAM)&cds, SMTO_ABORTIFHUNG, 1000, &result) == 0)
+	{
+		g_hMusicHelperWnd = NULL;
+		return false;
+	}
+
+	return result != 0;
+}
+
+static int QueryMusicHelperPosition()
+{
+	if (g_hMusicHelperWnd == NULL || IsWindow(g_hMusicHelperWnd) == FALSE)
+		g_hMusicHelperWnd = FindMusicHelperWindow();
+
+	if (g_hMusicHelperWnd == NULL)
+		return 100;
+
+	DWORD_PTR result = 100;
+	if (SendMessageTimeoutA(g_hMusicHelperWnd, WM_MUSIC_HELPER_QUERY, MUSIC_HELPER_POSITION, 0, SMTO_ABORTIFHUNG, 1000, &result) == 0)
+	{
+		g_hMusicHelperWnd = NULL;
+		return 100;
+	}
+
+	return (int)result;
+}
+
+static void StopMusicHelper()
+{
+	if (g_hMusicHelperWnd != NULL && IsWindow(g_hMusicHelperWnd) != FALSE)
+		SendMusicHelperCommand(MUSIC_HELPER_QUIT, 0, NULL);
+
+	if (g_hMusicHelperProcess != NULL)
+	{
+		WaitForSingleObject(g_hMusicHelperProcess, 2000);
+		CloseHandle(g_hMusicHelperProcess);
+		g_hMusicHelperProcess = NULL;
+	}
+
+	g_hMusicHelperWnd = NULL;
+	g_dwMusicHelperProcessId = 0;
+}
+
+void SetMusicVolumeLevel(int level)
+{
+	level = ClampMusicVolumeLevel(level);
+	SendMusicHelperCommand(MUSIC_HELPER_VOLUME, level, NULL);
+}
 
 void StopMp3(char* Name, BOOL bEnforce)
 {
@@ -156,7 +331,7 @@ void StopMp3(char* Name, BOOL bEnforce)
 	if (Mp3FileName[0] != NULL)
 	{
 		if (strcmp(Name, Mp3FileName) == 0) {
-			wzAudioStop();
+			SendMusicHelperCommand(MUSIC_HELPER_STOP, 0, Name);
 			Mp3FileName[0] = NULL;
 		}
 	}
@@ -175,7 +350,8 @@ void PlayMp3(char* Name, BOOL bEnforce)
 	{
 		if (g_pOption->m_Music == false)
 		{
-			wzAudioPlay(Name, 1);
+			SendMusicHelperCommand(MUSIC_HELPER_VOLUME, g_pOption->GetMusicVolumeLevel(), NULL);
+			SendMusicHelperCommand(MUSIC_HELPER_PLAY, 0, Name);
 			strcpy(Mp3FileName, Name);
 		}
 	}
@@ -183,14 +359,14 @@ void PlayMp3(char* Name, BOOL bEnforce)
 
 bool IsEndMp3()
 {
-	if (100 == wzAudioGetStreamOffsetRange())
+	if (100 == QueryMusicHelperPosition())
 		return true;
 	return false;
 }
 
 int GetMp3PlayPosition()
 {
-	return wzAudioGetStreamOffsetRange();
+	return QueryMusicHelperPosition();
 }
 
 extern int  LogIn;
@@ -207,6 +383,11 @@ void CheckHack(void)
 
 GLvoid KillGLWindow(GLvoid)
 {
+#if jdk_shader_local330
+	OGL330::Release();
+#endif
+	CoreGLCompat::Shutdown();
+
 	if (g_hRC)
 	{
 		if (!wglMakeCurrent(NULL, NULL))
@@ -417,6 +598,7 @@ void DestroyWindow()
 	leaf::CRegKey regkey;
 	regkey.SetKey(leaf::CRegKey::_HKEY_CURRENT_USER, "SOFTWARE\\MuOnline\\Config");
 	regkey.WriteDword("VolumeLevel", g_pOption->GetVolumeLevel());
+	regkey.WriteDword("MusicVolumeLevel", g_pOption->GetMusicVolumeLevel());
 
 	CUIMng::Instance().Release();
 
@@ -517,7 +699,7 @@ void DestroySound()
 		ReleaseBuffer(i);
 
 	FreeDirectSound();
-	wzAudioDestroy();
+	StopMusicHelper();
 }
 
 int g_iInactiveTime = 0;
@@ -661,9 +843,9 @@ LONG FAR PASCAL WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 			char szIniFilePath[256 + 20] = "";
 			char szCurrentDir[256];
-			GetCurrentDirectory(256, szCurrentDir);
+	if (szCurrentDir[strlen(szCurrentDir) - 1] == 92)
 			strcpy(szIniFilePath, szCurrentDir);
-			if (szCurrentDir[strlen(szCurrentDir) - 1] == '\\')
+			if (szCurrentDir[strlen(szCurrentDir) - 1] == 92)
 				strcat(szIniFilePath, "config.ini");
 			else
 				strcat(szIniFilePath, "\\Data\\Custom\\config.ini");
@@ -757,8 +939,8 @@ LONG FAR PASCAL WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_ACTIVATE:
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
-			// Não desativa o jogo quando perde foco (fullscreen continua rodando)
-			// Apenas reseta os botões do mouse no Window Mode
+			// N�o desativa o jogo quando perde foco (fullscreen continua rodando)
+			// Apenas reseta os bot�es do mouse no Window Mode
 #if defined USER_WINDOW_MODE || (defined WINDOWMODE)
 			if (g_bUseWindowMode == TRUE)
 			{
@@ -1080,6 +1262,25 @@ LONG FAR PASCAL WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
+static int GetConfiguredSwapInterval()
+{
+	char szCurrentDir[MAX_PATH] = { 0 };
+	char szIniFilePath[MAX_PATH + 32] = { 0 };
+
+	GetCurrentDirectoryA(MAX_PATH, szCurrentDir);
+	strcpy_s(szIniFilePath, szCurrentDir);
+
+	if (szCurrentDir[strlen(szCurrentDir) - 1] == 92)
+	{
+		strcat_s(szIniFilePath, "Data\\Custom\\config.ini");
+	}
+	else
+	{
+		strcat_s(szIniFilePath, "\\Data\\Custom\\config.ini");
+	}
+
+	return GetPrivateProfileIntA("OpenGL", "VSync", 1, szIniFilePath) != 0 ? 1 : 0;
+}
 bool CreateOpenglWindow()
 {
 	PIXELFORMATDESCRIPTOR pfd;
@@ -1089,8 +1290,9 @@ bool CreateOpenglWindow()
 	pfd.nVersion = 1;
 	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
 	pfd.iPixelType = PFD_TYPE_RGBA;
-	pfd.cColorBits = 16;
-	pfd.cDepthBits = 16;
+	pfd.cColorBits = 32;
+	pfd.cDepthBits = 24;
+	pfd.cStencilBits = 8;
 
 	if (!(g_hDC = GetDC(g_hWnd)))
 	{
@@ -1118,28 +1320,68 @@ bool CreateOpenglWindow()
 		return FALSE;
 	}
 
-	if (!(g_hRC = wglCreateContext(g_hDC)))
+	typedef HGLRC(WINAPI* MuWglCreateContextAttribsARB)(HDC, HGLRC, const int*);
+	const int WGL_CONTEXT_MAJOR_VERSION_ARB_VALUE = 0x2091;
+	const int WGL_CONTEXT_MINOR_VERSION_ARB_VALUE = 0x2092;
+	const int WGL_CONTEXT_PROFILE_MASK_ARB_VALUE = 0x9126;
+	const int WGL_CONTEXT_CORE_PROFILE_BIT_ARB_VALUE = 0x00000001;
+
+	HGLRC bootstrapContext = wglCreateContext(g_hDC);
+	if (bootstrapContext == NULL || !wglMakeCurrent(g_hDC, bootstrapContext))
 	{
-		g_ErrorReport.Write("OpenGL Create Context Error - ErrorCode : %d\r\n", GetLastError());
-		KillGLWindow();
-		MessageBox(NULL, GlobalText[4], "OpenGL Create Context Error.", MB_OK | MB_ICONEXCLAMATION);
+		g_ErrorReport.Write("OpenGL bootstrap context error - ErrorCode : %d\r\n", GetLastError());
+		if (bootstrapContext != NULL) wglDeleteContext(bootstrapContext);
 		return FALSE;
 	}
 
-	if (!wglMakeCurrent(g_hDC, g_hRC))
+	MuWglCreateContextAttribsARB createContextAttribs =
+		reinterpret_cast<MuWglCreateContextAttribsARB>(wglGetProcAddress("wglCreateContextAttribsARB"));
+	if (createContextAttribs == NULL)
 	{
-		g_ErrorReport.Write("OpenGL Make Current Error - ErrorCode : %d\r\n", GetLastError());
-		KillGLWindow();
-		MessageBox(NULL, GlobalText[4], "OpenGL Make Current Error.", MB_OK | MB_ICONEXCLAMATION);
+		wglMakeCurrent(NULL, NULL);
+		wglDeleteContext(bootstrapContext);
+		MessageBox(NULL, "OpenGL 3.3 Core nao e suportado por este computador.", "OpenGL 3.3 Core", MB_OK | MB_ICONERROR);
 		return FALSE;
 	}
 
+	const int contextAttributes[] = {
+		WGL_CONTEXT_MAJOR_VERSION_ARB_VALUE, 3,
+		WGL_CONTEXT_MINOR_VERSION_ARB_VALUE, 3,
+		WGL_CONTEXT_PROFILE_MASK_ARB_VALUE, WGL_CONTEXT_CORE_PROFILE_BIT_ARB_VALUE,
+		0
+	};
+
+	g_hRC = createContextAttribs(g_hDC, NULL, contextAttributes);
+	wglMakeCurrent(NULL, NULL);
+	wglDeleteContext(bootstrapContext);
+
+	if (g_hRC == NULL || !wglMakeCurrent(g_hDC, g_hRC))
+	{
+		g_ErrorReport.Write("OpenGL 3.3 Core context error - ErrorCode : %d\r\n", GetLastError());
+		MessageBox(NULL, "Falha ao criar o contexto OpenGL 3.3 Core.", "OpenGL 3.3 Core", MB_OK | MB_ICONERROR);
+		return FALSE;
+	}
+
+	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
 	{
-		MessageBox(NULL, "Erro ao carregar glew32.dll", "Erro", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, "Erro ao inicializar o OpenGL 3.3 Core.", "Erro", MB_OK | MB_ICONERROR);
+		return false;
+	}
+	glGetError();
+
+	if (!CoreGLCompat::Initialize())
+	{
+		MessageBox(NULL, "Falha ao inicializar o backend OpenGL 3.3 Core.", "Erro", MB_OK | MB_ICONERROR);
 		return false;
 	}
 
+	typedef BOOL(WINAPI* MuWglSwapIntervalEXT)(int);
+	MuWglSwapIntervalEXT muSwapInterval = reinterpret_cast<MuWglSwapIntervalEXT>(wglGetProcAddress("wglSwapIntervalEXT"));
+	if (muSwapInterval != NULL)
+	{
+		muSwapInterval(GetConfiguredSwapInterval());
+	}
 	ShowWindow(g_hWnd, SW_SHOW);
 	SetForegroundWindow(g_hWnd);
 	SetFocus(g_hWnd);
@@ -1245,7 +1487,7 @@ BOOL OpenInitFile()
 	char szCurrentDir[256];
 	GetCurrentDirectory(256, szCurrentDir);
 	strcpy(szIniFilePath, szCurrentDir);
-	if (szCurrentDir[strlen(szCurrentDir) - 1] == '\\')
+	if (szCurrentDir[strlen(szCurrentDir) - 1] == 92)
 		strcat(szIniFilePath, "config.ini");
 	else
 		strcat(szIniFilePath, "\\Data\\Custom\\config.ini");
@@ -1435,7 +1677,7 @@ BOOL Util_CheckOption(char* lpszCommandLine, unsigned char cOption, char* lpszSt
 	{
 		lpFound = (unsigned char*)strchr((char*)(lpFound + 1), nFind);
 		if (lpFound && (*(lpFound + 1) == cComp[0] || *(lpFound + 1) == cComp[1]))
-		{	// ¹ß°ß
+		{	// �߰�
 			if (lpszString)
 			{
 				int nCount = 0;
@@ -1462,7 +1704,7 @@ BOOL UpdateFile(char* lpszOld, char* lpszNew)
 	DWORD dwStartTickCount = ::GetTickCount();
 	while (::GetTickCount() - dwStartTickCount < 5000) {
 		if (CopyFile(lpszOld, lpszNew, FALSE))
-		{	// ¼º°ø
+		{	// ����
 			DeleteFile(lpszOld);
 			return (TRUE);
 		}
@@ -1567,7 +1809,7 @@ bool ExceptionCallback(_EXCEPTION_POINTERS* pExceptionInfo)
 
 	GetLocalTime(&SystemTime);
 
-	//wsprintf(path, "%d-%d-%d_%dh%dm%ds.dmp", SystemTime.wYear, SystemTime.wMonth, SystemTime.wDay, SystemTime.wHour, SystemTime.wMinute, SystemTime.wSecond);
+	wsprintf(path, "%d-%d-%d_%dh%dm%ds.dmp", SystemTime.wYear, SystemTime.wMonth, SystemTime.wDay, SystemTime.wHour, SystemTime.wMinute, SystemTime.wSecond);
 
 	HANDLE file = CreateFile(path, GENERIC_WRITE, FILE_SHARE_WRITE, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 
@@ -1733,12 +1975,13 @@ void RunLauncherFromSameFolder()
 }
 
 // ============================================================
-//  Startup Dialog — Interface visual inspirada no InGameUpdater
+//  Startup Dialog � Interface visual inspirada no InGameUpdater
 // ============================================================
 #define IDC_SD_COMBO_RES     2001
 #define IDC_SD_CHK_SOUND     2002
 #define IDC_SD_SLIDER_VOL    2003
 #define IDC_SD_CHK_MUSIC     2004
+#define IDC_SD_SLIDER_MUSIC  2008
 #define IDC_SD_EDIT_LOGIN    2005
 #define IDC_SD_EDIT_PASS     2006
 #define IDC_SD_CHK_AUTOLOGIN 2007
@@ -1753,16 +1996,17 @@ struct StartupDlgData
 	int  soundOnOff;
 	int  volumeLevel;   // 0..9
 	int  musicOnOff;
+	int  musicVolumeLevel; // 0..10
 	char login[50];
 	char password[50];
 	int  autoLogin;
-	int  fpsLimit;      // 21..64
-	bool saved;         // false = fechou sem salvar -> não abre o jogo
+	int  fpsLimit;      // 32..120
+	bool saved;         // false = fechou sem salvar -> n�o abre o jogo
 };
 
 static StartupDlgData g_sdData;
 
-// ── helpers de desenho ────────────────────────────────────────
+// -- helpers de desenho ----------------------------------------
 static HFONT  g_sdFontTitle = NULL;
 static HFONT  g_sdFontNormal = NULL;
 static HFONT  g_sdFontSmall = NULL;
@@ -1833,7 +2077,7 @@ static void SD_DrawPanel(HDC hdc, const RECT& rc)
 	SelectObject(hdc, op);
 }
 
-// Atualiza o label dinâmico de FPS / Volume
+// Atualiza o label din�mico de FPS / Volume
 static void SD_UpdateDynLabel(HWND hDlg)
 {
 	// FPS
@@ -1842,8 +2086,8 @@ static void SD_UpdateDynLabel(HWND hDlg)
 	SetDlgItemTextA(hDlg, IDC_SD_LBL_FPSDYN, buf);
 }
 
-// ── WndProc da janela ─────────────────────────────────────────
-// ── WndProc da janela ─────────────────────────────────────────
+// -- WndProc da janela -----------------------------------------
+// -- WndProc da janela -----------------------------------------
 LRESULT CALLBACK StartupDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
@@ -1852,11 +2096,11 @@ LRESULT CALLBACK StartupDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 	{
 		SD_CreateResources();
 
-		// Janela compacta 420x370, sem título
+		// Janela compacta 420x370, sem t�tulo
 		// Labels: x=14, w=110 | Controls: x=130, w=270
 		int cx = 130, cw = 270;
 
-		// Resolução y=46
+		// Resolu��o y=46
 		HWND hCombo = CreateWindowA("COMBOBOX", NULL,
 			WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP,
 			cx, 44, cw, 180, hDlg, (HMENU)IDC_SD_COMBO_RES, g_hInst, NULL);
@@ -1882,48 +2126,54 @@ LRESULT CALLBACK StartupDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 		SendMessage(hSliderVol, TBM_SETRANGE, TRUE, MAKELONG(0, 9));
 		SendMessage(hSliderVol, TBM_SETPOS, TRUE, g_sdData.volumeLevel);
 
-		// Música y=128
-		HWND hChkM = CreateWindowA("BUTTON", "Músicas",
+		// M�sica y=128
+		HWND hChkM = CreateWindowA("BUTTON", "M�sicas",
 			WS_CHILD | WS_VISIBLE | BS_CHECKBOX | BS_FLAT | WS_TABSTOP,
 			cx, 126, cw, 20, hDlg, (HMENU)IDC_SD_CHK_MUSIC, g_hInst, NULL);
 		SendMessage(hChkM, WM_SETFONT, (WPARAM)g_sdFontNormal, TRUE);
 		SendMessage(hChkM, BM_SETCHECK, g_sdData.musicOnOff ? BST_CHECKED : BST_UNCHECKED, 0);
 
-		// Login y=162
+		HWND hSliderMusic = CreateWindowExA(0, TRACKBAR_CLASS, NULL,
+			WS_CHILD | WS_VISIBLE | TBS_HORZ | TBS_AUTOTICKS | TBS_NOTICKS | WS_TABSTOP,
+			cx, 150, cw - 42, 20, hDlg, (HMENU)IDC_SD_SLIDER_MUSIC, g_hInst, NULL);
+		SendMessage(hSliderMusic, TBM_SETRANGE, TRUE, MAKELONG(0, 10));
+		SendMessage(hSliderMusic, TBM_SETPOS, TRUE, g_sdData.musicVolumeLevel);
+
+		// Login y=176
 		HWND hEditL = CreateWindowExA(WS_EX_CLIENTEDGE, "EDIT", g_sdData.login,
 			WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_TABSTOP,
-			cx, 160, cw, 20, hDlg, (HMENU)IDC_SD_EDIT_LOGIN, g_hInst, NULL);
+			cx, 174, cw, 20, hDlg, (HMENU)IDC_SD_EDIT_LOGIN, g_hInst, NULL);
 		SendMessage(hEditL, WM_SETFONT, (WPARAM)g_sdFontNormal, TRUE);
 		SendMessage(hEditL, EM_SETLIMITTEXT, 10, 0);
 
-		// Senha y=188
+		// Senha y=202
 		HWND hEditP = CreateWindowExA(WS_EX_CLIENTEDGE, "EDIT", g_sdData.password,
 			WS_CHILD | WS_VISIBLE | ES_PASSWORD | ES_AUTOHSCROLL | WS_TABSTOP,
-			cx, 184, cw, 20, hDlg, (HMENU)IDC_SD_EDIT_PASS, g_hInst, NULL);
+			cx, 198, cw, 20, hDlg, (HMENU)IDC_SD_EDIT_PASS, g_hInst, NULL);
 		SendMessage(hEditP, WM_SETFONT, (WPARAM)g_sdFontNormal, TRUE);
 		SendMessage(hEditP, EM_SETLIMITTEXT, 10, 0);
 
-		// Auto Login y=210
+		// Auto Login y=224
 		HWND hChkA = CreateWindowA("BUTTON", "Auto Login",
 			WS_CHILD | WS_VISIBLE | BS_CHECKBOX | BS_FLAT | WS_TABSTOP,
-			cx, 208, cw, 20, hDlg, (HMENU)IDC_SD_CHK_AUTOLOGIN, g_hInst, NULL);
+			cx, 222, cw, 20, hDlg, (HMENU)IDC_SD_CHK_AUTOLOGIN, g_hInst, NULL);
 		SendMessage(hChkA, WM_SETFONT, (WPARAM)g_sdFontNormal, TRUE);
 		SendMessage(hChkA, BM_SETCHECK, g_sdData.autoLogin ? BST_CHECKED : BST_UNCHECKED, 0);
 
-		// FPS y=238
+		// FPS y=252
 		HWND hSliderFps = CreateWindowExA(0, TRACKBAR_CLASS, NULL,
 			WS_CHILD | WS_VISIBLE | TBS_HORZ | TBS_AUTOTICKS | TBS_NOTICKS | WS_TABSTOP,
-			cx, 236, cw - 56, 20, hDlg, (HMENU)IDC_SD_SLIDER_FPS, g_hInst, NULL);
-		SendMessage(hSliderFps, TBM_SETRANGE, TRUE, MAKELONG(32, 64));
+			cx, 250, cw - 56, 20, hDlg, (HMENU)IDC_SD_SLIDER_FPS, g_hInst, NULL);
+		SendMessage(hSliderFps, TBM_SETRANGE, TRUE, MAKELONG(32, 120));
 		SendMessage(hSliderFps, TBM_SETPOS, TRUE, g_sdData.fpsLimit);
 
 		char fpsBuf[16]; sprintf_s(fpsBuf, "FPS: %d", g_sdData.fpsLimit);
 		HWND hLblFps = CreateWindowA("STATIC", fpsBuf,
 			WS_CHILD | WS_VISIBLE | SS_LEFT,
-			cx + cw - 52, 236, 50, 20, hDlg, (HMENU)IDC_SD_LBL_FPSDYN, g_hInst, NULL);
+			cx + cw - 52, 250, 50, 20, hDlg, (HMENU)IDC_SD_LBL_FPSDYN, g_hInst, NULL);
 		SendMessage(hLblFps, WM_SETFONT, (WPARAM)g_sdFontSmall, TRUE);
 
-		// Botões y=302
+		// Bot�es y=302
 		HWND hBtnSave = CreateWindowA("BUTTON", "JOGAR",
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_FLAT | WS_TABSTOP,
 			30, 300, 168, 30, hDlg, (HMENU)IDC_SD_BTN_SAVE, g_hInst, NULL);
@@ -1952,39 +2202,40 @@ LRESULT CALLBACK StartupDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 		RECT panel = { 8, 38, 412, 290 };
 		SD_DrawPanel(hdc, panel);
 
-		// Linha antes dos botões
+		// Linha antes dos bot�es
 		SD_DrawLine(hdc, 8, 294, 412, 294);
 
-		// Título na faixa
+		// T�tulo na faixa
 		RECT rcTitle = { 12, 6, 380, 28 };
 		HFONT oldF = (HFONT)SelectObject(hdc, g_sdFontNormal);
 		SetBkMode(hdc, TRANSPARENT);
 		SetTextColor(hdc, RGB(255, 255, 255));
-		DrawTextA(hdc, "CONFIGURAÇÕES DE INÍCIO", -1, &rcTitle, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+		DrawTextA(hdc, "CONFIGURA��ES DE IN�CIO", -1, &rcTitle, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 		SelectObject(hdc, oldF);
 
-		// Botão X manual no canto (informativo)
+		// Bot�o X manual no canto (informativo)
 		RECT rcX = { 386, 6, 412, 28 };
 		SD_PaintLabel(hdc, rcX, "[X]", g_sdFontSmall, RGB(40, 40, 120));
 
 		// Labels dos campos
 		int lx = 14;
-		RECT rRes = { lx, 40, 126, 62 };  SD_PaintLabel(hdc, rRes, "Resolução", g_sdFontNormal, RGB(180, 180, 200));
+		RECT rRes = { lx, 40, 126, 62 };  SD_PaintLabel(hdc, rRes, "Resolu��o", g_sdFontNormal, RGB(180, 180, 200));
 		RECT rSnd = { lx, 72, 126, 94 };  SD_PaintLabel(hdc, rSnd, "Sons", g_sdFontNormal, RGB(180, 180, 200));
 		RECT rVol = { lx, 98, 126, 120 }; SD_PaintLabel(hdc, rVol, "Volume (0-9)", g_sdFontNormal, RGB(180, 180, 200));
-		RECT rMus = { lx,122, 126, 144 }; SD_PaintLabel(hdc, rMus, "Música", g_sdFontNormal, RGB(180, 180, 200));
+		RECT rMus = { lx,122, 126, 144 }; SD_PaintLabel(hdc, rMus, "M�sica", g_sdFontNormal, RGB(180, 180, 200));
+		RECT rMusVol = { lx,146, 126, 168 }; SD_PaintLabel(hdc, rMusVol, "Vol. M�sica (0-10)", g_sdFontNormal, RGB(180, 180, 200));
 
-		SD_DrawLine(hdc, 14, 150, 406, 150);
+		SD_DrawLine(hdc, 14, 170, 406, 170);
 
-		RECT rLog = { lx,156, 126, 178 }; SD_PaintLabel(hdc, rLog, "Login", g_sdFontNormal, RGB(180, 180, 200));
-		RECT rPas = { lx,180, 126, 202 }; SD_PaintLabel(hdc, rPas, "Senha", g_sdFontNormal, RGB(180, 180, 200));
-		RECT rAut = { lx,204, 126, 226 }; SD_PaintLabel(hdc, rAut, "Auto Login", g_sdFontNormal, RGB(180, 180, 200));
+		RECT rLog = { lx,170, 126, 192 }; SD_PaintLabel(hdc, rLog, "Login", g_sdFontNormal, RGB(180, 180, 200));
+		RECT rPas = { lx,194, 126, 216 }; SD_PaintLabel(hdc, rPas, "Senha", g_sdFontNormal, RGB(180, 180, 200));
+		RECT rAut = { lx,218, 126, 240 }; SD_PaintLabel(hdc, rAut, "Auto Login", g_sdFontNormal, RGB(180, 180, 200));
 
-		SD_DrawLine(hdc, 14, 230, 406, 230);
+		SD_DrawLine(hdc, 14, 244, 406, 244);
 
-		RECT rFps = { lx,232, 126, 254 }; SD_PaintLabel(hdc, rFps, "Limite de FPS", g_sdFontNormal, RGB(180, 180, 200));
+		RECT rFps = { lx,246, 126, 268 }; SD_PaintLabel(hdc, rFps, "Limite de FPS", g_sdFontNormal, RGB(180, 180, 200));
 
-		// Rodapé discreto
+		// Rodap� discreto
 		RECT rFoot = { 0, 334, 420, 370 };
 		FillRect(hdc, &rFoot, g_sdBrushPanel);
 		RECT rNote = { 14, 338, 406, 358 };
@@ -2039,7 +2290,7 @@ LRESULT CALLBACK StartupDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 		}
 		if (wParam == VK_RETURN)
 		{
-			// Enter no campo de senha ou botão JOGAR dispara o login
+			// Enter no campo de senha ou bot�o JOGAR dispara o login
 			HWND hFocus = GetFocus();
 			HWND hPass = GetDlgItem(hDlg, IDC_SD_EDIT_PASS);
 			HWND hSave = GetDlgItem(hDlg, IDC_SD_BTN_SAVE);
@@ -2068,6 +2319,7 @@ LRESULT CALLBACK StartupDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 			g_sdData.musicOnOff = (SendMessage(GetDlgItem(hDlg, IDC_SD_CHK_MUSIC), BM_GETCHECK, 0, 0) == BST_CHECKED) ? 1 : 0;
 			g_sdData.autoLogin = (SendMessage(GetDlgItem(hDlg, IDC_SD_CHK_AUTOLOGIN), BM_GETCHECK, 0, 0) == BST_CHECKED) ? 1 : 0;
 			g_sdData.volumeLevel = (int)SendMessage(GetDlgItem(hDlg, IDC_SD_SLIDER_VOL), TBM_GETPOS, 0, 0);
+			g_sdData.musicVolumeLevel = (int)SendMessage(GetDlgItem(hDlg, IDC_SD_SLIDER_MUSIC), TBM_GETPOS, 0, 0);
 			g_sdData.fpsLimit = (int)SendMessage(GetDlgItem(hDlg, IDC_SD_SLIDER_FPS), TBM_GETPOS, 0, 0);
 			GetWindowTextA(GetDlgItem(hDlg, IDC_SD_EDIT_LOGIN), g_sdData.login, sizeof(g_sdData.login));
 			GetWindowTextA(GetDlgItem(hDlg, IDC_SD_EDIT_PASS), g_sdData.password, sizeof(g_sdData.password));
@@ -2098,7 +2350,8 @@ void ShowStartupDialog()
 	g_sdData.soundOnOff = m_SoundOnOff;
 	g_sdData.musicOnOff = m_MusicOnOff;
 	g_sdData.volumeLevel = 5;
-	g_sdData.fpsLimit = 64;
+	g_sdData.musicVolumeLevel = 10;
+	g_sdData.fpsLimit = 120;
 
 	{
 		HKEY hKey; DWORD dwSize;
@@ -2107,6 +2360,9 @@ void ShowStartupDialog()
 			DWORD vol = 5; dwSize = sizeof(DWORD);
 			if (RegQueryValueExA(hKey, "VolumeLevel", 0, NULL, (LPBYTE)&vol, &dwSize) == ERROR_SUCCESS)
 				g_sdData.volumeLevel = (int)vol;
+			DWORD musicVol = 10; dwSize = sizeof(DWORD);
+			if (RegQueryValueExA(hKey, "MusicVolumeLevel", 0, NULL, (LPBYTE)&musicVol, &dwSize) == ERROR_SUCCESS)
+				g_sdData.musicVolumeLevel = (int)musicVol;
 			RegCloseKey(hKey);
 		}
 	}
@@ -2124,8 +2380,8 @@ void ShowStartupDialog()
 		strncpy_s(g_sdData.login, bufLogin, sizeof(g_sdData.login) - 1);
 		strncpy_s(g_sdData.password, bufPass, sizeof(g_sdData.password) - 1);
 		g_sdData.autoLogin = GetPrivateProfileIntA("AutoLogin", "AutoLoginEnable", 0, szIni);
-		g_sdData.fpsLimit = GetPrivateProfileIntA("FPSSystem", "FpsLimit", 64, szIni);
-		if (g_sdData.fpsLimit < 32 || g_sdData.fpsLimit > 64) g_sdData.fpsLimit = 64;
+		g_sdData.fpsLimit = GetPrivateProfileIntA("FPSSystem", "FpsLimit", 120, szIni);
+		if (g_sdData.fpsLimit < 32 || g_sdData.fpsLimit > 120) g_sdData.fpsLimit = 120;
 	}
 
 	const char* className = "MuStartupDlg";
@@ -2143,7 +2399,7 @@ void ShowStartupDialog()
 	int x = (GetSystemMetrics(SM_CXSCREEN) - dlgW) / 2;
 	int y = (GetSystemMetrics(SM_CYSCREEN) - dlgH) / 2;
 
-	// WS_POPUP sem WS_CAPTION = sem barra de título (borderless)
+	// WS_POPUP sem WS_CAPTION = sem barra de t�tulo (borderless)
 	HWND hDlg = CreateWindowExA(
 		WS_EX_TOPMOST,
 		className,
@@ -2202,6 +2458,8 @@ void ShowStartupDialog()
 			RegSetValueExA(hKey2, "MusicOnOff", 0, REG_DWORD, (LPBYTE)&m_MusicOnOff, sizeof(DWORD));
 			DWORD vol = (DWORD)g_sdData.volumeLevel;
 			RegSetValueExA(hKey2, "VolumeLevel", 0, REG_DWORD, (LPBYTE)&vol, sizeof(DWORD));
+			DWORD musicVol = (DWORD)g_sdData.musicVolumeLevel;
+			RegSetValueExA(hKey2, "MusicVolumeLevel", 0, REG_DWORD, (LPBYTE)&musicVol, sizeof(DWORD));
 			RegCloseKey(hKey2);
 		}
 	}
@@ -2228,6 +2486,7 @@ void ShowStartupDialog()
 	strncpy_s(g_szStartupPassword, g_sdData.password, sizeof(g_szStartupPassword) - 1);
 	g_iStartupAutoLogin = g_sdData.autoLogin;
 }
+
 bool IsRunningAsAdmin()
 {
 	BOOL isAdmin = FALSE;
@@ -2526,6 +2785,7 @@ bool IsHardwareIdBlocked(const char* BlockList, const char* HardwareID)
 
 //Sistema de Obter o HardwareID
 #include <winioctl.h>
+#include <CustomCape.h>
 static bool GetPhysicalDriveSerialNumber(int driveIndex, char* outSerial, int outSize)
 {
 	char drivePath[32];
@@ -2612,9 +2872,131 @@ bool GetLocalComputerHardwareId(char* outHardwareId, int bufferSize)
 	return true;
 }
 
+static LRESULT CALLBACK MusicHelperWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+	case WM_CREATE:
+		SetTimer(hWnd, 1, 2000, NULL);
+		return 0;
+
+	case WM_TIMER:
+		if (g_hMusicHelperParentProcess != NULL && WaitForSingleObject(g_hMusicHelperParentProcess, 0) == WAIT_OBJECT_0)
+			DestroyWindow(hWnd);
+		return 0;
+
+	case WM_COPYDATA:
+	{
+		COPYDATASTRUCT* cds = (COPYDATASTRUCT*)lParam;
+		if (cds == NULL || cds->dwData != MUSIC_HELPER_COPYDATA_ID || cds->cbData != sizeof(MUSIC_HELPER_PACKET))
+			return FALSE;
+
+		MUSIC_HELPER_PACKET* packet = (MUSIC_HELPER_PACKET*)cds->lpData;
+		if (packet == NULL)
+			return FALSE;
+
+		switch (packet->command)
+		{
+		case MUSIC_HELPER_PLAY:
+			if (packet->name[0] != 0 && strcmp(packet->name, g_szMusicHelperCurrentFile) != 0)
+			{
+				wzAudioPlay(packet->name, 1);
+				strcpy_s(g_szMusicHelperCurrentFile, packet->name);
+			}
+			return TRUE;
+
+		case MUSIC_HELPER_STOP:
+			if (packet->name[0] == 0 || strcmp(packet->name, g_szMusicHelperCurrentFile) == 0)
+			{
+				wzAudioStop();
+				g_szMusicHelperCurrentFile[0] = 0;
+			}
+			return TRUE;
+
+		case MUSIC_HELPER_VOLUME:
+			ApplyWzMusicVolumeLevel(packet->value);
+			return TRUE;
+
+		case MUSIC_HELPER_QUIT:
+			DestroyWindow(hWnd);
+			return TRUE;
+		}
+	}
+	return FALSE;
+
+	case WM_MUSIC_HELPER_QUERY:
+		if (wParam == MUSIC_HELPER_POSITION)
+			return wzAudioGetStreamOffsetRange();
+		return 100;
+
+	case WM_DESTROY:
+		KillTimer(hWnd, 1);
+		wzAudioStop();
+		wzAudioDestroy();
+		if (g_hMusicHelperParentProcess != NULL)
+		{
+			CloseHandle(g_hMusicHelperParentProcess);
+			g_hMusicHelperParentProcess = NULL;
+		}
+		PostQuitMessage(0);
+		return 0;
+	}
+
+	return DefWindowProcA(hWnd, msg, wParam, lParam);
+}
+
+static int RunMusicHelper(HINSTANCE hInstance, PSTR szCmdLine)
+{
+	DWORD parentProcessId = 0;
+	const char* parentArg = strstr(szCmdLine, "--music-helper");
+	if (parentArg != NULL)
+	{
+		parentArg += strlen("--music-helper");
+		while (*parentArg == ' ')
+			parentArg++;
+		parentProcessId = strtoul(parentArg, NULL, 10);
+	}
+
+	if (parentProcessId != 0)
+		g_hMusicHelperParentProcess = OpenProcess(SYNCHRONIZE, FALSE, parentProcessId);
+
+	WNDCLASSA wc;
+	ZeroMemory(&wc, sizeof(wc));
+	wc.lpfnWndProc = MusicHelperWndProc;
+	wc.hInstance = hInstance;
+	wc.lpszClassName = MUSIC_HELPER_CLASS_NAME;
+	RegisterClassA(&wc);
+
+	char windowName[64] = { 0 };
+	BuildMusicHelperWindowName(windowName, sizeof(windowName), parentProcessId);
+
+	HWND hWnd = CreateWindowExA(0, MUSIC_HELPER_CLASS_NAME, windowName, WS_POPUP, 0, 0, 1, 1, NULL, NULL, hInstance, NULL);
+	if (hWnd == NULL)
+		return 0;
+
+	wzAudioCreate(hWnd);
+	wzAudioSetMixerMode(_mmInternalVolume);
+	wzAudioOption(WZAOPT_STOPBEFOREPLAY, 1);
+	ApplyWzMusicVolumeLevel(10);
+
+	MSG msg;
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	return (int)msg.wParam;
+}
+
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int nCmdShow)
 {
 	MSG msg;
+
+	if (szCmdLine && strstr(szCmdLine, "--music-helper"))
+	{
+		return RunMusicHelper(hInstance, szCmdLine);
+	}
 
 	if (szCmdLine && strstr(szCmdLine, "--apply-update"))
 	{
@@ -2630,7 +3012,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 
 	if (gProtect->ReadMainFile("Data//Local//info.bmd") == 0)
 	{
-		MessageBox(0, "Erro de configuração. Consulte o suporte! #1", "Erro de inicialização!", MB_OK | MB_ICONERROR);
+		MessageBox(0, "Erro de configura��o. Consulte o suporte! #1", "Erro de inicializa��o!", MB_OK | MB_ICONERROR);
 		delete gProtect;
 		gProtect = nullptr;
 		ExitProcess(0);
@@ -2658,9 +3040,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 			if (gProtect->m_MainInfo.m_RequireAdminMessage != 0)
 			{
 				int resposta = MessageBoxA(NULL,
-					"Este jogo requer execução de Administrador.\n\n"
+					"Este jogo requer execu��o de Administrador.\n\n"
 					"Deseja reiniciar e executar como administrador?",
-					"Requer Execução como Administrador",
+					"Requer Execu��o como Administrador",
 					MB_YESNO | MB_ICONQUESTION);
 
 				if (resposta == IDYES)
@@ -2699,7 +3081,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 
 	if (g_hLimitSemaphore == NULL)
 	{
-		MessageBoxA(NULL, "Erro ao criar limitador de instâncias.", "Erro Fatal", MB_OK | MB_ICONERROR);
+		MessageBoxA(NULL, "Erro ao criar limitador de inst�ncias.", "Erro Fatal", MB_OK | MB_ICONERROR);
 		return 0;
 	}
 
@@ -2707,11 +3089,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 	{
 		char msg[256];
 		wsprintfA(msg,
-			"Você já atingiu o limite máximo de clientes abertos!\n\n"
-			"Máximo permitido: %d clientes simultâneos.",
+			"Voc� j� atingiu o limite m�ximo de clientes abertos!\n\n"
+			"M�ximo permitido: %d clientes simult�neos.",
 			MaxInstances);
 
-		MessageBoxA(NULL, msg, "Limite de Instâncias", MB_OK | MB_ICONWARNING);
+		MessageBoxA(NULL, msg, "Limite de Inst�ncias", MB_OK | MB_ICONWARNING);
 
 		CloseHandle(g_hLimitSemaphore);
 		g_hLimitSemaphore = NULL;
@@ -2730,7 +3112,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 	//			"%s\n\n",
 	//			HardwareID);
 	//
-	//		MessageBoxA(NULL, msg, "Hardware ID - Verificação de Segurança", MB_OK | MB_ICONINFORMATION);
+	//		MessageBoxA(NULL, msg, "Hardware ID - Verifica��o de Seguran�a", MB_OK | MB_ICONINFORMATION);
 	//
 	//		HANDLE hFile = CreateFileA("Data\\Local\\hw.id", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	//		if (hFile != INVALID_HANDLE_VALUE)
@@ -2751,9 +3133,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 			{
 				MessageBoxA(
 					NULL,
-					"Este computador foi BLOQUEADO pela Administração.\n\n"
-					"e não pode ser usado para acessar o Servidor!\n",
-					"Aviso da Administração",
+					"Este computador foi BLOQUEADO pela Administra��o.\n\n"
+					"e n�o pode ser usado para acessar o Servidor!\n",
+					"Aviso da Administra��o",
 					MB_OK | MB_ICONERROR
 				);
 
@@ -2776,6 +3158,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 
 	gCustomWing.Init();
 
+	gCustomWorld.Init();
+
+	gCustomCape.Init();
+
 	gCustomEffects.Init();
 
 	gMonsters.Init();
@@ -2789,6 +3175,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 	gEventEntryLevel.Init();
 
 	gItemManager->Init();
+
+	gHelperSystem.Init();
 
 	gDescriptions->Init();
 
@@ -2806,11 +3194,18 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 
 	gCustomItemSize.Init();
 
-	gProtect->CheckPlugin1File();
-	gProtect->CheckPlugin2File();
-	gProtect->CheckPlugin3File();
-	gProtect->CheckPlugin4File();
-	gProtect->CheckPlugin5File();
+	if (gProtect->m_MainInfo.m_UseIntegratedAntiHack != 0)
+	{
+		MHPIntegrationStart(hInstance);
+	}
+	else
+	{
+		gProtect->CheckPlugin1File();
+		gProtect->CheckPlugin2File();
+		gProtect->CheckPlugin3File();
+		gProtect->CheckPlugin4File();
+		gProtect->CheckPlugin5File();
+	}
 
 	InitHackCheck();
 
@@ -2881,8 +3276,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 		g_ErrorReport.Write("config.ini read error\r\n");
 		return false;
 	}
-
-	ShowStartupDialog();
+	g_hInst = hInstance;
+	if (gProtect->m_MainInfo.m_AutoUpdateCpanel != 0)
+	{
+		ShowStartupDialog();
+	}
 
 	if (gProtect->m_MainInfo.m_WideScreenType != 0)
 	{
@@ -2955,7 +3353,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 	g_ErrorReport.Write("> Screen size = %d x %d.\r\n", WindowWidth, WindowHeight);
 
 	g_hInst = hInstance;
+
 	g_hWnd = StartWindow(hInstance, nCmdShow);
+	if (!g_hWnd)
+	{
+		MessageBox(NULL, "Falha ao criar a janela principal.", "Erro", MB_OK | MB_ICONERROR);
+		return FALSE;
+	}
+
 	g_ErrorReport.Write("> Start window success.\r\n");
 
 	if (!CreateOpenglWindow())
@@ -2968,6 +3373,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 	//g_ErrorReport.WriteOpenGLInfo();
 	g_ErrorReport.AddSeparator();
 	g_ErrorReport.WriteSoundCardInfo();
+
+#if jdk_shader_local330
+	// Takumi-style OpenGL 3.3 shader bootstrap after GLEW/context creation.
+	gShaderGL->Init();
+#endif
 
 	ShowWindow(g_hWnd, nCmdShow);
 	UpdateWindow(g_hWnd);
@@ -3071,8 +3481,20 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 
 	if (m_MusicOnOff)
 	{
-		wzAudioCreate(g_hWnd);
-		wzAudioOption(WZAOPT_STOPBEFOREPLAY, 1);
+		leaf::CRegKey regkey;
+		regkey.SetKey(leaf::CRegKey::_HKEY_CURRENT_USER, "SOFTWARE\\MuOnline\\Config");
+		DWORD value;
+		if (!regkey.ReadDword("MusicVolumeLevel", value))
+		{
+			value = 10;
+			regkey.WriteDword("MusicVolumeLevel", value);
+		}
+		if (value > 10)
+			value = 10;
+
+		g_pOption->SetMusicVolumeLevel(int(value));
+		StartMusicHelper();
+		SetMusicVolumeLevel(g_pOption->GetMusicVolumeLevel());
 	}
 
 	if (m_SoundOnOff)
@@ -3140,6 +3562,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 	g_pMovieScene = new CMovieScene;
 #endif // MOVIE_DIRECTSHOW
 
+#if jdk_shader_local330
+	OGL330::Init();
+#endif
+
 	g_BuffSystem = BuffStateSystem::Make();
 
 	g_MapProcess = MapProcess::Make();
@@ -3182,10 +3608,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 	if (g_bUseWindowMode == FALSE)
 	{
 #endif	// ACTIVE_FOCUS_OUT
-		int nOldVal; // °ªÀÌ µé¾î°¥ ÇÊ¿ä°¡ ¾øÀ½
-		SystemParametersInfo(SPI_SCREENSAVERRUNNING, 1, &nOldVal, 0);  // ´ÜÃàÅ°¸¦ ¸ø¾²°Ô ÇÔ
-		SystemParametersInfo(SPI_GETSCREENSAVETIMEOUT, 0, &g_iScreenSaverOldValue, 0);  // ½ºÅ©¸°¼¼ÀÌ¹ö Â÷´Ü
-		SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT, 300 * 60, NULL, 0);  // ½ºÅ©¸°¼¼ÀÌ¹ö Â÷´Ü
+		int nOldVal; // ���� �� �ʿ䰡 ����
+		SystemParametersInfo(SPI_SCREENSAVERRUNNING, 1, &nOldVal, 0);  // ����Ű�� ������ ��
+		SystemParametersInfo(SPI_GETSCREENSAVETIMEOUT, 0, &g_iScreenSaverOldValue, 0);  // ��ũ�����̹� ����
+		SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT, 300 * 60, NULL, 0);  // ��ũ�����̹� ����
 #ifdef ACTIVE_FOCUS_OUT
 	}
 #endif	// ACTIVE_FOCUS_OUT
@@ -3237,7 +3663,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 						Scene(g_hDC);           // Fullscreen - agora roda SEMPRE (mesmo sem foco)
 					}
 #else
-					Scene(g_hDC);               // Versão antiga
+					Scene(g_hDC);               // Vers�o antiga
 #endif
 				}
 				else
@@ -3259,7 +3685,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLin
 #ifndef FOR_WORK
 				else if (g_bUseWindowMode == FALSE)
 				{
-					// seu código antigo de minimized (deixe como estava)
+					// seu c�digo antigo de minimized (deixe como estava)
 				}
 #endif
 #else

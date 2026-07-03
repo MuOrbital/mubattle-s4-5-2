@@ -1,6 +1,7 @@
-ï»¿///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "CustomWorld.h"
 #include "ZzzOpenglUtil.h"
 #include "ZzzBMD.h"
 #include "ZzzInfomation.h"
@@ -47,8 +48,10 @@
 #endif //PBG_ADD_NEWCHAR_MONK
 #include "CustomJewel.h"
 #include "CustomWing.h"
+#include "HelperSystem.h"
 #include "RenderModel.h"
 #include <DisableExcellent.h>
+#include <CustomCape.h>
 
 extern vec3_t VertexTransform[MAX_MESH][MAX_VERTICES];
 extern vec3_t LightTransform[MAX_MESH][MAX_VERTICES];
@@ -403,7 +406,17 @@ bool Calc_ObjectAnimation ( OBJECT* o, bool Translate, int Select )
 void Draw_RenderObject(OBJECT *o,bool Translate,int Select, int ExtraMon)
 {
 	BMD* b = &Models[o->Type];
+#if jdk_shader_local330
+	rRenderLayOut uniform(o);
+#endif
 	bool View = true;
+
+	if(ExtraMon != 10 && gHelperSystem.CheckIsHelper(o->Type))
+	{
+		gHelperSystem.m_Lua.Generic_Call("RenderHelper","iii>",b,o,o->Type);
+		return;
+	}
+
 	if (o->Kind == KIND_MONSTER || o->Kind == KIND_NPC)
 	{
 		if (g_pOption->m_Monsters)
@@ -847,7 +860,7 @@ void Draw_RenderObject(OBJECT *o,bool Translate,int Select, int ExtraMon)
 
 					Vector ( 1.0f, 0.0f, 0.0f, vLight );
 					Vector ( (float)(rand()%10-10)*0.5f, 0.f, (float)(rand()%40-20)*0.5f, vPos );
-					b->TransformPosition ( BoneTransform[14], vPos, vPosition, false );	// Ã…ÃŽ
+					b->TransformPosition ( BoneTransform[14], vPos, vPosition, false );	// ÅÎ
 					CreateParticleFpsChecked(BITMAP_SPARK + 1, vPosition, o->Angle, vLight, 15, 0.7f + (fLuminosity * 0.05f));
 				}
 				b->StreamMesh = -1;
@@ -2318,7 +2331,7 @@ void Draw_RenderObject(OBJECT *o,bool Translate,int Select, int ExtraMon)
 				b->RenderMesh(2,RENDER_TEXTURE,o->Alpha,o->BlendMesh,o->BlendMeshLight,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV);
 				b->RenderMesh(3,RENDER_TEXTURE,o->Alpha,o->BlendMesh,o->BlendMeshLight,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV);
 				b->RenderMesh(4,RENDER_TEXTURE,o->Alpha,o->BlendMesh,o->BlendMeshLight,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV);
-				// Â³Â¯Â°Â³
+				// ³¯°³
 				Vector(1.0f, 1.0f, 1.0f, b->BodyLight);
 				b->RenderMesh(5,RENDER_TEXTURE,o->Alpha,o->BlendMesh,o->BlendMeshLight,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV);
 				b->RenderMesh(5,RENDER_TEXTURE|RENDER_BRIGHT,o->Alpha,5,0.1f,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV);
@@ -3547,6 +3560,9 @@ void RenderObject_AfterCharacter(OBJECT *o,bool Translate,int Select, int ExtraM
 void Draw_RenderObject_AfterCharacter(OBJECT *o,bool Translate,int Select, int ExtraMon)
 {
 	BMD *b = &Models[o->Type];
+#if jdk_shader_local330
+	rRenderLayOut uniform(o);
+#endif
 
     if ((EditFlag != EDIT_NONE) || (EditFlag==EDIT_NONE && o->HiddenMesh != -2))
 	{
@@ -3586,6 +3602,7 @@ void RenderObjects_AfterCharacter()
 #ifdef ASG_ADD_MAP_KARUTAN
 		|| IsKarutanMap()
 #endif	// ASG_ADD_MAP_KARUTAN
+		|| gCustomWorld.HasEffect(gMapManager.WorldActive)
 		) )
 		return;
 
@@ -6968,7 +6985,7 @@ void RenderPartObjectBody(BMD *b,OBJECT *o,int Type,float Alpha,int RenderType)
 
 		Vector(1.f, 1.f, 1.f, b->BodyLight);
 	}
-// 	else if( Type==MODEL_WING+37 )	// Â½ÃƒÂ°Ã¸Â³Â¯Â°Â³(Â¹Ã½Â»Ã§)
+// 	else if( Type==MODEL_WING+37 )	// ½Ã°ø³¯°³(¹ý»ç)
 //     {
 // 		Vector(1.f,1.f,1.f,b->BodyLight);
 // 		b->RenderBody(RENDER_TEXTURE,o->Alpha,o->BlendMesh,o->BlendMeshLight,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV,o->HiddenMesh);
@@ -6987,7 +7004,7 @@ void RenderPartObjectBody(BMD *b,OBJECT *o,int Type,float Alpha,int RenderType)
 	}
 	else if (gCustomWing.CheckCustomWingIsCape(Type) > 0)
 	{
-		//gCustomCape.RenderModel(b, o, Type);
+		gCustomCape.RenderModel(b, o, Type);
 	}
 	else if (Type == MODEL_WING + 40)
 	{
@@ -7598,7 +7615,7 @@ void RenderPartObjectBody(BMD *b,OBJECT *o,int Type,float Alpha,int RenderType)
 		float Luminosity = sinf(WorldTime*0.0008f)*0.7f+0.5f;
 		b->RenderMesh(2,RENDER_TEXTURE,Alpha,2,Luminosity,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV);
 		b->RenderMesh(1,RENDER_TEXTURE,Alpha,1,o->BlendMeshLight,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV);
-		//. Â³Â¯
+		//. ³¯
 		glColor3f(0.43f,0.14f,0.6f);
 
 		b->RenderMesh(3,RENDER_BRIGHT|RENDER_CHROME,Alpha,3,o->BlendMeshLight,WorldTime*0.0001f,WorldTime*0.0005f);
@@ -8671,12 +8688,12 @@ void RenderPartObjectBody(BMD *b,OBJECT *o,int Type,float Alpha,int RenderType)
 		b->RenderBody(RENDER_TEXTURE,o->Alpha,o->BlendMesh,o->BlendMeshLight, o->BlendMeshTexCoordU,o->BlendMeshTexCoordV,o->HiddenMesh);
 		b->RenderMesh(0,RENDER_BRIGHT|RENDER_CHROME,0.2f,0,o->BlendMeshLight,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV);
 	}
-	else if( o->Type >= MODEL_HELPER+109 && o->Type <= MODEL_HELPER+112 )	// InGameShop Ã€Ã¥Ã‚Ã¸ Â¾Ã†Ã€ÃŒÃ…Ã› : Â¹ÃÃÃ¶ (Â»Ã§Ã†Ã„Ã€ÃŒÂ¾Ã®, Â·Ã§ÂºÃ±, Ã…Ã¤Ã†Ã„ÃÃ®, Ã€ÃšÂ¼Ã¶ÃÂ¤)
+	else if( o->Type >= MODEL_HELPER+109 && o->Type <= MODEL_HELPER+112 )	// InGameShop ÀåÂø ¾ÆÀÌÅÛ : ¹ÝÁö (»çÆÄÀÌ¾î, ·çºñ, ÅäÆÄÁî, ÀÚ¼öÁ¤)
 	{	
 		b->RenderBody(RENDER_TEXTURE,o->Alpha,o->BlendMesh,o->BlendMeshLight, o->BlendMeshTexCoordU,o->BlendMeshTexCoordV,o->HiddenMesh);
  		b->RenderMesh(1,RENDER_BRIGHT|RENDER_CHROME,o->Alpha,0,o->BlendMeshLight,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV);
 	}
-	else if( o->Type >= MODEL_HELPER+113 && o->Type <= MODEL_HELPER+115 )// InGameShop Ã€Ã¥Ã‚Ã¸ Â¾Ã†Ã€ÃŒÃ…Ã› : Â¸Ã±Â°Ã‰Ã€ÃŒ (Â»Ã§Ã†Ã„Ã€ÃŒÂ¾Ã®, Â·Ã§ÂºÃ±, Â¿Â¡Â¸ÃžÂ¶Ã¶ÂµÃ¥)
+	else if( o->Type >= MODEL_HELPER+113 && o->Type <= MODEL_HELPER+115 )// InGameShop ÀåÂø ¾ÆÀÌÅÛ : ¸ñ°ÉÀÌ (»çÆÄÀÌ¾î, ·çºñ, ¿¡¸Þ¶öµå)
 	{
 		b->RenderBody(RENDER_TEXTURE,o->Alpha,o->BlendMesh,o->BlendMeshLight, o->BlendMeshTexCoordU,o->BlendMeshTexCoordV,o->HiddenMesh);
  		b->RenderMesh(1,RENDER_BRIGHT|RENDER_CHROME,o->Alpha,0,o->BlendMeshLight,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV);
@@ -8941,6 +8958,9 @@ void RenderPartObjectBody(BMD *b,OBJECT *o,int Type,float Alpha,int RenderType)
 
 void RenderPartObjectBodyColor(BMD *b,OBJECT *o,int Type,float Alpha,int RenderType,float Bright,int Texture, int iMonsterIndex)
 {
+#if jdk_shader_local330
+	rRenderLayOut uniform(o);
+#endif
 #ifdef PBG_ADD_NEWCHAR_MONK_ITEM
 	if(Type >= MODEL_HELM_MONK && Type <= MODEL_BOOTS_MONK + MODEL_ITEM_COMMONCNT_RAGEFIGHTER)
 		Type = g_CMonkSystem.OrginalTypeCommonItemMonk(Type);
@@ -9120,6 +9140,9 @@ void RenderPartObjectBodyColor(BMD *b,OBJECT *o,int Type,float Alpha,int RenderT
 
 void RenderPartObjectBodyColor2(BMD *b,OBJECT *o,int Type,float Alpha,int RenderType,float Bright,int Texture)
 {
+#if jdk_shader_local330
+	rRenderLayOut uniform(o);
+#endif
 
 #ifdef PBG_ADD_NEWCHAR_MONK_ITEM
 	if(Type >= MODEL_HELM_MONK && Type <= MODEL_BOOTS_MONK + MODEL_ITEM_COMMONCNT_RAGEFIGHTER)
@@ -10492,6 +10515,9 @@ void RenderPartObjectEdge2(BMD *b, OBJECT* o, int Flag,bool Translate,float Scal
 	b->LightEnable = false;
 	
 	BoneScale = Scale;
+#if jdk_shader_local330
+	rRenderLayOut uniform(o);
+#endif
 	b->Transform(BoneTransform,tmp,tmp,OBB, Translate);
 	b->RenderBody(Flag,o->Alpha,o->BlendMesh,o->BlendMeshLight,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV,o->HiddenMesh);
 	
@@ -10592,6 +10618,10 @@ void RenderPartObject(OBJECT *o,int Type,void *p2,vec3_t Light,float Alpha,int I
     {
      	b->Transform(o->BoneTransform,o->BoundingBoxMin,o->BoundingBoxMax,&o->OBB,Translate);
     }
+
+#if jdk_shader_local330
+	rRenderLayOut uniform(o);
+#endif
 
 	if(p)
 	{

@@ -8,6 +8,7 @@
 #include "ZzzCharacter.h"
 #include "zzzEffect.h"
 #include "MapManager.h"
+#include "CustomCape.h"
 
 #define RENDER_CLOTH
 #define ADD_COLLISION
@@ -826,16 +827,71 @@ void CPhysicsCloth::Render( vec3_t *pvColor, int iLevel)
         EnableAlphaBlend ();
 	}
 #ifdef RENDER_CLOTH
-     {
- 	    RenderFace( TRUE, m_iTexFront, pvRenderPos);
-         if ( (PCT_MASK_DRAW&m_dwType)!=PCT_MASK_BLEND || !(PCT_MASK_LIGHT&m_dwType) )
-         {
- 	        RenderFace( FALSE, m_iTexBack, pvRenderPos);
-         }
-     }
+	{
+		RenderFace(TRUE, m_iTexFront, pvRenderPos);
+		if ((PCT_MASK_DRAW & m_dwType) != PCT_MASK_BLEND || !(PCT_MASK_LIGHT & m_dwType))
+		{
+			RenderFace(FALSE, m_iTexBack, pvRenderPos);
+		}
+
+		int ShineIndex = 0;
+		float colorR = 0.f;
+		float colorG = 0.f;
+		float colorB = 0.f;
+		int ret = 0;
+
+		gCustomCape.m_Lua.Generic_Call("CapeRenderShine", "i>iifff", m_iTexBack, &ret, &ShineIndex, &colorR, &colorG, &colorB);
+
+		if (ret)
+		{
+			EnableAlphaBlend();
+
+			BindTexture(ShineIndex);
+
+			glBegin(GL_QUADS);
+
+			float_t lights = 1.0f;
+
+			if (colorR > 0.0)
+			{
+				float max = colorB - colorG;
+				float min = -colorR;
+
+				float Return;
+				float InitValue = (float)((int32_t)(0.0f * 0.01745f * 1000.0f / min + WorldTime) % (int32_t)(6283.185546875f / min)) * 0.001f * min;
+
+				if (InitValue >= 3.14f)
+				{
+					Return = cos(InitValue);
+				}
+				else
+				{
+					Return = -cos(InitValue);
+				}
+
+				lights = ((Return + 1.0f) * 0.5f) * max + colorG;
+			}
+
+			glColor3f(lights, lights, lights);
+
+			for (int j = 0; j < m_iNumVer - 1; ++j)
+			{
+				for (int i = 0; i < m_iNumHor - 1; ++i)
+				{
+					RenderVertex(pvRenderPos, i, j);
+					RenderVertex(pvRenderPos, i + 1, j);
+					RenderVertex(pvRenderPos, i + 1, j + 1);
+					RenderVertex(pvRenderPos, i, j + 1);
+				}
+			}
+
+			glEnd();
+		}
+	}
+
 #endif
 
-	delete [] pvRenderPos;
+	delete[] pvRenderPos;
 }
 
 void CPhysicsCloth::RenderFace( BOOL bFront, int iTexture, vec3_t *pvRenderPos)
@@ -895,16 +951,11 @@ void CPhysicsCloth::RenderCollisions( void)
 		{
 			CPhysicsColSphere *pColSph = ( CPhysicsColSphere*)pCol;
 
-			static GLUquadricObj *pQuad = NULL;
-			if ( NULL == pQuad)
-			{
-				pQuad = gluNewQuadric();
-			}
 			glPushMatrix();
 			vec3_t vCenter;
 			pColSph->GetCenter( vCenter);
 			glTranslatef( vCenter[0], vCenter[1], vCenter[2]);
-			gluSphere( pQuad, pColSph->GetRadius() - 2.0f, 20, 20);
+			CoreGLCompat::DrawSphere(pColSph->GetRadius() - 2.0f, 20, 20);
 			glPopMatrix();
 		}
 	}

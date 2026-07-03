@@ -111,19 +111,31 @@ CustomAttackRangeDisable_AL3 = 10
 CustomAttackTime_AL0 = 1440
 CustomAttackTime_AL1 = 1440
 CustomAttackTime_AL2 = 1440
-CustomAttackTime_AL3 = 1440
+CustomAttackTime_AL3 = 2000000
 CustomAttackDelay = 0
 CustomAttackAutoBuff_AL0 = 1
 CustomAttackAutoBuff_AL1 = 1
 CustomAttackAutoBuff_AL2 = 1
 CustomAttackAutoBuff_AL3 = 1
 CustomAttackAutoBuffDelay = 300
-CustomAttackAutoResume_AL0 = 0
-CustomAttackAutoResume_AL1 = 0
-CustomAttackAutoResume_AL2 = 0
-CustomAttackAutoResume_AL3 = 0
+CustomAttackAutoResume_AL0 = 1
+CustomAttackAutoResume_AL1 = 1
+CustomAttackAutoResume_AL2 = 1
+CustomAttackAutoResume_AL3 = 1
 
 ;==================================================
 ; Custom Attack Offline Settings
 ;==================================================
 CustomAttackOfflineGPGain = 0
+CustomOffAttackAutoResume_AL0 = 0
+CustomOffAttackAutoResume_AL1 = 1
+CustomOffAttackAutoResume_AL2 = 1
+CustomOffAttackAutoResume_AL3 = 1
+
+;==================================================
+; Controle de Camera 3D por VIP
+;==================================================
+Camera3DSwitch_AL0 = 0
+Camera3DSwitch_AL1 = 1
+Camera3DSwitch_AL2 = 1
+Camera3DSwitch_AL3 = 1

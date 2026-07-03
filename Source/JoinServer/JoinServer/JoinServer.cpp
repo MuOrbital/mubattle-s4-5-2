@@ -43,7 +43,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	char buff[256];
 
-	wsprintf(buff,"[%s] MuEMU JoinServer (QueueSize : %d) (AccountCount : %d/%d)",JOINSERVER_VERSION,0,0,0);
+	wsprintf(buff,"[%s] MuOnline JoinServer (QueueSize : %d) (AccountCount : %d/%d)",JOINSERVER_VERSION,0,0,0);
 
 	SetWindowText(hWnd,buff);
 

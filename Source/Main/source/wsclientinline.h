@@ -1617,6 +1617,15 @@ __forceinline bool SendRequestMixExit()
 	spe.Send();\
 }
 
+#define SendRequestMiniatureMode(state)\
+{\
+	CStreamPacketEngine spe;\
+	spe.Init( 0xC1, 0xF3);\
+	spe << ( BYTE)0x32;\
+	spe << ( BYTE)(state);\
+	spe.Send();\
+}
+
 #define SendRequestDuelStart(index, name)\
 {\
 	CStreamPacketEngine spe;\
@@ -2545,6 +2554,18 @@ __forceinline void SendRequestRankingInfo(BYTE p_Type)
 	spe.Init(0xC1, 0xF3);
 	spe << (BYTE)(0xE6);
 	spe << (BYTE)(p_Type);
+	spe.Send();
+}
+__forceinline void SendRequestRankingPlayer(int characterIndex, const char* characterId)
+{
+	char characterName[MAX_ID_SIZE] = { 0 };
+	strncpy_s(characterName, sizeof(characterName), characterId, _TRUNCATE);
+
+	CStreamPacketEngine spe;
+	spe.Init(0xC1, 0xF3);
+	spe << (BYTE)(0xE5);
+	spe << (DWORD)(characterIndex);
+	spe.AddData(characterName, MAX_ID_SIZE);
 	spe.Send();
 }
 

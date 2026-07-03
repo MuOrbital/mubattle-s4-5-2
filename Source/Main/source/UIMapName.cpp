@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "UIMapName.h"
 #include "MapManager.h"
+#include "CustomWorld.h"
 #include "ZzzOpenglUtil.h"
 #include "ZzzTexture.h"
 
@@ -134,6 +135,15 @@ void CUIMapName::InitImgPathMap()
 	m_mapImgPath[80] = strFolderName + "MapName_Karutan.tga";
 	m_mapImgPath[81] = strFolderName + "MapName_Karutan.tga";
 #endif	// ASG_ADD_MAP_KARUTAN
+
+	for (std::map<int, CUSTOM_WORLD_INFO>::iterator it = gCustomWorld.m_WorldInfo.begin(); it != gCustomWorld.m_WorldInfo.end(); ++it)
+	{
+		CUSTOM_WORLD_INFO& world = it->second;
+		if (world.ImageName[0] != '\0')
+		{
+			m_mapImgPath[world.MapIndex] = strFolderName + world.ImageName;
+		}
+	}
 }
 
 void CUIMapName::Init()

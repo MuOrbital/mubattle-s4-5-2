@@ -10,6 +10,7 @@
 #include "UIControls.h"
 #include "DuelMgr.h"
 #include "RenderModel.h"
+#include "CustomCape.h"
 
 using namespace SEASON3B;
 
@@ -116,6 +117,7 @@ void SEASON3B::CNewUIDuelWindow::LoadImages()
 {
 	LoadBitmap("Interface\\newui_Figure_ground.tga", IMAGE_DUEL_BACK, GL_LINEAR);
 	gRenderModel.LoadImageRenderModel();
+	gCustomCape.LoadImageCape();
 }
 
 void SEASON3B::CNewUIDuelWindow::UnloadImages()

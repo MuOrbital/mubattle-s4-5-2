@@ -5,4 +5,5 @@
   <Process Run="True" Delay="1000" Path="C:\MuServer\JoinServer\JoinServer.exe" Parameters="" />
   <Process Run="True" Delay="1000" Path="C:\MuServer\GameServer\GameServer.exe" Parameters="" />
   <Process Run="True" Delay="1000" Path="C:\MuServer\GameServerCS\GameServerCS.exe" Parameters="" />
+  <Process Run="True" Delay="1000" Path="C:\MuServer\MHPServer\MHPServer.exe" Parameters="" />
 </Processes>

@@ -777,6 +777,9 @@ extern float  IntensityTransform[MAX_MESH][MAX_VERTICES];
 
 bool GMNewTown::RenderObject(OBJECT* pObject, BMD* pModel, bool ExtraMon)
 {
+#if jdk_shader_local330
+	rRenderLayOut uniform(pObject);
+#endif
 	if (!IsCurrentMap())
 		return false;
 

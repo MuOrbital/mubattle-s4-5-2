@@ -6,6 +6,8 @@
 #include "ZzzBMD.h"
 #include "MapManager.h"
 
+#define RANGE_OBJET_MAP(index_obj) (index_obj >= MODEL_WORLD_OBJECT && index_obj < MAX_WORLD_OBJECTS)
+
 class BaseMap
 {
 public:
@@ -47,7 +49,7 @@ public:
 	void clear() { m_MapTypes.clear(); }
 
 public:
-	bool isMapIndex( ENUM_WORLD type )
+	bool isMapIndex( int type )
 	{
 		for( int i = 0; i < (int)m_MapTypes.size(); ++i ) 
 		{
@@ -59,20 +61,20 @@ public:
 		return false;
 	}
 
-	ENUM_WORLD FindMapIndex( int index = 0 ) {
+	int FindMapIndex( int index = 0 ) {
 
-		if( m_MapTypes.size() == 0 || index >= (int)m_MapTypes.size() ) return NUM_WD;
+		if( m_MapTypes.size() == 0 || index >= (int)m_MapTypes.size() ) return -1;
 		else return m_MapTypes[index];
 	}
 
 public:
-	const bool IsCurrentMap( int type ) { return isMapIndex( static_cast<ENUM_WORLD>( type ) ); }
+	const bool IsCurrentMap( int type ) { return isMapIndex( type ); }
 
 public:
-	void AddMapIndex( ENUM_WORLD type ) { if( !isMapIndex( type ) ) m_MapTypes.push_back( type ); }
+	void AddMapIndex( int type ) { if( !isMapIndex( type ) ) m_MapTypes.push_back( type ); }
 
 public:
-	typedef std::vector<ENUM_WORLD>	WorldVector;
+	typedef std::vector<int>	WorldVector;
 
 private:
 	WorldVector		m_MapTypes;

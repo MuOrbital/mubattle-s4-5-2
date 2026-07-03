@@ -44,6 +44,7 @@
 #endif //PBG_ADD_NEWCHAR_MONK
 #include "CustomJewel.h"
 #include "CustomWing.h"
+#include "HelperSystem.h"
 #include <Monsters.h>
 
 
@@ -52,6 +53,38 @@ extern BOOL g_bUseChatListBox;
 ///////////////////////////////////////////
 
 bool Flip           = false;
+
+static bool IsHelperModelFileAvailable(const char* folder, const char* modelName)
+{
+	char path[MAX_PATH] = { 0 };
+	wsprintf(path, "%s%s.bmd", folder, modelName);
+	return GetFileAttributesA(path) != INVALID_FILE_ATTRIBUTES;
+}
+
+static bool UseHelperSkillModel(HELPER_INFO* lpInfo)
+{
+	return IsHelperModelFileAvailable("Data\\Skill\\", lpInfo->ObjectModel);
+}
+
+static bool UseHelperItemObjectModel(HELPER_INFO* lpInfo)
+{
+	return IsHelperModelFileAvailable("Data\\Item\\", lpInfo->ObjectModel);
+}
+
+static char* GetHelperObjectModelFolder(HELPER_INFO* lpInfo)
+{
+	return UseHelperSkillModel(lpInfo) ? (char*)"Data\\Skill\\" : (char*)"Data\\Item\\";
+}
+
+static char* GetHelperObjectTextureFolder(HELPER_INFO* lpInfo)
+{
+	return UseHelperSkillModel(lpInfo) ? (char*)"Skill\\" : (char*)"Item\\";
+}
+
+static char* GetHelperObjectModelName(HELPER_INFO* lpInfo)
+{
+	return (UseHelperSkillModel(lpInfo) || UseHelperItemObjectModel(lpInfo)) ? lpInfo->ObjectModel : lpInfo->Model;
+}
 
 void OpenModel(int Type,char *Dir,char *ModelFileName,...)
 {
@@ -1332,6 +1365,22 @@ void OpenItems()
 		gLoadData.AccessModel((lpInfo->ItemIndex + MODEL_ITEM), "Data\\Item\\", lpInfo->ModelName);
 	}
 
+	int StartModelHelper = gItemManager->GET_ITEM_MODEL(17, 255);
+
+	for (std::map<int, HELPER_INFO>::iterator it = gHelperSystem.m_HelperInfo.begin(); it != gHelperSystem.m_HelperInfo.end(); it++)
+	{
+		auto lpInfo = &(*it).second;
+
+		gLoadData.AccessModel(lpInfo->ItemIndex, "Data\\Item\\", lpInfo->Model);
+
+		if (lpInfo->Type > 0)
+		{
+			lpInfo->ModelID = StartModelHelper;
+			gLoadData.AccessModel(StartModelHelper, GetHelperObjectModelFolder(lpInfo), GetHelperObjectModelName(lpInfo));
+			StartModelHelper++;
+		}
+	}
+
 
 	//for (auto& pair : gCustomJewel->m_CustomJewelInfo)
 	//{
@@ -1925,6 +1974,18 @@ void OpenItemTextures()
 		auto lpInfo = &(*it).second;
 
 		gLoadData.OpenTexture((lpInfo->ItemIndex + MODEL_ITEM), "Item\\");
+	}
+
+	for (std::map<int, HELPER_INFO>::iterator it = gHelperSystem.m_HelperInfo.begin(); it != gHelperSystem.m_HelperInfo.end(); it++)
+	{
+		auto lpInfo = &(*it).second;
+
+		gLoadData.OpenTexture(lpInfo->ItemIndex, "Item\\");
+
+		if (lpInfo->Type > 0)
+		{
+			gLoadData.OpenTexture(lpInfo->ModelID, GetHelperObjectTextureFolder(lpInfo));
+		}
 	}
 
 

@@ -437,7 +437,7 @@ struct VIEWPORT_STRUCT
 struct HIT_DAMAGE_STRUCT
 {
 	int index;
-	int damage;
+	QWORD damage;
 	DWORD time;
 };
 
@@ -645,6 +645,7 @@ struct OBJECTSTRUCT
 	int VPCountItem;
 	HIT_DAMAGE_STRUCT* HitDamage;
 	short HitDamageCount;
+	int MonsterItemDropDone;
 	INTERFACE_STATE Interface;
 	DWORD InterfaceTime;
 	char Transaction;
@@ -776,6 +777,7 @@ struct OBJECTSTRUCT
 	int AttackCustomOfflineMoneyDelay;
 	int AttackCustomAutoBuff;
 	int AttackCustomAutoBuffDelay;
+	int MiniatureMode;
 	int MiniMapState;
 	int MiniMapValue;
 	int MiningStage;

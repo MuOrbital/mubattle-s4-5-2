@@ -1,38 +1,47 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "Camera3D.h"
-#include "ZzzLodTerrain.h"
 #include "NewUISystem.h"
-#include <Xinput.h>
-#pragma comment(lib, "Xinput.lib")
+#include "ZzzInterface.h"
 
 CCamera gCamera;
 
-static float Clamp(float v, float min, float max)
+extern float vCameraFOV;
+extern float vCameraAngleY;
+extern float vTargetDistance;
+extern float g_fScreenRate_x;
+extern float g_fScreenRate_y;
+
+static float CameraClampFloat(float Value, float Min, float Max)
 {
-    if (v < min) return min;
-    if (v > max) return max;
-    return v;
+	if (Value < Min)
+	{
+		return Min;
+	}
+
+	if (Value > Max)
+	{
+		return Max;
+	}
+
+	return Value;
 }
 
 CCamera::CCamera()
 {
-    LastPress = GetTickCount();
-    m_CursorX = MouseX;
-    m_CursorY = MouseY;
-    m_ZoomVelocity = 0.0f;
-    m_ZoomSpeed = 0.25f;
-    m_TargetYaw = 0.0f;
-    m_TargetPitch = 0.0f;
-    m_CurrentYaw = 0.0f;
-    m_CurrentPitch = 0.0f;
-    m_YawVelocity = 0.0f;
-    m_PitchVelocity = 0.0f;
-    m_RotationSpeed = 0.45f;
-    m_PitchSpeed = 0.30f;
-    m_IsMiddleMousePressed = false;
-    m_LastMouseX = MouseX;
-    m_LastMouseY = MouseY;
-    m_CameraOnOff = false;
+	this->m_Allowed = true;
+	this->m_InitCam = 1;
+	this->m_Enable = 0;
+	this->m_IsMove = 0;
+	this->m_vMouseX = -1;
+	this->m_vMouseY = -1;
+	this->m_vMouseWheel = 0;
+	this->m_vCameraFOV = 35.0f;
+	this->m_vTargetAngleY = -48.5f;
+	this->m_vTargetAngleX = -45.0f;
+	this->m_vTargetDistance = 150.0f;
+	this->m_vFrustrumCollision = 0.0f;
+	this->m_CameraOnOff = false;
+	this->LastPress = GetTickCount();
 }
 
 CCamera::~CCamera()
@@ -41,256 +50,350 @@ CCamera::~CCamera()
 
 void CCamera::Toggle()
 {
-    m_CameraOnOff ^= 1;
+	if (SceneFlag != MAIN_SCENE)
+	{
+		return;
+	}
+
+	if (this->m_Allowed == false)
+	{
+		this->m_Enable = 0;
+		this->m_CameraOnOff = false;
+		this->InitCamera();
+		g_pChatListBox->AddText("", "Camera 3D disponivel apenas para VIP.", SEASON3B::TYPE_SYSTEM_MESSAGE);
+		return;
+	}
+
+	this->m_Enable ^= 1;
+	this->m_CameraOnOff = (this->m_Enable != 0);
+	this->m_vMouseWheel = 0;
+	MouseWheel = 0;
+
+	g_pChatListBox->AddText(
+		"",
+		(this->m_Enable != 0) ? "Camera 3D [ON] - Character Rotation [OFF]" : "Camera 3D [OFF] - Character Rotation [ON]",
+		SEASON3B::TYPE_SYSTEM_MESSAGE);
 }
 
 void CCamera::Restore()
 {
-    CameraZoom = 0.0f;
-    CameraAngle[2] = -45.0f;
-    AngleY3D = 0.0f;
-    AngleZ3D = 0.0f;
-    m_TargetYaw = 0.0f;
-    m_TargetPitch = 0.0f;
-    m_CurrentYaw = 0.0f;
-    m_CurrentPitch = 0.0f;
-    m_YawVelocity = 0.0f;
-    m_PitchVelocity = 0.0f;
-    m_ZoomVelocity = 0.0f;
-    m_IsMiddleMousePressed = false;
+	if (SceneFlag != MAIN_SCENE)
+	{
+		return;
+	}
+
+	this->InitCamera();
+	this->m_vMouseWheel = 0;
+	MouseWheel = 0;
+}
+
+void CCamera::SetIsMove(BOOL IsMove)
+{
+	if (this->m_Enable != 0 && SceneFlag == MAIN_SCENE)
+	{
+		this->m_IsMove = IsMove;
+	}
+	else
+	{
+		this->m_IsMove = 0;
+	}
+}
+
+void CCamera::SetCursorX(LONG CursorX)
+{
+	if (this->m_Enable != 0 && SceneFlag == MAIN_SCENE)
+	{
+		this->m_vMouseX = MouseX;
+	}
+}
+
+void CCamera::SetCursorY(LONG CursorY)
+{
+	if (this->m_Enable != 0 && SceneFlag == MAIN_SCENE)
+	{
+		this->m_vMouseY = MouseY;
+	}
+}
+
+void CCamera::Zoom(MOUSEHOOKSTRUCTEX* lpMouse)
+{
+	if (this->m_Enable == 0 || this->m_IsMove != 0 || SceneFlag != MAIN_SCENE)
+	{
+		return;
+	}
+
+	this->m_vMouseWheel = (((int)lpMouse->mouseData) > 0) ? 1 : -1;
+	MouseWheel = this->m_vMouseWheel;
+}
+
+void CCamera::Move(MOUSEHOOKSTRUCTEX* lpMouse)
+{
+	if (this->m_Enable == 0 || this->m_IsMove == 0 || SceneFlag != MAIN_SCENE)
+	{
+		return;
+	}
+}
+
+void CCamera::InitCamera()
+{
+	this->m_InitCam = 1;
+}
+
+void CCamera::SyncCameraTargets()
+{
+	if (this->m_InitCam != 0)
+	{
+		this->m_InitCam = 0;
+		this->m_vMouseX = -1;
+		this->m_vMouseY = -1;
+		this->m_vCameraFOV = 35.0f;
+		this->m_vTargetAngleY = -48.5f;
+		this->m_vTargetAngleX = -45.0f;
+		this->m_vTargetDistance = 150.0f;
+		this->m_vFrustrumCollision = 0.0f;
+	}
 }
 
 void CCamera::Update()
 {
-    if (SceneFlag != MAIN_SCENE) return;
+	if (SceneFlag != MAIN_SCENE)
+	{
+		return;
+	}
 
-    static DWORD lastPadPress = 0;
+	if (HIBYTE(GetAsyncKeyState(VK_F10)) == 128)
+	{
+		if ((GetTickCount() - this->LastPress) > 300)
+		{
+			this->LastPress = GetTickCount();
+			this->Toggle();
+		}
 
-    XINPUT_STATE state;
-    ZeroMemory(&state, sizeof(XINPUT_STATE));
-    bool padConnected = (XInputGetState(0, &state) == ERROR_SUCCESS);
+		return;
+	}
 
-    if (padConnected && (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB))
-    {
-        if (GetTickCount() - lastPadPress > 600)
-        {
-            lastPadPress = GetTickCount();
-            Toggle();
+	if (HIBYTE(GetAsyncKeyState(VK_F11)) == 128)
+	{
+		if ((GetTickCount() - this->LastPress) > 200)
+		{
+			this->LastPress = GetTickCount();
+			this->Restore();
+			g_pChatListBox->AddText("", "System [F11] Camera 3D Restaurada", SEASON3B::TYPE_SYSTEM_MESSAGE);
+		}
+	}
 
-            g_pChatListBox->AddText(
-                "",
-                m_CameraOnOff
-                ? "Câmera 3D [ON] - Character Rotation [OFF]"
-                : "Câmera 3D [OFF] - Character Rotation [ON]",
-                SEASON3B::TYPE_SYSTEM_MESSAGE
-            );
-        }
-    }
+}
 
-    if (HIBYTE(GetAsyncKeyState(VK_F10)) == 128)
-    {
-        if ((GetTickCount() - LastPress) > 2000)
-        {
-            LastPress = GetTickCount();
-            Toggle();
+void CCamera::UpdateSmoothCamera()
+{
+	if (SceneFlag != MAIN_SCENE)
+	{
+		return;
+	}
 
-            g_pChatListBox->AddText(
-                "",
-                m_CameraOnOff
-                ? "Câmera 3D [ON] - Character Rotation [OFF]"
-                : "Câmera 3D [OFF] - Character Rotation [ON]",
-                SEASON3B::TYPE_SYSTEM_MESSAGE
-            );
-        }
-        return;
-    }
+	if (this->m_Allowed == false)
+	{
+		if (this->m_Enable != 0 || this->m_CameraOnOff != false)
+		{
+			this->Restore();
+		}
 
-    if (!m_CameraOnOff && padConnected)
-    {
-        const float DEADZONE = 0.20f;
-        const float MOUSE_SPEED = 5.0f;
+		return;
+	}
 
-        float LX = state.Gamepad.sThumbLX / 32767.0f;
-        float LY = state.Gamepad.sThumbLY / 32767.0f;
+	this->SyncCameraTargets();
 
-        if (fabs(LX) < DEADZONE) LX = 0.0f;
-        if (fabs(LY) < DEADZONE) LY = 0.0f;
+	if (this->m_Enable != 0)
+	{
+		if (g_pNewUISystem->CheckMouseUse() == false && MouseOnWindow == false && g_dwMouseUseUIID == 0)
+		{
+			this->UpdateSmoothCameraWithMouse();
+		}
+	}
 
-        if (LX != 0.0f || LY != 0.0f)
-        {
-            m_CursorX += LX * MOUSE_SPEED;
-            m_CursorY -= LY * MOUSE_SPEED;
+	if (this->m_vTargetAngleX >= 360.0f)
+	{
+		this->m_vTargetAngleX -= 360.0f;
+		CameraAngle[2] -= 360.0f;
+	}
+	else if (this->m_vTargetAngleX <= -360.0f)
+	{
+		this->m_vTargetAngleX += 360.0f;
+		CameraAngle[2] += 360.0f;
+	}
 
-            if (m_CursorX < 0) m_CursorX = 0;
-            if (m_CursorY < 0) m_CursorY = 0;
-            if (m_CursorX > GetWindowsX - 1) m_CursorX = GetWindowsX - 1;
-            if (m_CursorY > GetWindowsY - 1) m_CursorY = GetWindowsY - 1;
+	LInterpolationF(vCameraFOV, vCameraFOV, this->m_vCameraFOV, 0.05f);
+	LInterpolationF(vCameraAngleY, vCameraAngleY, this->m_vTargetAngleY, 0.05f);
+	LInterpolationF(CameraAngle[2], CameraAngle[2], this->m_vTargetAngleX, 0.05f);
+	LInterpolationF(vTargetDistance, vTargetDistance, this->m_vTargetDistance, 0.05f);
 
-            MouseX = (int)m_CursorX;
-            MouseY = (int)m_CursorY;
-        }
+	CameraZoom = vCameraFOV - 35.0f;
+	AngleY3D = vCameraAngleY + 48.5f;
+	AngleZ3D = 150.0f - vTargetDistance;
 
-        return;
-    }
+	if (CameraFOV > 35.0f)
+	{
+		float Factor = (CameraFOV - 35.0f) / 35.0f;
+		Factor = CameraClampFloat(Factor, 0.0f, 1.0f);
+		this->m_vFrustrumCollision = -250.0f * Factor;
+	}
+	else
+	{
+		this->m_vFrustrumCollision = 0.0f;
+	}
 
+	this->SetCurrentValue();
 
+	this->m_vMouseX = MouseX;
+	this->m_vMouseY = MouseY;
+}
 
-    if (!m_CameraOnOff) return;
+void CCamera::UpdateSmoothCameraWithMouse()
+{
+	if (this->m_vMouseX == -1)
+	{
+		this->m_vMouseX = MouseX;
+	}
 
-    static bool isRestoreActive = false;
+	if (this->m_vMouseY == -1)
+	{
+		this->m_vMouseY = MouseY;
+	}
 
-    if (padConnected && (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB))
-    {
-        if (GetTickCount() - lastPadPress > 600)
-        {
-            lastPadPress = GetTickCount();
-            isRestoreActive = true;
+	int CurrentMouseX = MouseX;
+	int CurrentMouseY = MouseY;
+	int Yaw = (this->m_vMouseX - CurrentMouseX);
+	int Pitch = (CurrentMouseY - this->m_vMouseY);
 
-            g_pChatListBox->AddText(
-                "",
-                "System [L3] Câmera 3D Restaurada",
-                SEASON3B::TYPE_SYSTEM_MESSAGE
-            );
-        }
-    }
+	if (this->m_IsMove != 0)
+	{
+		if (Yaw != 0 && this->CheckMouseInPitchZone() == false)
+		{
+			this->SetAngleX(1, 1.0f * Yaw);
+		}
 
-    if (padConnected)
-    {
-        const float DEADZONE = 0.20f;
-        const float ANALOG_ZOOM_SPEED = 1.8f;
+		if (Pitch != 0 && this->CheckMouseInPitchZone() != false)
+		{
+			this->SetAngleY(1, 1.0f * Pitch, 18.0f * Pitch);
+		}
+	}
 
-        float LY = state.Gamepad.sThumbLY / 32767.0f;
+	int Wheel = this->m_vMouseWheel;
 
-        if (fabs(LY) < DEADZONE)
-            LY = 0.0f;
+	if (Wheel == 0)
+	{
+		Wheel = MouseWheel;
+	}
 
-        if (LY != 0.0f)
-        {
-            isRestoreActive = false;
+	if (Wheel != 0)
+	{
+		this->SetZoom(Wheel * 3.5f);
+		this->m_vMouseWheel = 0;
+		MouseWheel = 0;
+	}
+}
 
-            CameraZoom -= LY * ANALOG_ZOOM_SPEED;
-            CameraZoom = Clamp(CameraZoom, -20.0f, 30.0f);
-        }
-    }
+void CCamera::SetZoom(float fStepZoom)
+{
+	float FOV = this->m_vCameraFOV - fStepZoom;
 
+	if (FOV >= 17.5f && FOV <= 70.0f)
+	{
+		this->m_vCameraFOV = FOV;
+	}
+}
 
-    if (HIBYTE(GetAsyncKeyState(VK_F11)) == 128)
-    {
-        if ((GetTickCount() - LastPress) > 200)
-        {
-            LastPress = GetTickCount();
-            isRestoreActive = true;
+void CCamera::SetAngleX(int PitchDirection, float fStepAngle)
+{
+	this->m_vTargetAngleX += PitchDirection * fStepAngle;
+}
 
-            g_pChatListBox->AddText(
-                "",
-                "System [F11] Câmera 3D Restaurada",
-                SEASON3B::TYPE_SYSTEM_MESSAGE
-            );
-        }
-    }
+void CCamera::SetAngleY(int PitchDirection, float fStepAngle, float fStepZ)
+{
+	float AngleY = this->m_vTargetAngleY + (PitchDirection * fStepAngle);
 
-    if (isRestoreActive)
-    {
-        float k = 0.13f;
+	if (AngleY >= -93.5f && AngleY <= -45.5f)
+	{
+		this->m_vTargetAngleY = AngleY;
+		this->m_vTargetDistance -= (PitchDirection * fStepZ);
+	}
 
-        float deltaYaw = fmodf(-m_TargetYaw, 360.0f);
-        if (deltaYaw > 180.0f) deltaYaw -= 360.0f;
-        if (deltaYaw < -180.0f) deltaYaw += 360.0f;
-        m_TargetYaw += deltaYaw * k;
+	if (this->m_vTargetDistance < -15.0f)
+	{
+		this->m_vTargetDistance = -15.0f;
+	}
 
-        float deltaPitch = -m_TargetPitch;
-        m_TargetPitch += deltaPitch * k;
+	if (this->m_vTargetDistance > 930.0f)
+	{
+		this->m_vTargetDistance = 930.0f;
+	}
+}
 
-        CameraZoom += (0.0f - CameraZoom) * k;
+float CCamera::GetFrustrumCollision()
+{
+	if (SceneFlag == MAIN_SCENE)
+	{
+		return this->m_vFrustrumCollision;
+	}
 
-        if (fabs(m_TargetYaw) < 0.1f &&
-            fabs(m_TargetPitch) < 0.1f &&
-            fabs(CameraZoom) < 0.1f)
-        {
-            isRestoreActive = false;
-            Restore();
-        }
-    }
+	return 0.0f;
+}
 
-    if (HIBYTE(GetAsyncKeyState(VK_MBUTTON)) == 128)
-    {
-        POINT p;
-        GetCursorPos(&p);
+bool CCamera::IsActive()
+{
+	return (this->m_Enable != 0);
+}
 
-        if (!m_IsMiddleMousePressed)
-        {
-            m_IsMiddleMousePressed = true;
-            m_LastMouseX = p.x;
-            m_LastMouseY = p.y;
-        }
-        else
-        {
-            int dx = p.x - m_LastMouseX;
-            int dy = p.y - m_LastMouseY;
+void CCamera::SetCurrentValue()
+{
+	float Distance = this->m_vTargetDistance - 150.0f;
 
-            if (dx != 0 || dy != 0)
-            {
-                isRestoreActive = false;
+	if (Distance < 0.0f)
+	{
+		Distance = -Distance;
+	}
 
-                m_TargetYaw += (float)dx * m_RotationSpeed;
-                m_TargetPitch += (float)dy * m_PitchSpeed;
+	float requiredViewFar = 2500.0f + (Distance * 3.0f);
 
-                m_LastMouseX = p.x;
-                m_LastMouseY = p.y;
-            }
-        }
-    }
-    else
-    {
-        m_IsMiddleMousePressed = false;
-    }
+	if (CameraViewFar < requiredViewFar)
+	{
+		CameraViewFar = requiredViewFar;
+	}
+}
 
-    if (padConnected)
-    {
-        const float DEADZONE = 0.20f;
+void CCamera::SetAllowed(bool allowed)
+{
+	this->m_Allowed = allowed;
 
-        float RX = state.Gamepad.sThumbRX / 32767.0f;
-        float RY = state.Gamepad.sThumbRY / 32767.0f;
+	if (this->m_Allowed == false)
+	{
+		this->m_Enable = 0;
+		this->m_CameraOnOff = false;
+		this->Restore();
+	}
+}
 
-        if (fabs(RX) < DEADZONE) RX = 0.0f;
-        if (fabs(RY) < DEADZONE) RY = 0.0f;
+bool CCamera::IsAllowed() const
+{
+	return this->m_Allowed;
+}
 
-        if (RX != 0.0f || RY != 0.0f)
-        {
-            isRestoreActive = false;
+bool CCamera::CheckMouseInPitchZone()
+{
+	float WindowW = ((g_fScreenRate_x > 0.0f) ? ((float)WindowWidth / g_fScreenRate_x) : 640.0f);
+	float WindowH = ((g_fScreenRate_y > 0.0f) ? ((float)WindowHeight / g_fScreenRate_y) : 480.0f);
 
-            const float ANALOG_YAW_SPEED = 6.0f;
-            const float ANALOG_PITCH_SPEED = 5.0f;
+	if (WindowW <= 0.0f)
+	{
+		WindowW = 640.0f;
+	}
 
-            m_TargetYaw += RX * ANALOG_YAW_SPEED;
-            m_TargetPitch -= RY * ANALOG_PITCH_SPEED;
-        }
-    }
+	if (WindowH <= 0.0f)
+	{
+		WindowH = 480.0f;
+	}
 
-    const float stiffnessYaw = 0.22f;
-    const float dampingYaw = 0.66f;
-    const float stiffnessPitch = 0.28f;
-    const float dampingPitch = 0.66f;
+	float MidCenter = (WindowW * 0.5f) - 50.0f;
 
-    float yawForce = (m_TargetYaw - m_CurrentYaw) * stiffnessYaw;
-    m_YawVelocity = (m_YawVelocity + yawForce) * dampingYaw;
-    m_CurrentYaw += m_YawVelocity;
-
-    float pitchForce = (m_TargetPitch - m_CurrentPitch) * stiffnessPitch;
-    m_PitchVelocity = (m_PitchVelocity + pitchForce) * dampingPitch;
-    m_CurrentPitch += m_PitchVelocity;
-
-    m_CurrentPitch = Clamp(m_CurrentPitch, -35.0f, 10.0f);
-
-    CameraAngle[2] = -45.0f + m_CurrentYaw;
-    AngleY3D = m_CurrentPitch;
-    AngleZ3D = m_CurrentPitch * 18.0f;
-
-    if (MouseWheel > 0) { isRestoreActive = false; m_ZoomVelocity -= m_ZoomSpeed; }
-    if (MouseWheel < 0) { isRestoreActive = false; m_ZoomVelocity += m_ZoomSpeed; }
-    MouseWheel = 0;
-
-    CameraZoom += m_ZoomVelocity;
-    CameraZoom = Clamp(CameraZoom, -30.0f, 25.0f);
-    m_ZoomVelocity *= 0.90f;
+	return (MouseX >= MidCenter && MouseX <= (MidCenter + 100.0f) && MouseY >= 0 && MouseY <= WindowH);
 }

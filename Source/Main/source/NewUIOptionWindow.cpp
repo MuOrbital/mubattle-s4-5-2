@@ -1,4 +1,4 @@
-﻿// NewUIOptionWindow.cpp: implementation of the CNewUIOptionWindow class.
+// NewUIOptionWindow.cpp: implementation of the CNewUIOptionWindow class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -9,8 +9,71 @@
 #include "DSPlaySound.h"
 #include "OptionWin.h"
 #include "AutoClick.h"
-
+#include "Winmain.h"
+#include "Steady_clock.h"
 using namespace SEASON3B;
+
+static const int OPTION_SLIDER_WIDTH = 100;
+static const int OPTION_SLIDER_HEIGHT = 13;
+static const int OPTION_SLIDER_THUMB_WIDTH = 13;
+static const int OPTION_SLIDER_THUMB_RANGE = OPTION_SLIDER_WIDTH - OPTION_SLIDER_THUMB_WIDTH;
+static const int OPTION_SLIDER_GAUGE_X = 3;
+static const int OPTION_SLIDER_GAUGE_Y = 3;
+static const int OPTION_SLIDER_GAUGE_WIDTH = OPTION_SLIDER_WIDTH - 6;
+static const int OPTION_SLIDER_GAUGE_HEIGHT = 7;
+
+static int GetOptionSliderValue(int sliderX, int range)
+{
+	int x = MouseX - sliderX;
+
+	if (x <= 0)
+		return 0;
+	if (x >= OPTION_SLIDER_THUMB_RANGE)
+		return range;
+
+	return (range * x + (OPTION_SLIDER_THUMB_RANGE / 2)) / OPTION_SLIDER_THUMB_RANGE;
+}
+
+static int GetOptionSliderPercent(int value, int range)
+{
+	if (range <= 0)
+		return 0;
+
+	if (value < 0)
+		value = 0;
+	if (value > range)
+		value = range;
+
+	return (100 * value + (range / 2)) / range;
+}
+
+static void RenderOptionSlider(int x, int y, int value, int range)
+{
+	if (range <= 0)
+		range = 1;
+
+	if (value < 0)
+		value = 0;
+	if (value > range)
+		value = range;
+
+	float fPercent = float(value) / float(range);
+	RenderImage(BITMAP_SLIDER + 2, x, y, OPTION_SLIDER_WIDTH, OPTION_SLIDER_HEIGHT);
+
+	if (value > 0)
+	{
+		RenderImage(BITMAP_SLIDER + 1, x + OPTION_SLIDER_GAUGE_X, y + OPTION_SLIDER_GAUGE_Y, OPTION_SLIDER_GAUGE_WIDTH * fPercent, OPTION_SLIDER_GAUGE_HEIGHT);
+	}
+
+	RenderImage(BITMAP_SLIDER, x + (OPTION_SLIDER_THUMB_RANGE * fPercent), y, OPTION_SLIDER_THUMB_WIDTH, OPTION_SLIDER_HEIGHT);
+}
+
+static void RenderOptionSliderText(int x, int y, const char* text, int value, int range)
+{
+	char szText[64];
+	snprintf(szText, sizeof(szText), "%s: %d%%", text, GetOptionSliderPercent(value, range));
+	g_pRenderText->RenderText(x - 14, y, szText, OPTION_SLIDER_WIDTH + 28, 0, RT3_SORT_CENTER);
+}
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -26,6 +89,7 @@ SEASON3B::CNewUIOptionWindow::CNewUIOptionWindow()
 	m_bWhisperSound = false;
 	m_bSlideHelp = false;
 	m_iVolumeLevel = 0;
+	m_iMusicVolumeLevel = 10;
 	m_iRenderLevel = 4;
 	m_EffectSprite = false;
 	m_EffectParticle = false;
@@ -77,6 +141,7 @@ void SEASON3B::CNewUIOptionWindow::UpdateFpsLimitInIni(int limit)
 	sprintf(strLimit, "%d", limit);
 
 	WritePrivateProfileString("FPSSystem", "FpsLimit", strLimit, path);
+	gsteady_clock->SetLimitFps(limit);
 }
 
 int SEASON3B::CNewUIOptionWindow::ReadFpsLimitFromIni()
@@ -84,7 +149,7 @@ int SEASON3B::CNewUIOptionWindow::ReadFpsLimitFromIni()
 	char path[MAX_PATH] = { 0 };
 	strcpy(path, ".\\Data\\Custom\\config.ini");
 
-	return GetPrivateProfileInt("FPSSystem", "FpsLimit", 64, path);
+	return GetPrivateProfileInt("FPSSystem", "FpsLimit", 120, path);
 }
 
 void SEASON3B::CNewUIOptionWindow::SaveOptionToIni(const char* key, int value)
@@ -119,14 +184,21 @@ bool SEASON3B::CNewUIOptionWindow::Create(CNewUIManager* pNewUIMng, int x, int y
 	Show(false);
 
 	int currentFps = ReadFpsLimitFromIni();
-	m_Fps30 = (currentFps == 32);
-	m_Fps60 = (currentFps == 64);
-	m_Fps120 = (currentFps == 128);
+	m_Fps30 = (currentFps <= 32);
+	m_Fps60 = (currentFps > 32 && currentFps <= 64);
+	m_Fps120 = (currentFps > 64);
 
-	if (!m_Fps30 && !m_Fps60 && !m_Fps120)
+	if (m_Fps30 && currentFps != 30)
 	{
-		m_Fps60 = true;
-		UpdateFpsLimitInIni(64);
+		UpdateFpsLimitInIni(30);
+	}
+	else if (m_Fps60 && currentFps != 60)
+	{
+		UpdateFpsLimitInIni(60);
+	}
+	else if (m_Fps120 && currentFps != 120)
+	{
+		UpdateFpsLimitInIni(120);
 	}
 
 	m_bAutoAttack = ReadOptionFromIni("AutoAttack", 1) != 0;
@@ -267,7 +339,44 @@ bool SEASON3B::CNewUIOptionWindow::UpdateMouseEvent()
 			m_Music = !m_Music;
 			SaveOptionToIni("Music", m_Music ? 1 : 0);
 		}
-		if (CheckMouseIn(m_Pos.x + 34, m_Pos.y + 120 + m_NewY, 132, 16))
+		int musicSliderX = m_Pos.x + 50;
+		int musicSliderY = m_Pos.y + 115 + m_NewY;
+		int effectSliderX = m_Pos.x + 50;
+		int effectSliderY = m_Pos.y + 150 + m_NewY;
+		int renderSliderX = m_Pos.x + 50;
+		int renderSliderY = m_Pos.y + 185 + m_NewY;
+
+		if (CheckMouseIn(musicSliderX, musicSliderY, OPTION_SLIDER_WIDTH, OPTION_SLIDER_HEIGHT))
+		{
+			int iOldValue = m_iMusicVolumeLevel;
+
+			if (MouseWheel > 0)
+			{
+				MouseWheel = 0;
+				m_iMusicVolumeLevel++;
+				if (m_iMusicVolumeLevel > 10)
+					m_iMusicVolumeLevel = 10;
+			}
+			else if (MouseWheel < 0)
+			{
+				MouseWheel = 0;
+				m_iMusicVolumeLevel--;
+				if (m_iMusicVolumeLevel < 0)
+					m_iMusicVolumeLevel = 0;
+			}
+
+			if (SEASON3B::IsRepeat(VK_LBUTTON))
+			{
+				m_iMusicVolumeLevel = GetOptionSliderValue(musicSliderX, 10);
+			}
+
+			if (iOldValue != m_iMusicVolumeLevel)
+			{
+				this->SetMusicVolumeLevel(m_iMusicVolumeLevel);
+				::SetMusicVolumeLevel(this->GetMusicVolumeLevel());
+			}
+		}
+		if (CheckMouseIn(effectSliderX, effectSliderY, OPTION_SLIDER_WIDTH, OPTION_SLIDER_HEIGHT))
 		{
 			int iOldValue = m_iVolumeLevel;
 
@@ -275,8 +384,8 @@ bool SEASON3B::CNewUIOptionWindow::UpdateMouseEvent()
 			{
 				MouseWheel = 0;
 				m_iVolumeLevel++;
-				if (m_iVolumeLevel > 10)
-					m_iVolumeLevel = 10;
+				if (m_iVolumeLevel > 9)
+					m_iVolumeLevel = 9;
 			}
 			else if (MouseWheel < 0)
 			{
@@ -288,17 +397,7 @@ bool SEASON3B::CNewUIOptionWindow::UpdateMouseEvent()
 
 			if (SEASON3B::IsRepeat(VK_LBUTTON))
 			{
-				int x = MouseX - (m_Pos.x + 34);
-
-				if (x < 0)
-					m_iVolumeLevel = 0;
-				else if (x > 124)
-					m_iVolumeLevel = 10;
-				else
-				{
-					float fValue = (10.f * x) / 124.f;
-					m_iVolumeLevel = (int)(fValue + 0.5f);
-				}
+				m_iVolumeLevel = GetOptionSliderValue(effectSliderX, 9);
 			}
 
 			if (iOldValue != m_iVolumeLevel)
@@ -306,13 +405,11 @@ bool SEASON3B::CNewUIOptionWindow::UpdateMouseEvent()
 				SetEffectVolumeLevel(m_iVolumeLevel);
 			}
 		}
-		if (CheckMouseIn(m_Pos.x + 25, m_Pos.y + 160 + m_NewY, 141, 29))
+		if (CheckMouseIn(renderSliderX, renderSliderY, OPTION_SLIDER_WIDTH, OPTION_SLIDER_HEIGHT))
 		{
 			if (SEASON3B::IsRepeat(VK_LBUTTON))
 			{
-				int x = MouseX - (m_Pos.x + 25);
-				float fValue = (5.f * x) / 141.f;
-				m_iRenderLevel = (int)fValue;
+				m_iRenderLevel = GetOptionSliderValue(renderSliderX, 4);
 			}
 		}
 	}
@@ -486,7 +583,8 @@ bool SEASON3B::CNewUIOptionWindow::UpdateMouseEvent()
 			if (!m_Fps30) {
 				m_Fps30 = true;
 				m_Fps60 = false;
-				UpdateFpsLimitInIni(32);
+				m_Fps120 = false;
+				UpdateFpsLimitInIni(30);
 			}
 		}
 		if (SEASON3B::IsPress(VK_LBUTTON) && CheckMouseIn(m_Pos.x + 70, m_Pos.y + 177 + m_NewY, 15, 15))
@@ -494,7 +592,17 @@ bool SEASON3B::CNewUIOptionWindow::UpdateMouseEvent()
 			if (!m_Fps60) {
 				m_Fps30 = false;
 				m_Fps60 = true;
-				UpdateFpsLimitInIni(64);
+				m_Fps120 = false;
+				UpdateFpsLimitInIni(60);
+			}
+		}
+		if (SEASON3B::IsPress(VK_LBUTTON) && CheckMouseIn(m_Pos.x + 128, m_Pos.y + 177 + m_NewY, 15, 15))
+		{
+			if (!m_Fps120) {
+				m_Fps30 = false;
+				m_Fps60 = false;
+				m_Fps120 = true;
+				UpdateFpsLimitInIni(120);
 			}
 		}
 	}
@@ -673,8 +781,9 @@ void SEASON3B::CNewUIOptionWindow::RenderContents()
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 44 + m_NewY, m_bWhisperSound ? "WisperSound Disable" : "WisperSound Enable");
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 62 + m_NewY, m_bSlideHelp ? "Slide Disable" : "Slide");
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 80 + m_NewY, m_Music ? "Music Disable" : "Music Enable");
-		g_pRenderText->RenderText(m_Pos.x + 40, m_Pos.y + 145 + m_NewY, GlobalText[1840], 120, 0, RT3_SORT_CENTER);
-		g_pRenderText->RenderText(m_Pos.x + 40, m_Pos.y + 105 + m_NewY, GlobalText[389], 120, 0, RT3_SORT_CENTER);
+		RenderOptionSliderText(m_Pos.x + 50, m_Pos.y + 100 + m_NewY, "Music Volume", m_iMusicVolumeLevel, 10);
+		RenderOptionSliderText(m_Pos.x + 50, m_Pos.y + 135 + m_NewY, GlobalText[389], m_iVolumeLevel, 9);
+		RenderOptionSliderText(m_Pos.x + 50, m_Pos.y + 170 + m_NewY, GlobalText[1840], m_iRenderLevel, 4);
 	}
 
 	if (m_ActiveTab == TAB_GRAPHICS)
@@ -710,6 +819,7 @@ void SEASON3B::CNewUIOptionWindow::RenderContents()
 
 		g_pRenderText->RenderText(m_Pos.x + 30, m_Pos.y + 179 + m_NewY, "30 FPS");
 		g_pRenderText->RenderText(m_Pos.x + 88, m_Pos.y + 179 + m_NewY, "60 FPS");
+		g_pRenderText->RenderText(m_Pos.x + 146, m_Pos.y + 179 + m_NewY, "120 FPS");
 	}
 
 	char nameWindow[128];
@@ -762,21 +872,9 @@ void SEASON3B::CNewUIOptionWindow::RenderButtons()
 			RenderImage(IMAGE_OPTION_BTN_CHECK, m_Pos.x + 12, m_Pos.y + 77 + m_NewY, 15, 15, 0, 15.f);
 		}
 
-		RenderImage(IMAGE_OPTION_VOLUME_BACK, m_Pos.x + 34, m_Pos.y + 120 + m_NewY, 124.f, 16.f);
-		if (m_iVolumeLevel > 0)
-		{
-			RenderImage(IMAGE_OPTION_VOLUME_COLOR, m_Pos.x + 34, m_Pos.y + 120 + m_NewY, 124.f * 0.1f * (m_iVolumeLevel), 16.f);
-		}
-		else
-		{
-			AllStopSound();
-		}
-
-		RenderImage(IMAGE_OPTION_EFFECT_BACK, m_Pos.x + 25, m_Pos.y + 160 + m_NewY, 141.f, 29.f);
-		if (m_iRenderLevel >= 0)
-		{
-			RenderImage(IMAGE_OPTION_EFFECT_COLOR, m_Pos.x + 25, m_Pos.y + 160 + m_NewY, 141.f * 0.2f * (m_iRenderLevel + 1), 29.f);
-		}
+		RenderOptionSlider(m_Pos.x + 50, m_Pos.y + 115 + m_NewY, m_iMusicVolumeLevel, 10);
+		RenderOptionSlider(m_Pos.x + 50, m_Pos.y + 150 + m_NewY, m_iVolumeLevel, 9);
+		RenderOptionSlider(m_Pos.x + 50, m_Pos.y + 185 + m_NewY, m_iRenderLevel, 4);
 	}
 
 	if (m_ActiveTab == TAB_GRAPHICS)
@@ -960,6 +1058,14 @@ void SEASON3B::CNewUIOptionWindow::RenderButtons()
 		{
 			RenderImage(IMAGE_OPTION_BTN_CHECK, m_Pos.x + 70, m_Pos.y + 177 + m_NewY, 15, 15, 0, 15.f);
 		}
+		if (m_Fps120)
+		{
+			RenderImage(IMAGE_OPTION_BTN_CHECK, m_Pos.x + 128, m_Pos.y + 177 + m_NewY, 15, 15, 0, 0);
+		}
+		else
+		{
+			RenderImage(IMAGE_OPTION_BTN_CHECK, m_Pos.x + 128, m_Pos.y + 177 + m_NewY, 15, 15, 0, 15.f);
+		}
 	}
 }
 
@@ -996,12 +1102,30 @@ bool SEASON3B::CNewUIOptionWindow::IsSlideHelp()
 
 void SEASON3B::CNewUIOptionWindow::SetVolumeLevel(int iVolume)
 {
+	if (iVolume < 0)
+		iVolume = 0;
+	if (iVolume > 9)
+		iVolume = 9;
 	m_iVolumeLevel = iVolume;
 }
 
 int SEASON3B::CNewUIOptionWindow::GetVolumeLevel()
 {
 	return m_iVolumeLevel;
+}
+
+void SEASON3B::CNewUIOptionWindow::SetMusicVolumeLevel(int iVolume)
+{
+	if (iVolume < 0)
+		iVolume = 0;
+	if (iVolume > 10)
+		iVolume = 10;
+	m_iMusicVolumeLevel = iVolume;
+}
+
+int SEASON3B::CNewUIOptionWindow::GetMusicVolumeLevel()
+{
+	return m_iMusicVolumeLevel;
 }
 
 void SEASON3B::CNewUIOptionWindow::SetRenderLevel(int iRender)

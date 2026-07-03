@@ -85,6 +85,19 @@ void CCustomWing::Init() // OK
 	m_Lua.Generic_Call("StartLoadWings", "");
 }
 
+void CCustomWing::RestartLua() // OK
+{
+	this->m_Lua.CloseLua();
+	this->m_Lua.RegisterLua();
+	this->m_CustomWingInfo.clear();
+
+	lua_register(m_Lua.GetState(), "LoadWing", LuaLoadWing);
+
+	this->m_Lua.DoFile("Data//Lua//ItemManager//CustomWings.lua");
+
+	m_Lua.Generic_Call("StartLoadWings", "");
+}
+
 CUSTOM_WING_INFO* CCustomWing::GetInfoByItem(int ItemIndex) // OK
 {
 	std::map<int, CUSTOM_WING_INFO>::iterator it = gCustomWing.m_CustomWingInfo.find(ItemIndex);
@@ -142,7 +155,7 @@ int CCustomWing::GetCustomWingIncDamage(int ItemIndex, int ItemLevel) // OK
 		return 0;
 	}
 
-	return ((lpInfo->IncDamageConstA + (ItemLevel * lpInfo->IncDamageConstB)) - 100);
+	return (lpInfo->IncDamageConstA + (ItemLevel * lpInfo->IncDamageConstB));
 }
 
 int CCustomWing::GetCustomWingDecDamage(int ItemIndex, int ItemLevel) // OK
@@ -154,7 +167,7 @@ int CCustomWing::GetCustomWingDecDamage(int ItemIndex, int ItemLevel) // OK
 		return 0;
 	}
 
-	return (100 - (lpInfo->DecDamageConstA - (ItemLevel * lpInfo->DecDamageConstB)));
+	return (lpInfo->DecDamageConstA - (ItemLevel * lpInfo->DecDamageConstB));
 }
 
 int CCustomWing::GetCustomWingOptionIndex(int ItemIndex, int OptionNumber) // OK

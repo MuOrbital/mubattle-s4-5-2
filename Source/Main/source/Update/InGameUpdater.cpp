@@ -20,7 +20,6 @@
 #define UI_BAR_WIDTH_RATIO      0.62f
 #define UI_GLOW_LAYERS          6
 #define UI_PARTICLE_COUNT       80
-#define UI_TIPS_COUNT           7
 #define UI_CHECKING_MSGS_COUNT  6
 #define UI_ANIM_FPS_TARGET      60
 
@@ -29,16 +28,75 @@
 #define BG_STARS_COUNT          160
 #define BG_WAVE_RINGS           12
 
-static const char* g_tips[UI_TIPS_COUNT] =
+enum eUpdateColorId
 {
-    "ALT + ENTER para habilitar modo borda infinita.",
-    "F10 para habilitar a Camera3D - F11 Restaura.",
-    "Shift 2x para habilitar AutoPotion interno.",
-    "Control 2x para habilitar Modo PVP.",
-    "Chaos Machine: use TCA para não perder Itens.",
-    "Chaos Machine: use TOL para aumentar a %.",
-    "Elfa pedindo Itens dizendo que é menina? confia.",
+    UPDATE_COLOR_BACKGROUND = 1,
+    UPDATE_COLOR_BACKGROUND_GLOW,
+    UPDATE_COLOR_STARS,
+    UPDATE_COLOR_ORB_1,
+    UPDATE_COLOR_ORB_2,
+    UPDATE_COLOR_ORB_3,
+    UPDATE_COLOR_ORB_4,
+    UPDATE_COLOR_ORB_5,
+    UPDATE_COLOR_ORB_6,
+    UPDATE_COLOR_RIBBON_1,
+    UPDATE_COLOR_RIBBON_2,
+    UPDATE_COLOR_RIBBON_3,
+    UPDATE_COLOR_SPHERE_GLOW,
+    UPDATE_COLOR_SPHERE_BODY,
+    UPDATE_COLOR_SPHERE_RINGS,
+    UPDATE_COLOR_SPHERE_HIGHLIGHT,
+    UPDATE_COLOR_BAR_OUTER,
+    UPDATE_COLOR_BAR_BACKGROUND,
+    UPDATE_COLOR_BAR_START,
+    UPDATE_COLOR_BAR_END,
+    UPDATE_COLOR_PARTICLES,
+    UPDATE_COLOR_DETAILS,
+    UPDATE_COLOR_TEXT_TOP,
+    UPDATE_COLOR_TEXT_MIDDLE,
+    UPDATE_COLOR_TEXT_BOTTOM,
+    UPDATE_COLOR_HIGHLIGHT,
 };
+
+static const UPDATE_COLOR_INFO& GetUpdateColor(int id)
+{
+    if (id < 1 || id > UPDATE_COLOR_COUNT)
+    {
+        id = UPDATE_COLOR_HIGHLIGHT;
+    }
+
+    return gProtect->m_MainInfo.m_UpdateColors[id - 1];
+}
+
+static float GetUpdateColorComponent(BYTE value, float scale = 1.0f)
+{
+    float result = ((float)value / 255.0f) * scale;
+
+    if (result < 0.0f) return 0.0f;
+    if (result > 1.0f) return 1.0f;
+    return result;
+}
+
+static float GetUpdateColorRed(int id, float scale = 1.0f)
+{
+    return GetUpdateColorComponent(GetUpdateColor(id).Red, scale);
+}
+
+static float GetUpdateColorGreen(int id, float scale = 1.0f)
+{
+    return GetUpdateColorComponent(GetUpdateColor(id).Green, scale);
+}
+
+static float GetUpdateColorBlue(int id, float scale = 1.0f)
+{
+    return GetUpdateColorComponent(GetUpdateColor(id).Blue, scale);
+}
+
+static COLORREF GetUpdateTextColor(int id)
+{
+    const UPDATE_COLOR_INFO& color = GetUpdateColor(id);
+    return RGB(color.Red, color.Green, color.Blue);
+}
 
 static const char* g_checkingMsgs[UI_CHECKING_MSGS_COUNT] =
 {
@@ -216,21 +274,22 @@ static void InitBgElements(int W, int H)
             rb.phase = (float)(rand() % 628) * 0.01f;
             rb.alphaMult = 0.05f + (rand() % 100) * 0.002f;
             int colorChoice = rand() % 3;
-            if (colorChoice == 0) { rb.r = 0.05f; rb.g = 0.10f; rb.b = 0.80f; }
-            else if (colorChoice == 1) { rb.r = 0.00f; rb.g = 0.55f; rb.b = 0.90f; }
-            else { rb.r = 0.05f; rb.g = 0.25f; rb.b = 0.70f; }
+            int colorId = UPDATE_COLOR_RIBBON_1 + colorChoice;
+            rb.r = GetUpdateColorRed(colorId);
+            rb.g = GetUpdateColorGreen(colorId);
+            rb.b = GetUpdateColorBlue(colorId);
         }
     }
 
     if (!g_orbsInit)
     {
         g_orbsInit = true;
-        g_orbs[0] = { 0.5f, 0.42f, 0.38f, 0.6f, 0.0f,  0.02f, 0.10f, 0.55f, 1.0f };
-        g_orbs[1] = { 0.18f, 0.25f, 0.14f, 0.9f, 1.1f,  0.00f, 0.55f, 0.90f, 0.7f };
-        g_orbs[2] = { 0.82f, 0.30f, 0.12f, 0.7f, 2.3f,  0.05f, 0.25f, 0.80f, 0.6f };
-        g_orbs[3] = { 0.10f, 0.70f, 0.10f, 1.1f, 0.7f,  0.00f, 0.40f, 0.90f, 0.5f };
-        g_orbs[4] = { 0.88f, 0.65f, 0.11f, 0.8f, 3.5f,  0.02f, 0.60f, 1.00f, 0.5f };
-        g_orbs[5] = { 0.50f, 0.85f, 0.09f, 1.3f, 1.8f,  0.05f, 0.20f, 0.75f, 0.4f };
+        g_orbs[0] = { 0.5f, 0.42f, 0.38f, 0.6f, 0.0f, GetUpdateColorRed(UPDATE_COLOR_ORB_1), GetUpdateColorGreen(UPDATE_COLOR_ORB_1), GetUpdateColorBlue(UPDATE_COLOR_ORB_1), 1.0f };
+        g_orbs[1] = { 0.18f, 0.25f, 0.14f, 0.9f, 1.1f, GetUpdateColorRed(UPDATE_COLOR_ORB_2), GetUpdateColorGreen(UPDATE_COLOR_ORB_2), GetUpdateColorBlue(UPDATE_COLOR_ORB_2), 0.7f };
+        g_orbs[2] = { 0.82f, 0.30f, 0.12f, 0.7f, 2.3f, GetUpdateColorRed(UPDATE_COLOR_ORB_3), GetUpdateColorGreen(UPDATE_COLOR_ORB_3), GetUpdateColorBlue(UPDATE_COLOR_ORB_3), 0.6f };
+        g_orbs[3] = { 0.10f, 0.70f, 0.10f, 1.1f, 0.7f, GetUpdateColorRed(UPDATE_COLOR_ORB_4), GetUpdateColorGreen(UPDATE_COLOR_ORB_4), GetUpdateColorBlue(UPDATE_COLOR_ORB_4), 0.5f };
+        g_orbs[4] = { 0.88f, 0.65f, 0.11f, 0.8f, 3.5f, GetUpdateColorRed(UPDATE_COLOR_ORB_5), GetUpdateColorGreen(UPDATE_COLOR_ORB_5), GetUpdateColorBlue(UPDATE_COLOR_ORB_5), 0.5f };
+        g_orbs[5] = { 0.50f, 0.85f, 0.09f, 1.3f, 1.8f, GetUpdateColorRed(UPDATE_COLOR_ORB_6), GetUpdateColorGreen(UPDATE_COLOR_ORB_6), GetUpdateColorBlue(UPDATE_COLOR_ORB_6), 0.4f };
     }
 
     if (!g_starsInit)
@@ -252,9 +311,9 @@ static void InitBgElements(int W, int H)
 static void DrawBgBackground(int W, int H, float t)
 {
     float pulse = 0.5f + 0.5f * sinf(t * 0.3f);
-    float r0 = 0.01f;
-    float g0 = 0.02f + pulse * 0.01f;
-    float b0 = 0.06f + pulse * 0.02f;
+    float r0 = GetUpdateColorRed(UPDATE_COLOR_BACKGROUND);
+    float g0 = GetUpdateColorGreen(UPDATE_COLOR_BACKGROUND, 0.85f + pulse * 0.15f);
+    float b0 = GetUpdateColorBlue(UPDATE_COLOR_BACKGROUND, 0.80f + pulse * 0.20f);
 
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);
@@ -276,7 +335,11 @@ static void DrawBgBackground(int W, int H, float t)
         float rr = maxR * frac;
         float alpha = (1.f - frac) * 0.07f;
         glBegin(GL_TRIANGLE_FAN);
-        glColor4f(r0, g0 * 2.f, b0 * 4.f, alpha);
+        glColor4f(
+            GetUpdateColorRed(UPDATE_COLOR_BACKGROUND_GLOW),
+            GetUpdateColorGreen(UPDATE_COLOR_BACKGROUND_GLOW),
+            GetUpdateColorBlue(UPDATE_COLOR_BACKGROUND_GLOW),
+            alpha);
         glVertex2f(cx, cy);
         int seg = 32;
         for (int k = 0; k <= seg; k++)
@@ -302,7 +365,11 @@ static void DrawBgStars(int W, int H, float t)
     {
         BgStar& s = g_stars[i];
         float tw = s.alpha * (0.5f + 0.5f * sinf(t * s.twinkleSpeed + s.twinklePhase));
-        glColor4f(0.7f, 0.85f, 1.0f, tw);
+        glColor4f(
+            GetUpdateColorRed(UPDATE_COLOR_STARS),
+            GetUpdateColorGreen(UPDATE_COLOR_STARS),
+            GetUpdateColorBlue(UPDATE_COLOR_STARS),
+            tw);
         glVertex2f(s.x, s.y);
     }
     glEnd();
@@ -496,7 +563,11 @@ static void DrawBgCentralSphere(int W, int H, float t)
         float alpha = (1.f - frac) * (1.f - frac) * 0.04f;
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         glBegin(GL_TRIANGLE_FAN);
-        glColor4f(0.08f, 0.35f, 0.90f, alpha);
+        glColor4f(
+            GetUpdateColorRed(UPDATE_COLOR_SPHERE_GLOW),
+            GetUpdateColorGreen(UPDATE_COLOR_SPHERE_GLOW),
+            GetUpdateColorBlue(UPDATE_COLOR_SPHERE_GLOW),
+            alpha);
         glVertex2f(cx, cy);
         int seg = 48;
         for (int s = 0; s <= seg; s++)
@@ -513,9 +584,10 @@ static void DrawBgCentralSphere(int W, int H, float t)
     {
         float frac = (float)k / bodyLayers;
         float rr = sphereR * frac;
-        float cr = frac < 0.3f ? (0.3f - frac) * 0.3f : 0.0f;
-        float cg = frac < 0.3f ? (0.3f - frac) * 0.4f : 0.05f * (1.f - frac);
-        float cb = 0.3f + (1.f - frac) * 0.7f;
+        float colorIntensity = 0.3f + (1.f - frac) * 0.7f;
+        float cr = GetUpdateColorRed(UPDATE_COLOR_SPHERE_BODY, colorIntensity);
+        float cg = GetUpdateColorGreen(UPDATE_COLOR_SPHERE_BODY, colorIntensity);
+        float cb = GetUpdateColorBlue(UPDATE_COLOR_SPHERE_BODY, colorIntensity);
         float alpha = 0.08f;
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBegin(GL_TRIANGLE_FAN);
@@ -553,7 +625,11 @@ static void DrawBgCentralSphere(int W, int H, float t)
             float ly = sinf(ang) * ringR;
             float rx = lx * cosZ - ly * sinX * sinZ;
             float ry = ly * cosX;
-            glColor4f(0.20f, 0.60f, 1.00f, alpha * (0.5f + 0.5f * cosf(ang)));
+            glColor4f(
+                GetUpdateColorRed(UPDATE_COLOR_SPHERE_RINGS),
+                GetUpdateColorGreen(UPDATE_COLOR_SPHERE_RINGS),
+                GetUpdateColorBlue(UPDATE_COLOR_SPHERE_RINGS),
+                alpha * (0.5f + 0.5f * cosf(ang)));
             glVertex2f(cx + rx, cy + ry);
         }
         glEnd();
@@ -564,13 +640,21 @@ static void DrawBgCentralSphere(int W, int H, float t)
     float hr = sphereR * 0.22f;
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glBegin(GL_TRIANGLE_FAN);
-    glColor4f(0.8f, 0.92f, 1.0f, 0.25f);
+    glColor4f(
+        GetUpdateColorRed(UPDATE_COLOR_SPHERE_HIGHLIGHT),
+        GetUpdateColorGreen(UPDATE_COLOR_SPHERE_HIGHLIGHT),
+        GetUpdateColorBlue(UPDATE_COLOR_SPHERE_HIGHLIGHT),
+        0.25f);
     glVertex2f(hx, hy);
     int seg = 24;
     for (int s = 0; s <= seg; s++)
     {
         float ang = s * 2.f * 3.14159f / seg;
-        glColor4f(0.7f, 0.85f, 1.0f, 0.f);
+        glColor4f(
+            GetUpdateColorRed(UPDATE_COLOR_SPHERE_HIGHLIGHT, 0.85f),
+            GetUpdateColorGreen(UPDATE_COLOR_SPHERE_HIGHLIGHT, 0.85f),
+            GetUpdateColorBlue(UPDATE_COLOR_SPHERE_HIGHLIGHT, 0.85f),
+            0.f);
         glVertex2f(hx + cosf(ang) * hr, hy + sinf(ang) * hr);
     }
     glEnd();
@@ -600,7 +684,8 @@ void InGameUpdate_Start(HWND hWnd)
     strcpy_s(g_UpdateStatus.statusText, "Verificando atualizacoes...");
     g_renderStartTick = GetTickCount();
     g_lastTipChange = GetTickCount();
-    g_currentTip = rand() % UI_TIPS_COUNT;
+    int tipCount = gProtect->m_MainInfo.m_UpdateTipsCount;
+    g_currentTip = (tipCount > 0) ? (rand() % tipCount) : 0;
 
     g_hUpdateThread = CreateThread(NULL, 0, UpdateThreadProc, NULL, 0, NULL);
 }
@@ -776,9 +861,17 @@ static void DrawParticles()
         Particle& p = g_particles[i];
         if (p.alpha <= 0.01f) continue;
         float pulse = 0.7f + 0.3f * sinf(p.life * 0.15f);
-        glColor4f(0.2f * pulse, 0.6f * pulse, 1.0f * pulse, p.alpha * 0.75f);
+        glColor4f(
+            GetUpdateColorRed(UPDATE_COLOR_PARTICLES, pulse),
+            GetUpdateColorGreen(UPDATE_COLOR_PARTICLES, pulse),
+            GetUpdateColorBlue(UPDATE_COLOR_PARTICLES, pulse),
+            p.alpha * 0.75f);
         glVertex2f(p.x, p.y);
-        glColor4f(0.5f, 0.8f, 1.0f, p.alpha * 0.3f);
+        glColor4f(
+            GetUpdateColorRed(UPDATE_COLOR_HIGHLIGHT),
+            GetUpdateColorGreen(UPDATE_COLOR_HIGHLIGHT),
+            GetUpdateColorBlue(UPDATE_COLOR_HIGHLIGHT),
+            p.alpha * 0.3f);
         glVertex2f(p.x + p.size * 0.3f, p.y);
     }
     glEnd();
@@ -842,10 +935,10 @@ static void DrawBarHighlight(int x, int y, int w, int h)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBegin(GL_QUADS);
-    glColor4f(1.f, 1.f, 1.f, 0.18f); glVertex2i(x, y);
-    glColor4f(1.f, 1.f, 1.f, 0.18f); glVertex2i(x + w, y);
-    glColor4f(1.f, 1.f, 1.f, 0.0f);  glVertex2i(x + w, y + h / 2);
-    glColor4f(1.f, 1.f, 1.f, 0.0f);  glVertex2i(x, y + h / 2);
+    glColor4f(GetUpdateColorRed(UPDATE_COLOR_HIGHLIGHT), GetUpdateColorGreen(UPDATE_COLOR_HIGHLIGHT), GetUpdateColorBlue(UPDATE_COLOR_HIGHLIGHT), 0.18f); glVertex2i(x, y);
+    glColor4f(GetUpdateColorRed(UPDATE_COLOR_HIGHLIGHT), GetUpdateColorGreen(UPDATE_COLOR_HIGHLIGHT), GetUpdateColorBlue(UPDATE_COLOR_HIGHLIGHT), 0.18f); glVertex2i(x + w, y);
+    glColor4f(GetUpdateColorRed(UPDATE_COLOR_HIGHLIGHT), GetUpdateColorGreen(UPDATE_COLOR_HIGHLIGHT), GetUpdateColorBlue(UPDATE_COLOR_HIGHLIGHT), 0.0f);  glVertex2i(x + w, y + h / 2);
+    glColor4f(GetUpdateColorRed(UPDATE_COLOR_HIGHLIGHT), GetUpdateColorGreen(UPDATE_COLOR_HIGHLIGHT), GetUpdateColorBlue(UPDATE_COLOR_HIGHLIGHT), 0.0f);  glVertex2i(x, y + h / 2);
     glEnd();
     glDisable(GL_BLEND);
 }
@@ -905,7 +998,11 @@ void InGameUpdate_RenderScreen(HDC hDC)
     int H = (int)WindowHeight;
     float t = (GetTickCount() - g_renderStartTick) / 1000.0f;
 
-    glClearColor(0.f, 0.f, 0.f, 1.f);
+    glClearColor(
+        GetUpdateColorRed(UPDATE_COLOR_BACKGROUND),
+        GetUpdateColorGreen(UPDATE_COLOR_BACKGROUND),
+        GetUpdateColorBlue(UPDATE_COLOR_BACKGROUND),
+        1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
@@ -929,34 +1026,53 @@ void InGameUpdate_RenderScreen(HDC hDC)
     UpdateParticles(barX, barY - 10, (int)(barW * fillFrac) + 1, barH + 20, fillFrac);
     DrawParticles();
 
-    DrawFilledRect(barX - 2, barY - 2, barW + 4, barH + 4, 0.f, 0.f, 0.f, 0.6f);
-    DrawFilledRect(barX, barY, barW, barH, 0.05f, 0.07f, 0.12f);
+    DrawFilledRect(barX - 2, barY - 2, barW + 4, barH + 4,
+        GetUpdateColorRed(UPDATE_COLOR_BAR_OUTER),
+        GetUpdateColorGreen(UPDATE_COLOR_BAR_OUTER),
+        GetUpdateColorBlue(UPDATE_COLOR_BAR_OUTER), 0.6f);
+    DrawFilledRect(barX, barY, barW, barH,
+        GetUpdateColorRed(UPDATE_COLOR_BAR_BACKGROUND),
+        GetUpdateColorGreen(UPDATE_COLOR_BAR_BACKGROUND),
+        GetUpdateColorBlue(UPDATE_COLOR_BAR_BACKGROUND));
 
     int fillW = (int)(barW * fillFrac);
     if (fillW > 0)
     {
         DrawGradientBar(barX, barY, fillW, barH,
-            0.00f, 0.20f, 0.75f,
-            0.10f, 0.55f, 1.00f);
+            GetUpdateColorRed(UPDATE_COLOR_BAR_START),
+            GetUpdateColorGreen(UPDATE_COLOR_BAR_START),
+            GetUpdateColorBlue(UPDATE_COLOR_BAR_START),
+            GetUpdateColorRed(UPDATE_COLOR_BAR_END),
+            GetUpdateColorGreen(UPDATE_COLOR_BAR_END),
+            GetUpdateColorBlue(UPDATE_COLOR_BAR_END));
         DrawBarHighlight(barX, barY, fillW, barH);
 
         float scanPulse = 0.4f + 0.35f * sinf(t * 3.5f);
         int   scanX = barX + (int)((fillW - 4) * (0.5f + 0.5f * sinf(t * 1.8f)));
-        DrawFilledRect(scanX, barY, 3, barH, 1.f, 1.f, 1.f, scanPulse * 0.5f);
-        DrawGlow(barX, barY, fillW, barH, 0.10f, 0.50f, 1.00f);
+        DrawFilledRect(scanX, barY, 3, barH,
+            GetUpdateColorRed(UPDATE_COLOR_HIGHLIGHT),
+            GetUpdateColorGreen(UPDATE_COLOR_HIGHLIGHT),
+            GetUpdateColorBlue(UPDATE_COLOR_HIGHLIGHT), scanPulse * 0.5f);
+        DrawGlow(barX, barY, fillW, barH,
+            GetUpdateColorRed(UPDATE_COLOR_BAR_END),
+            GetUpdateColorGreen(UPDATE_COLOR_BAR_END),
+            GetUpdateColorBlue(UPDATE_COLOR_BAR_END));
     }
 
-    DrawRectOutline(barX, barY, barW, barH, 0.10f, 0.55f, 1.00f, 0.7f, 1.5f);
+    DrawRectOutline(barX, barY, barW, barH,
+        GetUpdateColorRed(UPDATE_COLOR_DETAILS),
+        GetUpdateColorGreen(UPDATE_COLOR_DETAILS),
+        GetUpdateColorBlue(UPDATE_COLOR_DETAILS), 0.7f, 1.5f);
 
     {
         float lineAlpha = 0.25f + 0.1f * sinf(t * 2.f);
         int   lx1 = barX - 18, lx2 = barX + barW + 18;
-        DrawHLine(lx1 - 60, barY + barH / 2, 55, 0.10f, 0.55f, 1.00f, lineAlpha);
-        DrawHLine(lx2 + 5, barY + barH / 2, 55, 0.10f, 0.55f, 1.00f, lineAlpha);
+        DrawHLine(lx1 - 60, barY + barH / 2, 55, GetUpdateColorRed(UPDATE_COLOR_DETAILS), GetUpdateColorGreen(UPDATE_COLOR_DETAILS), GetUpdateColorBlue(UPDATE_COLOR_DETAILS), lineAlpha);
+        DrawHLine(lx2 + 5, barY + barH / 2, 55, GetUpdateColorRed(UPDATE_COLOR_DETAILS), GetUpdateColorGreen(UPDATE_COLOR_DETAILS), GetUpdateColorBlue(UPDATE_COLOR_DETAILS), lineAlpha);
         glDisable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor4f(0.10f, 0.55f, 1.00f, lineAlpha * 1.5f);
+        glColor4f(GetUpdateColorRed(UPDATE_COLOR_DETAILS), GetUpdateColorGreen(UPDATE_COLOR_DETAILS), GetUpdateColorBlue(UPDATE_COLOR_DETAILS), lineAlpha * 1.5f);
         glBegin(GL_TRIANGLES);
         glVertex2i(lx1, barY + barH / 2 - 5);
         glVertex2i(lx1, barY + barH / 2 + 5);
@@ -972,7 +1088,7 @@ void InGameUpdate_RenderScreen(HDC hDC)
 
     {
         float sepAlpha = 0.3f + 0.05f * sinf(t * 1.5f);
-        DrawHLine(barX, barY - 40, barW, 0.10f, 0.55f, 1.00f, sepAlpha);
+        DrawHLine(barX, barY - 40, barW, GetUpdateColorRed(UPDATE_COLOR_DETAILS), GetUpdateColorGreen(UPDATE_COLOR_DETAILS), GetUpdateColorBlue(UPDATE_COLOR_DETAILS), sepAlpha);
     }
 
     int mainTitleX = (W - g_texMainTitleW) / 2;
@@ -986,7 +1102,7 @@ void InGameUpdate_RenderScreen(HDC hDC)
             mainTitleBuilt = true;
             g_texMainTitle = BuildTextTexture(hDC,
                 gProtect->m_MainInfo.m_TitleName,
-                tw, th, 66, RGB(255, 255, 255),
+                tw, th, 66, GetUpdateTextColor(UPDATE_COLOR_TEXT_TOP),
                 DT_CENTER | DT_VCENTER | DT_SINGLELINE,
                 "Tahoma", FW_BOLD);
             g_texMainTitleW = tw; g_texMainTitleH = th;
@@ -1039,7 +1155,11 @@ void InGameUpdate_RenderScreen(HDC hDC)
             Particle& p = titleParticles[i];
             if (p.alpha <= 0.01f) continue;
             float pulse = 0.7f + 0.3f * sinf(p.life * 0.2f);
-            glColor4f(0.2f * pulse, 0.6f * pulse, 1.0f * pulse, p.alpha * 0.8f);
+            glColor4f(
+                GetUpdateColorRed(UPDATE_COLOR_PARTICLES, pulse),
+                GetUpdateColorGreen(UPDATE_COLOR_PARTICLES, pulse),
+                GetUpdateColorBlue(UPDATE_COLOR_PARTICLES, pulse),
+                p.alpha * 0.8f);
             glVertex2f(p.x, p.y);
         }
         glEnd(); glDisable(GL_BLEND);
@@ -1056,7 +1176,7 @@ void InGameUpdate_RenderScreen(HDC hDC)
             subTitleBuilt = true;
             g_texSubTitle = BuildTextTexture(hDC,
                 gProtect->m_MainInfo.m_SubTitleName,
-                tw, th, 28, RGB(255, 255, 255),
+                tw, th, 28, GetUpdateTextColor(UPDATE_COLOR_TEXT_TOP),
                 DT_CENTER | DT_VCENTER | DT_SINGLELINE,
                 "Trebuchet MS", FW_SEMIBOLD);
             g_texSubTitleW = tw; g_texSubTitleH = th;
@@ -1109,7 +1229,11 @@ void InGameUpdate_RenderScreen(HDC hDC)
             Particle& p = subParticles[i];
             if (p.alpha <= 0.01f) continue;
             float pulse = 0.7f + 0.3f * sinf(p.life * 0.22f);
-            glColor4f(0.2f * pulse, 0.6f * pulse, 1.0f * pulse, p.alpha * 0.7f);
+            glColor4f(
+                GetUpdateColorRed(UPDATE_COLOR_PARTICLES, pulse),
+                GetUpdateColorGreen(UPDATE_COLOR_PARTICLES, pulse),
+                GetUpdateColorBlue(UPDATE_COLOR_PARTICLES, pulse),
+                p.alpha * 0.7f);
             glVertex2f(p.x, p.y);
         }
         glEnd(); glDisable(GL_BLEND);
@@ -1131,7 +1255,7 @@ void InGameUpdate_RenderScreen(HDC hDC)
 
             int tw = barW, th = 38;
             g_texTitle = BuildTextTexture(hDC, titleStr,
-                tw, th, 22, RGB(255, 255, 255),
+                tw, th, 22, GetUpdateTextColor(UPDATE_COLOR_TEXT_MIDDLE),
                 DT_CENTER | DT_VCENTER | DT_SINGLELINE,
                 "Tahoma", FW_BOLD, g_texTitle);
             g_texTitleW = tw; g_texTitleH = th;
@@ -1147,7 +1271,7 @@ void InGameUpdate_RenderScreen(HDC hDC)
         {
             strcpy_s(g_cachedMain, st.statusText);
             g_texMain = BuildTextTexture(hDC, st.statusText,
-                tw, th, 15, RGB(255, 255, 255),
+                tw, th, 15, GetUpdateTextColor(UPDATE_COLOR_TEXT_MIDDLE),
                 DT_CENTER | DT_VCENTER | DT_SINGLELINE,
                 "Tahoma", FW_SEMIBOLD, g_texMain);
             g_texMainW = tw; g_texMainH = th;
@@ -1170,7 +1294,7 @@ void InGameUpdate_RenderScreen(HDC hDC)
         {
             strcpy_s(g_cachedSub, subLine);
             g_texSub = BuildTextTexture(hDC, subLine,
-                tw, th, 13, RGB(255, 255, 255),
+                tw, th, 13, GetUpdateTextColor(UPDATE_COLOR_TEXT_MIDDLE),
                 DT_CENTER | DT_VCENTER | DT_SINGLELINE,
                 "Consolas", FW_NORMAL, g_texSub);
             g_texSubW = tw; g_texSubH = th;
@@ -1194,7 +1318,7 @@ void InGameUpdate_RenderScreen(HDC hDC)
         {
             strcpy_s(cachedFile, fileInfo);
             texFile = BuildTextTexture(hDC, fileInfo,
-                tw, th, 11, RGB(255, 255, 255),
+                tw, th, 11, GetUpdateTextColor(UPDATE_COLOR_TEXT_MIDDLE),
                 DT_CENTER | DT_VCENTER | DT_SINGLELINE,
                 "Consolas", FW_NORMAL, texFile);
             texFileW = tw; texFileH = th;
@@ -1204,23 +1328,31 @@ void InGameUpdate_RenderScreen(HDC hDC)
             texFileW, texFileH, fileAlpha, 1.f, 1.f, 1.f);
     }
 
+    if (gProtect->m_MainInfo.m_UpdateTipsCount > 0)
     {
+        int tipCount = gProtect->m_MainInfo.m_UpdateTipsCount;
+
+        if (tipCount > UPDATE_TIP_MAX)
+        {
+            tipCount = UPDATE_TIP_MAX;
+        }
+
         DWORD now = GetTickCount();
-        if (now - g_lastTipChange > 15000)
+        if (now - g_lastTipChange > 15000 && tipCount > 1)
         {
             g_lastTipChange = now;
             int nextTip;
-            do { nextTip = rand() % UI_TIPS_COUNT; } while (nextTip == g_currentTip);
+            do { nextTip = rand() % tipCount; } while (nextTip == g_currentTip);
             g_currentTip = nextTip;
         }
         float tipAlpha = 0.55f + 0.2f * sinf(t * 0.8f);
-        const char* tip = g_tips[g_currentTip];
+        const char* tip = gProtect->m_MainInfo.m_UpdateTips[g_currentTip];
         int tw = barW + 200, th = 52;
         if (strcmp(tip, g_cachedTip) != 0)
         {
             strcpy_s(g_cachedTip, tip);
             g_texTip = BuildTextTexture(hDC, tip,
-                tw, th, 30, RGB(255, 255, 255),
+                tw, th, 30, GetUpdateTextColor(UPDATE_COLOR_TEXT_BOTTOM),
                 DT_CENTER | DT_VCENTER | DT_SINGLELINE,
                 "Tahoma", FW_NORMAL, g_texTip);
             g_texTipW = tw; g_texTipH = th;
@@ -1228,7 +1360,10 @@ void InGameUpdate_RenderScreen(HDC hDC)
         int tipX = (W - g_texTipW) / 2;
         int tipY = barY + barH + 76;
         DrawTexture(g_texTip, tipX, tipY, g_texTipW, g_texTipH, tipAlpha);
-        DrawHLine(barX + 20, tipY - 6, barW - 40, 0.10f, 0.45f, 0.90f, 0.35f);
+        DrawHLine(barX + 20, tipY - 6, barW - 40,
+            GetUpdateColorRed(UPDATE_COLOR_DETAILS),
+            GetUpdateColorGreen(UPDATE_COLOR_DETAILS),
+            GetUpdateColorBlue(UPDATE_COLOR_DETAILS), 0.35f);
     }
 
     {
@@ -1238,7 +1373,7 @@ void InGameUpdate_RenderScreen(HDC hDC)
         float ca = 0.4f + 0.1f * sinf(t * 2.5f);
         glDisable(GL_TEXTURE_2D); glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glLineWidth(1.5f); glColor4f(0.10f, 0.55f, 1.00f, ca);
+        glLineWidth(1.5f); glColor4f(GetUpdateColorRed(UPDATE_COLOR_DETAILS), GetUpdateColorGreen(UPDATE_COLOR_DETAILS), GetUpdateColorBlue(UPDATE_COLOR_DETAILS), ca);
         glBegin(GL_LINES);
         glVertex2i(cx, cy);      glVertex2i(cx + len, cy);
         glVertex2i(cx, cy);      glVertex2i(cx, cy + len);
@@ -1264,7 +1399,7 @@ void InGameUpdate_RenderScreen(HDC hDC)
             strcpy_s(cachedVer, verStr);
             int tw = 400, th = 18;
             texVer = BuildTextTexture(hDC, verStr, tw, th, 11,
-                RGB(255, 255, 255),
+                GetUpdateTextColor(UPDATE_COLOR_TEXT_BOTTOM),
                 DT_CENTER | DT_VCENTER | DT_SINGLELINE,
                 "Tahoma", FW_NORMAL, texVer);
         }

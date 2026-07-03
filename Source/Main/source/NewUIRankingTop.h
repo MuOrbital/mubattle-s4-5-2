@@ -1,6 +1,7 @@
 #pragma once
 #include "NewUIBase.h"
 #include "NewUIManager.h"
+#include "NewUIScrollBar.h"
 
 namespace SEASON3B
 {
@@ -8,11 +9,15 @@ namespace SEASON3B
 	{
 		std::string Name;
 		std::string Class;
+		BYTE PlayerClass;
 		BYTE Vip;
 		DWORD Score;
-		TEMPLATE_RANKING(const std::string& n, const std::string& c, BYTE v, DWORD s)
-			: Name(n), Class(c), Vip(v), Score(s)
+		TEMPLATE_RANKING(const std::string& n, const std::string& c, BYTE p, BYTE v, DWORD s)
+			: Name(n), Class(c), PlayerClass(p), Vip(v), Score(s)
 		{
+		}
+		BYTE GetPlayerClass() {
+			return PlayerClass;
 		}
 		BYTE GetVip() {
 			return Vip;
@@ -32,30 +37,28 @@ namespace SEASON3B
 	{
 		enum IMAGE_LIST
 		{
-			IMAGE_TOP_BACK1 = BITMAP_IMAGE_FRAME_EMU + 1,
-			IMAGE_TOP_BACK2 = BITMAP_IMAGE_FRAME_EMU + 2,
-			IMAGE_TOP_BACK3 = BITMAP_IMAGE_FRAME_EMU + 3,
-			IMAGE_TOP_LEVEL1 = BITMAP_IMAGE_FRAME_EMU + 4,
-			IMAGE_TOP_LEVEL2 = BITMAP_IMAGE_FRAME_EMU + 5,
-			IMAGE_TOP_LEVEL3 = BITMAP_IMAGE_FRAME_EMU + 6,
+			IMAGE_TOP_BACK1 = 120100,
+			IMAGE_TOP_BACK2 = 120101,
+			IMAGE_TOP_BACK3 = 120102,
+			IMAGE_TOP_LEVEL1 = 120103,
+			IMAGE_TOP_LEVEL2 = 120104,
+			IMAGE_TOP_LEVEL3 = 120105,
 		};
 	private:
-		//CUIComboBox m_ComboRankingList;
-		std::vector<std::pair<std::string, int>> m_ComboBXHOptions; // tên + ID
-
 		CNewUIManager* m_pNewUIMng;
 		POINT m_Pos;
 		CUIPhotoViewer m_RenderCharacter;
 
 		bool is_request;
-		size_t m_RankListView;
-		size_t m_RankMaxTop;
-		size_t m_RankIndexCur;
-		size_t m_RankSelectIndex;
-		char m_RankName[50];
-		char m_RankColum[50];
-		//CNewUIScrollBarHTML m_pScrollBar;
-		std::vector<TEMPLATE_RANKING> m_RankList;
+		bool is_loading;
+		int CharacterIndex;
+		size_t TotalView;
+		size_t TotalSize;
+		size_t SelectIndex;
+		std::string RankingName;
+		std::string ScoreName;
+		CNewUIScrollBar* m_pScrollBar;
+		std::vector<TEMPLATE_RANKING> rankingList;
 	public:
 		CNewUIRankingTop();
 		virtual ~CNewUIRankingTop();
@@ -74,15 +77,17 @@ namespace SEASON3B
 
 		void OpenningProcess();
 		void ClosingProcess();
-
-		void RenderFrame();
-		void RenderTexte();
-
-
 		void ReceiveRankingInfo(BYTE* ReceiveBuffer);
+		void ReceiveCharacterInfo(BYTE* ReceiveBuffer);
 		void ReceiveRankingListInfo(BYTE* ReceiveBuffer);
 	private:
-		void RequestServerRankingInfo(BYTE Index);
+		void RenderFrame();
+		void RenderText();
+		void SetCharacterIndex(int characterIndex);
+		int GetCharacterIndex();
+		int GetTotalCharacter();
+		void RequestCharacterInfo(int characterIndex);
+		void RequestServerRankingInfo(BYTE RankingIndex);
 	};
 }
 

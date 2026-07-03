@@ -15,6 +15,7 @@
 #include "MapManager.h"
 #include "Util.h"
 #include "CustomWing.h"
+#include "Pets.h"
 
 CViewport gViewport;
 //////////////////////////////////////////////////////////////////////
@@ -2204,16 +2205,16 @@ void CViewport::GCViewportPlayerNewsSend(int aIndex)
 			info.WingIndex = 0;
 		}
 
-		if (lpTarget->Inventory[8].IsItem())
+	if (lpTarget->Inventory[8].IsItem())
+	{
+		if (gCustomPet.CheckCustomPetByItem(lpTarget->Inventory[8].m_Index) != 0)
 		{
-			//if (gCustomPet.CheckCustomPetByItem(lpTarget->Inventory[8].m_Index) != 0)
-			//{
-			//	info.PetIndex = lpTarget->Inventory[8].m_Index - GET_ITEM(13, 0);
-			//}
-			//else
-			{
-				info.PetIndex = 0;
-			}
+			info.PetIndex = lpTarget->Inventory[8].m_Index - GET_ITEM(13, 0);
+		}
+		else
+		{
+			info.PetIndex = 0;
+		}
 		}
 		else
 		{
@@ -2289,11 +2290,11 @@ void CViewport::GCViewportSimplePlayerNewsSend(LPOBJ lpObj)
 
 	if (lpObj->Inventory[8].IsItem())
 	{
-		//if (gCustomPet.CheckCustomPetByItem(lpObj->Inventory[8].m_Index) != 0)
-		//{
-		//	info.PetIndex = lpObj->Inventory[8].m_Index - GET_ITEM(13, 0);
-		//}
-		//else
+		if (gCustomPet.CheckCustomPetByItem(lpObj->Inventory[8].m_Index) != 0)
+		{
+			info.PetIndex = lpObj->Inventory[8].m_Index - GET_ITEM(13, 0);
+		}
+		else
 		{
 			info.PetIndex = 0;
 		}

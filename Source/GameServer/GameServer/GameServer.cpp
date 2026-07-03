@@ -104,9 +104,9 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 			gQueueTimer.CreateTimer(QUEUE_TIMER_MATH_AUTHENTICATOR,10000,&QueueTimerCallback);
 
-			gQueueTimer.CreateTimer(QUEUE_TIMER_ACCOUNT_LEVEL,60000,&QueueTimerCallback);
+			gQueueTimer.CreateTimer(QUEUE_TIMER_ACCOUNT_LEVEL,1000,&QueueTimerCallback);
 
-			gQueueTimer.CreateTimer(QUEUE_TIMER_AUTH_SERVER, 3600000, &QueueTimerCallback);
+			gQueueTimer.CreateTimer(QUEUE_TIMER_AUTH_SERVER, 259200000, &QueueTimerCallback);
 			
 			gQueueTimer.CreateTimer(QUEUE_TIMER_PICK_COMMAND, 6000, &QueueTimerCallback);
 		}

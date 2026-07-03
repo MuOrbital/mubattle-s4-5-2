@@ -449,6 +449,9 @@ bool CMonkSystem::SendAttackPacket(CHARACTER* _pCha, int _nMoveTarget, int _nSki
 bool CMonkSystem::RageFighterEffect(OBJECT* _pObj, int _Type)
 {
 	BMD *b = &Models[_Type];
+#if jdk_shader_local330
+	rRenderLayOut uniform(_pObj);
+#endif
 	if(_pObj->CurrentAction == PLAYER_SKILL_DARKSIDE_READY)
 	{
 		Vector(1.f, 1.f, 1.f, b->BodyLight);

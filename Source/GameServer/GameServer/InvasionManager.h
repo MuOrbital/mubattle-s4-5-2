@@ -4,7 +4,9 @@
 
 #pragma once
 
+#include <map>
 #include "User.h"
+#include "Protocol.h"
 
 #define MAX_INVASION 30
 #define MAX_INVASION_MONSTER 500
@@ -43,6 +45,33 @@ struct INVASION_MONSTER_INFO
 	int RegenTime;
 };
 
+struct INVASION_INFO_MONSTER
+{
+	int MonsterIndex;
+	int Monster_Kill;
+	int MonsterCount;
+};
+
+struct PMSG_INVASION_KILL_INFO
+{
+	PSWMSG_HEAD Head;
+	int Index;
+	int MonsterIndex;
+	int Monster_Kill;
+	int MonsterCount;
+};
+
+struct PMSG_INVASION_INFO
+{
+	PSWMSG_HEAD Head;
+	int Index;
+	char Name[64];
+	int RemainTime;
+	int count;
+};
+
+typedef std::map<int,INVASION_INFO_MONSTER> type_count_monster;
+
 struct INVASION_INFO
 {
 	int Index;
@@ -65,6 +94,7 @@ struct INVASION_INFO
 	int AlarmTime;
 	char AlertMessage[128];
 	int CountNotify;
+	type_count_monster total_data_monster;
 };
 
 class CInvasionManager
@@ -95,9 +125,17 @@ public:
 	void MonsterDieProc(LPOBJ lpObj, LPOBJ lpTarget);
 	void StartInvasion(int index);
 	const char* GetInvasionName(int index);
+	void SendPlayerInfo(int index);
+	void SendInfoKill(INVASION_INFO_MONSTER* lpInfo,int index);
+	void SendInfoInvasion(INVASION_INFO* lpInfo,int status,int index);
+	void AddNotifyMonsterInfo(INVASION_INFO* lpInfo,int MonsterClass,int MonsterCount);
+	void EnsureNotifyMonsterInfo(INVASION_INFO* lpInfo);
+	void RebuildNotifyMonsterInfo(INVASION_INFO* lpInfo);
+	int GetNotifyMonsterCount(INVASION_INFO* lpInfo,INVASION_MONSTER_INFO* lpMonsterInfo);
 
 private:
 	INVASION_INFO m_InvasionInfo[MAX_INVASION];
+	DWORD m_ClientSyncTick;
 };
 
 extern CInvasionManager gInvasionManager;

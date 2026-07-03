@@ -10,13 +10,13 @@ public:
 	virtual ~CFileLuaProtect();
 	bool LoadFile(char* path);
 	bool EncryptFile(char* path, char* n_path);
+	bool DecryptFile(char* path, char* n_path); // NOVO
 	void FindFile(const char* path, const char* n_path);
-
+	void FindFileDecrypt(const char* path, const char* n_path); // NOVO
 private:
 	char* m_buff;
 	DWORD m_size;
 	char m_path[256];
-
 public:
 	char m_IpServer[17];
 	char m_PrivateCode[125];

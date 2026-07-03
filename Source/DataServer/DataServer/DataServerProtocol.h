@@ -7,6 +7,16 @@
 #else
 #define INVENTORY_SIZE 108
 #endif
+
+#define RANKING_INVENTORY_SLOTS 9
+
+struct CUSTOM_RANKING_DATA
+{
+	char szName[20];
+	BYTE Class;
+	BYTE Vip;
+	int Score;
+};
 #if(DATASERVER_UPDATE>=701)
 #define MAX_EFFECT_LIST 32
 #else
@@ -127,6 +137,45 @@ struct PSWMSG_HEAD
 	BYTE subh;
 };
 
+#pragma pack(push, 1)
+
+struct SDHP_CUSTOM_RANKING_RECV
+{
+	PSBMSG_HEAD header;
+	WORD index;
+	WORD type;
+};
+
+struct SDHP_RANKING_CHARACTER_INFO_RECV
+{
+	PSBMSG_HEAD header;
+	int characterIndex;
+	WORD index;
+	char name[11];
+};
+
+struct SDHP_RANKING_CHARACTER_INFO_SEND
+{
+	PWMSG_HEAD header;
+	int characterIndex;
+	WORD index;
+	BYTE result;
+	char name[11];
+	BYTE DBClass;
+	BYTE CtlCode;
+	BYTE Inventory[RANKING_INVENTORY_SLOTS][5];
+};
+
+#pragma pack(pop)
+
+struct PMSG_CUSTOM_RANKING_SEND
+{
+	PWMSG_HEAD header;
+	int index;
+	int type;
+	int count;
+};
+
 //**********************************************//
 //********** GameServer -> DataServer **********//
 //**********************************************//
@@ -144,6 +193,7 @@ struct SDHP_CARESUME_RECV
 {
 	PBMSG_HEAD header; // C1:F5
 	WORD index;
+	char account[11];
 	char name[11];
 };
 
@@ -151,6 +201,7 @@ struct SDHP_CARESUME_SAVE_RECV
 {
 	PBMSG_HEAD header; // C1:F6
 	WORD index;
+	char account[11];
 	char name[11];
 	WORD active;
 	WORD skill;
@@ -158,6 +209,26 @@ struct SDHP_CARESUME_SAVE_RECV
 	WORD posx;
 	WORD posy;
 	WORD autobuff;
+};
+
+struct SDHP_OFFATTACK_SAVE_RECV
+{
+	PBMSG_HEAD header; // C1:F7
+	char account[11];
+	char name[11];
+	WORD active;
+	WORD skill;
+	WORD map;
+	WORD posx;
+	WORD posy;
+	WORD autobuff;
+	WORD accountLevel;
+	char accountExpireDate[20];
+};
+
+struct SDHP_OFFATTACK_LIST_RECV
+{
+	PBMSG_HEAD header; // C1:F8
 };
 
 struct SDHP_CHARACTER_LIST_RECV
@@ -793,6 +864,7 @@ struct SDHP_CARESUME_SEND
 {
 	PBMSG_HEAD header; // C1:F5
 	WORD index;
+	char account[11];
 	char name[11];
 	WORD active;
 	WORD skill;
@@ -800,6 +872,20 @@ struct SDHP_CARESUME_SEND
 	WORD posx;
 	WORD posy;
 	WORD autobuff;
+};
+
+struct SDHP_OFFATTACK_RESUME_SEND
+{
+	PBMSG_HEAD header; // C1:F8
+	char account[11];
+	char name[11];
+	WORD skill;
+	WORD map;
+	WORD posx;
+	WORD posy;
+	WORD autobuff;
+	WORD accountLevel;
+	char accountExpireDate[20];
 };
 
 //**********************************************//
@@ -828,6 +914,8 @@ void GDOptionDataSaveRecv(SDHP_OPTION_DATA_SAVE_RECV* lpMsg);
 void GDPetItemInfoSaveRecv(SDHP_PET_ITEM_INFO_SAVE_RECV* lpMsg);
 void GDResetInfoSaveRecv(SDHP_RESET_INFO_SAVE_RECV* lpMsg);
 void GDMasterResetInfoSaveRecv(SDHP_MASTER_RESET_INFO_SAVE_RECV* lpMsg);
+void GDCustomRankingRecv(SDHP_CUSTOM_RANKING_RECV* lpMsg, int index);
+void GDRankingPlayerInfoRecv(SDHP_RANKING_CHARACTER_INFO_RECV* lpMsg, int index);
 void GDRankingDuelSaveRecv(SDHP_RANKING_DUEL_SAVE_RECV* lpMsg);
 void GDRankingBloodCastleSaveRecv(SDHP_RANKING_BLOOD_CASTLE_SAVE_RECV* lpMsg);
 void GDRankingChaosCastleSaveRecv(SDHP_RANKING_CHAOS_CASTLE_SAVE_RECV* lpMsg);
@@ -844,6 +932,8 @@ void GDGlobalWhisperRecv(SDHP_GLOBAL_WHISPER_RECV* lpMsg,int index);
 void DGGlobalWhisperEchoSend(WORD ServerCode,WORD index,char* account,char* name,char* SourceName,char* message);
 void GDCustomAttackResumeRecv(SDHP_CARESUME_RECV* lpMsg, int index);
 void GDCustomAttackSaveRecv(SDHP_CARESUME_SAVE_RECV* lpMsg);
+void GDCustomOffAttackSaveRecv(SDHP_OFFATTACK_SAVE_RECV* lpMsg);
+void GDCustomOffAttackListRecv(SDHP_OFFATTACK_LIST_RECV* lpMsg,int index);
 
 //**************************************************************************//
 // RAW FUNCTIONS ***********************************************************//

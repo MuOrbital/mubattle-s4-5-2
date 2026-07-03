@@ -370,7 +370,7 @@ void gObjAccountLevelProc() // OK
 {
 	for(int n=OBJECT_START_USER;n < MAX_OBJECT;n++)
 	{
-		if(gObjIsConnectedGP(n) != 0)
+		if(gObjIsConnectedGP(n) != 0 && gObj[n].AccountLevel != 0)
 		{
 			GJAccountLevelSend(n);
 		}
@@ -727,6 +727,7 @@ void gObjCharZeroSet(int aIndex) // OK
 	lpObj->AttackCustomOffline = 0;
 	lpObj->AttackCustomOfflineTime = 0;
 	lpObj->AttackCustomOfflineMoneyDelay = 0;
+	lpObj->MiniatureMode = 0;
 	lpObj->MiniMapState = 0;
 	lpObj->MiniMapValue = -1;
 	lpObj->MiningStage = 0;

@@ -12,6 +12,7 @@
 #include "CommandManager.h"
 #include "Crywolf.h"
 #include "CSProtocol.h"
+#include "CustomRanking.h"
 #include "DarkSpirit.h"
 #include "DefaultClassInfo.h"
 #include "DevilSquare.h"
@@ -933,10 +934,22 @@ void ProtocolCore(BYTE head, BYTE* lpMsg, int size, int aIndex, int encrypt, int
 			CGClientSecurityBreachRecv((PMSG_CLIENT_SECURITY_BREACH_RECV*)lpMsg, aIndex);
 #endif
 			break;
+		case 0x32:
+			CGMiniatureModeRecv((PMSG_MINIATURE_MODE_RECV*)lpMsg, aIndex);
+			break;
 		case 0x52:
 #if(GAMESERVER_UPDATE>=401)
 			gMasterSkillTree.CGMasterSkillRecv((PMSG_MASTER_SKILL_RECV*)lpMsg, aIndex);
 #endif
+			break;
+		case 0xE5:
+			gCustomRanking.GCReqRankingPlayer(aIndex, (PMSG_RANKING_CHARACTER_INFO_RECV*)lpMsg);
+			break;
+		case 0xE6:
+			gCustomRanking.GCReqRanking(aIndex, (PMSG_CUSTOM_RANKING_RECV*)lpMsg);
+			break;
+		case 0xE7:
+			gCustomRanking.GCReqRankingCount(aIndex, (PMSG_CUSTOM_RANKING_COUNT_RECV*)lpMsg);
 			break;
 		case 0xF2:
 			gChaosBox.CGChaosMixRateRecv((PMSG_CHAOS_MIX_RATE_RECV*)lpMsg, aIndex);
@@ -2203,6 +2216,28 @@ void CGClientSecurityBreachRecv(PMSG_CLIENT_SECURITY_BREACH_RECV* lpMsg, int aIn
 #endif
 }
 
+void CGMiniatureModeRecv(PMSG_MINIATURE_MODE_RECV* lpMsg, int aIndex) // OK
+{
+	if(gObjIsConnected(aIndex) == 0)
+	{
+		return;
+	}
+
+	LPOBJ lpObj = &gObj[aIndex];
+
+	lpObj->MiniatureMode = ((lpMsg->state == 0) ? 0 : 1);
+
+	gObjectManager.CharacterMakePreviewCharSet(aIndex);
+	if(gObjIsChangeSkin(lpObj->Index) == 0)
+	{
+		gViewport.GCViewportSimplePlayerSend(lpObj);
+	}
+	else
+	{
+		gViewport.GCViewportSimpleChangeSend(lpObj);
+	}
+}
+
 void CGAcheronEnterRecv(int aIndex) // OK
 {
 #if(GAMESERVER_UPDATE>=701)
@@ -3428,6 +3463,11 @@ void GCNewHealthBarSend(LPOBJ lpObj) // OK
 			continue;
 		}
 
+		if(lpTarget->Type == OBJECT_MONSTER)
+		{
+			gObjMonsterDelHitDamageUser(lpTarget);
+		}
+
 		info.index = lpTarget->Index;
 		info.type = (BYTE)lpTarget->Type;
 
@@ -3438,7 +3478,7 @@ void GCNewHealthBarSend(LPOBJ lpObj) // OK
 		struct DamageEntry
 		{
 			int index;
-			int damage;
+			QWORD damage;
 		};
 
 		DamageEntry entries[MAX_HIT_DAMAGE];
@@ -3490,7 +3530,7 @@ void GCNewHealthBarSend(LPOBJ lpObj) // OK
 		for (int i = 0; i < max; i++)
 		{
 			info.topIndex[i] = entries[i].index;
-			info.topDamage[i] = entries[i].damage;
+			info.topDamage[i] = ((entries[i].damage>0xFFFFFFFF)?0xFFFFFFFF:(DWORD)entries[i].damage);
 		}
 
 		if ((size + sizeof(info)) >= sizeof(send))

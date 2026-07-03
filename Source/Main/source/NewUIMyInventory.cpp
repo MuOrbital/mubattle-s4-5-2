@@ -41,10 +41,41 @@
 #include "CustomJewel.h"
 #include "ItemBank.h"
 #include <CustomWing.h>
+#include "HelperSystem.h"
+#include "HelperManager.h"
 
 #define SOCKET_ACTIVATE
 
 using namespace SEASON3B;
+
+static void RestoreEquippedCustomHelper()
+{
+	if (Hero == NULL || CharacterMachine == NULL)
+	{
+		return;
+	}
+
+	ITEM* pHelper = &CharacterMachine->Equipment[EQUIPMENT_HELPER];
+
+	if (pHelper->Type == -1)
+	{
+		return;
+	}
+
+	int HelperType = pHelper->Type + MODEL_ITEM;
+
+	if (gHelperSystem.CheckIsHelper(HelperType) == false)
+	{
+		return;
+	}
+
+	DeleteBug(&Hero->Object);
+	ThePetProcess().DeletePet(Hero, Hero->Helper.Type, true);
+	gHelperManager.DeleteHelper(Hero);
+
+	Hero->Helper.Type = HelperType;
+	gHelperManager.CreateHelper(pHelper->Type, gHelperSystem.GetHelperModel(Hero->Helper.Type), Hero->Object.Position, Hero, 0);
+}
 
 SEASON3B::CNewUIMyInventory::CNewUIMyInventory()
 {
@@ -161,6 +192,11 @@ bool SEASON3B::CNewUIMyInventory::EquipItem(int iIndex, BYTE* pbyItemPacket)
 		g_pNewItemMng->DeleteItem(pTempItem);
 
 		CreateEquippingEffect(pTargetItemSlot);
+
+		if (iIndex != EQUIPMENT_HELPER)
+		{
+			RestoreEquippedCustomHelper();
+		}
 	}
 	return false;
 }
@@ -198,6 +234,11 @@ void SEASON3B::CNewUIMyInventory::UnequipItem(int iIndex)
 			}
 			pEquippedItem->SocketSeedSetOption = 0;
 			DeleteEquippingEffect();
+
+			if (iIndex != EQUIPMENT_HELPER)
+			{
+				RestoreEquippedCustomHelper();
+			}
 		}
 	}
 }
@@ -1024,6 +1065,23 @@ void SEASON3B::CNewUIMyInventory::CreateEquippingEffect(ITEM* pItem)
 	OBJECT* pHeroObject = &Hero->Object;
 	if (false == gMapManager.InChaosCastle())
 	{
+		if (gHelperSystem.CheckIsHelper(pItem->Type + MODEL_ITEM))
+		{
+			gHelperManager.DeleteHelper(Hero);
+			DeleteBug(pHeroObject);
+			ThePetProcess().DeletePet(Hero, Hero->Helper.Type, true);
+
+			Hero->Helper.Type = pItem->Type + MODEL_ITEM;
+			gHelperManager.CreateHelper(pItem->Type, gHelperSystem.GetHelperModel(Hero->Helper.Type), pHeroObject->Position, Hero, 0);
+
+			if (!Hero->SafeZone)
+			{
+				CreateEffect(BITMAP_MAGIC + 1, pHeroObject->Position, pHeroObject->Angle, pHeroObject->Light, 1, pHeroObject);
+			}
+
+			return;
+		}
+
 		switch (pItem->Type)
 		{
 		case ITEM_HELPER:
@@ -1096,14 +1154,7 @@ void SEASON3B::CNewUIMyInventory::CreateEquippingEffect(ITEM* pItem)
 			Hero->EtcPart = PARTS_LION;
 		}
 	}
-	if (pItem->Type == ITEM_WING + 39 || pItem->Type == ITEM_HELPER + 30 ||
-		pItem->Type == ITEM_WING + 130 ||
-#ifdef PBG_ADD_NEWCHAR_MONK_ITEM
-		(pItem->Type >= ITEM_WING + 49 && pItem->Type <= ITEM_WING + 50) ||
-		(pItem->Type == ITEM_WING + 135) ||
-#endif //PBG_ADD_NEWCHAR_MONK_ITEM
-		gCustomWing.CheckCustomWingIsCape(pItem->Type + MODEL_ITEM) > 0 ||
-		pItem->Type == ITEM_WING + 40)
+	if (pItem->Type == ITEM_WING + 39 || pItem->Type == ITEM_HELPER + 30 || pItem->Type == ITEM_WING + 130 || pItem->Type == ITEM_WING + 40 || gCustomWing.CheckCustomWingIsCape(pItem->Type + MODEL_ITEM) > 0)
 	{
 		DeleteCloth(Hero, &Hero->Object);
 	}
@@ -1114,6 +1165,18 @@ void SEASON3B::CNewUIMyInventory::DeleteEquippingEffectBug(ITEM* pItem)
 	if (ThePetProcess().IsPet(pItem->Type) == true)
 	{
 		ThePetProcess().DeletePet(Hero, pItem->Type);
+	}
+
+	if (gHelperSystem.CheckIsHelper(pItem->Type + MODEL_ITEM))
+	{
+		gHelperManager.DeleteHelper(Hero);
+
+		if (Hero->Helper.Type == pItem->Type + MODEL_ITEM)
+		{
+			Hero->Helper.Type = -1;
+		}
+
+		return;
 	}
 
 	switch (pItem->Type)
@@ -1136,6 +1199,7 @@ void SEASON3B::CNewUIMyInventory::DeleteEquippingEffectBug(ITEM* pItem)
 		DeleteCloth(Hero, &Hero->Object);
 		return;
 	}
+
 
 	if (IsBug(pItem) == true)
 	{

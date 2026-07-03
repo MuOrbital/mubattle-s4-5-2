@@ -361,6 +361,9 @@
     <Filter Include="Customs\Preview">
       <UniqueIdentifier>{607aea8f-e6d5-4479-9410-5fb107301638}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Customs\CustomCape">
+      <UniqueIdentifier>{172775b9-fe7d-432b-8e1c-99b46891e28e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="source\icon1.ico">
@@ -541,6 +544,18 @@
     <ClCompile Include="source\BoneManager.cpp">
       <Filter>MU\Client\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\CShaderGL.cpp">
+      <Filter>MU\Client\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MU_OpenGL.cpp">
+      <Filter>MU\Client\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\New_ModelBMD.cpp">
+      <Filter>MU\Client\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\New_RenderBMD.cpp">
+      <Filter>MU\Client\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="source\CameraMove.cpp">
       <Filter>MU\Client\Source Files</Filter>
     </ClCompile>
@@ -607,6 +622,15 @@
     <ClCompile Include="source\GOBoid.cpp">
       <Filter>MU\Client\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\HelperManager.cpp">
+      <Filter>MU\Client\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\HelperSystem.cpp">
+      <Filter>MU\Client\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\HelperView.cpp">
+      <Filter>MU\Client\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="source\GuildCache.cpp">
       <Filter>MU\Client\Source Files</Filter>
     </ClCompile>
@@ -668,6 +692,9 @@
       <Filter>MU\Client\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\TextureScript.cpp">
+      <Filter>MU\Client\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\steady_clock.cpp">
       <Filter>MU\Client\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\UsefulDef.cpp">
@@ -1462,6 +1489,9 @@
     <ClCompile Include="source\MonsterHPBar.cpp">
       <Filter>Customs\Interface\MonsterBar</Filter>
     </ClCompile>
+    <ClCompile Include="source\MHPIntegration.cpp">
+      <Filter>MU\Client\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="source\EventEntryLevel.cpp">
       <Filter>Customs\Event</Filter>
     </ClCompile>
@@ -1482,6 +1512,9 @@
     </ClCompile>
     <ClCompile Include="source\Camera3D.cpp">
       <Filter>Customs\Camera3D</Filter>
+    </ClCompile>
+    <ClCompile Include="source\InvasionInfo.cpp">
+      <Filter>Customs\Event</Filter>
     </ClCompile>
     <ClCompile Include="source\CustomWing.cpp">
       <Filter>Customs\CustomWing</Filter>
@@ -1539,6 +1572,9 @@
     </ClCompile>
     <ClCompile Include="source\Update\miniz.c">
       <Filter>MU\Client\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CustomCape.cpp">
+      <Filter>Customs\CustomCape</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1689,6 +1725,18 @@
     <ClInclude Include="source\BoneManager.h">
       <Filter>MU\Client\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\CShaderGL.h">
+      <Filter>MU\Client\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MU_OpenGL.h">
+      <Filter>MU\Client\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\New_ModelBMD.h">
+      <Filter>MU\Client\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\New_RenderBMD.h">
+      <Filter>MU\Client\Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="source\CameraMove.h">
       <Filter>MU\Client\Header Files</Filter>
     </ClInclude>
@@ -1755,6 +1803,15 @@
     <ClInclude Include="source\GOBoid.h">
       <Filter>MU\Client\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\HelperManager.h">
+      <Filter>MU\Client\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\HelperSystem.h">
+      <Filter>MU\Client\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\HelperView.h">
+      <Filter>MU\Client\Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="source\GuildCache.h">
       <Filter>MU\Client\Header Files</Filter>
     </ClInclude>
@@ -1765,6 +1822,9 @@
       <Filter>MU\Client\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\MatchEvent.h">
+      <Filter>MU\Client\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MHPIntegration.h">
       <Filter>MU\Client\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\MixMgr.h">
@@ -1828,6 +1888,9 @@
       <Filter>MU\Client\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\TextureScript.h">
+      <Filter>MU\Client\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\steady_clock.h">
       <Filter>MU\Client\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\UsefulDef.h">
@@ -2757,6 +2820,9 @@
     <ClInclude Include="source\Camera3D.h">
       <Filter>Customs\Camera3D</Filter>
     </ClInclude>
+    <ClInclude Include="source\InvasionInfo.h">
+      <Filter>Customs\Event</Filter>
+    </ClInclude>
     <ClInclude Include="source\CustomWing.h">
       <Filter>Customs\CustomWing</Filter>
     </ClInclude>
@@ -2813,6 +2879,9 @@
     </ClInclude>
     <ClInclude Include="source\Update\miniz.h">
       <Filter>MU\Client\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CustomCape.h">
+      <Filter>Customs\CustomCape</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

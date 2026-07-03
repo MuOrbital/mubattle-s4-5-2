@@ -67,6 +67,8 @@ namespace SEASON3B
         bool IsSlideHelp();
         void SetVolumeLevel(int iVolume);
         int GetVolumeLevel();
+        void SetMusicVolumeLevel(int iVolume);
+        int GetMusicVolumeLevel();
         void SetRenderLevel(int iRender);
         int GetRenderLevel();
 
@@ -82,6 +84,7 @@ namespace SEASON3B
         bool m_bWhisperSound;
         bool m_bSlideHelp;
         int m_iVolumeLevel;
+        int m_iMusicVolumeLevel;
         int m_iRenderLevel;
         bool m_Custom;
         bool m_Window;

@@ -26,6 +26,7 @@ void CHARACTER::Initialize()
 	Foot[0] = false;
 	Foot[1] = false;
 	SafeZone = false;
+	MiniatureMode = false;
 	Change = false;
 	HideShadow = false;
 	m_bIsSelected = false;

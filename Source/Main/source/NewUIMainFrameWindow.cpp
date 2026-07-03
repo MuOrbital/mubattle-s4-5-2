@@ -1,4 +1,4 @@
-ï»¿//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 // NewUIMainFrameWindow.cpp: implementation of the CNewUIMainFrameWindow class.
 //////////////////////////////////////////////////////////////////////
 
@@ -35,6 +35,8 @@
 #endif //PBG_ADD_INGAMESHOP_UI_MAINFRAME
 #include "Widescreen.h"
 #include <XboxInput.h>
+#include <GOBoid.h>
+#include "HelperSystem.h"
 
 extern float g_fScreenRate_x;
 extern float g_fScreenRate_y;
@@ -1047,6 +1049,7 @@ SEASON3B::CNewUIItemHotKey::~CNewUIItemHotKey()
 bool SEASON3B::CNewUIItemHotKey::UpdateKeyEvent()
 {
 	static bool bAutoKeyMode = false;
+	static bool bMiniatureMode = false;
 	static int iLastShiftPressTime = 0;
 	static int iShiftPressCount = 0;
 	const int DOUBLE_PRESS_DELAY = 300;
@@ -1076,6 +1079,32 @@ bool SEASON3B::CNewUIItemHotKey::UpdateKeyEvent()
 		iLastShiftPressTime = currentTime;
 	}
 
+	static int iLastCtrlZTime = 0;
+
+	if (SEASON3B::IsPress('Z'))
+	{
+		if ((Hero->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(Hero->Helper.Type, 8) == 1) && gCharacterManager.GetBaseClass(Hero->Class) == CLASS_KNIGHT)
+		{
+			if (SEASON3B::IsPress(VK_CONTROL) || (GetAsyncKeyState(VK_CONTROL) & 0x8000))
+			{
+				if (currentTime - iLastCtrlZTime > 250)
+				{
+					bMiniatureMode = !bMiniatureMode;
+					g_bMiniatureMode = bMiniatureMode;
+					Hero->MiniatureMode = bMiniatureMode;
+					SendRequestMiniatureMode(bMiniatureMode);
+
+					g_pChatListBox->AddText("",
+						bMiniatureMode ? "System [Ctrl + Z] Miniature [ON]"
+						: "System [Ctrl + Z] Miniature [OFF]",
+						SEASON3B::TYPE_SYSTEM_MESSAGE);
+
+					iLastCtrlZTime = currentTime;
+				}
+			}
+		}
+	}
+
 	if (XboxInput::IsDownDPadDown() && !bAutoKeyMode)
 	{
 		iIndex = GetHotKeyItemIndex(HOTKEY_Q);
@@ -1091,8 +1120,8 @@ bool SEASON3B::CNewUIItemHotKey::UpdateKeyEvent()
 				bAutoKeyMode = !bAutoKeyMode;
 				g_pChatListBox->AddText(
 					"",
-					bAutoKeyMode ? "System [2X â†“] AutoPotion [ON]"
-					: "System [2X â†“] AutoPotion [OFF]",
+					bAutoKeyMode ? "System [2X ?] AutoPotion [ON]"
+					: "System [2X ?] AutoPotion [OFF]",
 					SEASON3B::TYPE_SYSTEM_MESSAGE
 				);
 				iDPadPressCount = 0;
@@ -2337,12 +2366,23 @@ void SEASON3B::CNewUISkillList::RenderSkillIcon(int iIndex, float x, float y, fl
 		}
 	}
 
-	if(bySkillType >= AT_SKILL_BLOCKING && bySkillType <= AT_SKILL_SWORD5 && (Hero->Helper.Type == MODEL_HELPER+2 || Hero->Helper.Type == MODEL_HELPER+3 || Hero->Helper.Type == MODEL_HELPER+37))
+	// === LIBERAR SKILLS DE ESPADA NO FENRIR MINIATURA ===
+	if (bySkillType >= AT_SKILL_BLOCKING && bySkillType <= AT_SKILL_SWORD5)
 	{
-		bCantSkill = true;
+		if ((Hero->Helper.Type == MODEL_HELPER + 37 || gHelperSystem.CheckHelperType(Hero->Helper.Type, 8) == 1) && g_bMiniatureMode)
+		{
+			// Permite usar no Fenrir em modo miniatura
+		}
+		else if (Hero->Helper.Type == MODEL_HELPER + 2 ||
+			Hero->Helper.Type == MODEL_HELPER + 3 ||
+			Hero->Helper.Type == MODEL_HELPER + 37 ||
+			gHelperSystem.CheckHelperType(Hero->Helper.Type, 8) == 1)
+		{
+			bCantSkill = true;
+		}
 	}
 
-	if((bySkillType == AT_SKILL_ICE_BLADE ||(AT_SKILL_POWER_SLASH_UP <= bySkillType && AT_SKILL_POWER_SLASH_UP+4 >= bySkillType)) && (Hero->Helper.Type == MODEL_HELPER+2 || Hero->Helper.Type == MODEL_HELPER+3 || Hero->Helper.Type == MODEL_HELPER+37))
+	if((bySkillType == AT_SKILL_ICE_BLADE ||(AT_SKILL_POWER_SLASH_UP <= bySkillType && AT_SKILL_POWER_SLASH_UP+4 >= bySkillType)) && (Hero->Helper.Type == MODEL_HELPER+2 || Hero->Helper.Type == MODEL_HELPER+3 || Hero->Helper.Type == MODEL_HELPER+37 || gHelperSystem.CheckHelperType(Hero->Helper.Type, 8) == 1))
 	{
 		bCantSkill = true;
 	}
@@ -2368,14 +2408,14 @@ void SEASON3B::CNewUISkillList::RenderSkillIcon(int iIndex, float x, float y, fl
 	{
 		BYTE byDarkHorseLife = 0;
 		byDarkHorseLife = CharacterMachine->Equipment[EQUIPMENT_HELPER].Durability;
-		if(byDarkHorseLife == 0 || Hero->Helper.Type != MODEL_HELPER+4)
+		if(byDarkHorseLife == 0 && Hero->Helper.Type != MODEL_HELPER+4 && gHelperSystem.CheckHelperType(Hero->Helper.Type, 16) != 1)
 		{
 			bCantSkill = true;
 
 		}
 	}
 #ifdef PJH_FIX_SPRIT
-/*Â¹ÃšÃÂ¾ÃˆÃ†*/
+/*¹ÚÁ¾ÈÆ*/
 	if( bySkillType>=AT_PET_COMMAND_DEFAULT && bySkillType<AT_PET_COMMAND_END )
 	{
 		int iCharisma = CharacterAttribute->Charisma+CharacterAttribute->AddCharisma;
