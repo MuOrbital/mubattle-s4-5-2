@@ -582,6 +582,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\CAIController.cpp" />
     <ClCompile Include="source\AutoClick.cpp" />
     <ClCompile Include="source\BlackWin.cpp" />
     <ClCompile Include="source\BoneManager.cpp" />
@@ -594,6 +595,9 @@
     <ClCompile Include="source\New_ModelBMD.cpp" />
     <ClCompile Include="source\MU_OpenGL.cpp" />
     <ClCompile Include="source\CShaderGL.cpp" />
+    <ClCompile Include="source\CUIListBox.cpp" />
+    <ClCompile Include="source\MuHelperProtocol.cpp" />
+    <ClCompile Include="source\MuHelperControls.cpp" />
     <ClCompile Include="source\CoreGLCompat.cpp" />
     <ClCompile Include="source\CameraMove.cpp" />
     <ClCompile Include="source\CBTMessageBox.cpp" />
@@ -840,6 +844,9 @@
     <ClCompile Include="source\NewUIKanturuEvent.cpp" />
     <ClCompile Include="source\NewUILuckyItemWnd.cpp" />
     <ClCompile Include="source\NewUIMainFrameWindow.cpp" />
+    <ClCompile Include="source\NewUIMacroGaugeBar.cpp" />
+    <ClCompile Include="source\NewUIMacroMain.cpp" />
+    <ClCompile Include="source\NewUIMacroSub.cpp" />
     <ClCompile Include="source\NewUIManager.cpp" />
     <ClCompile Include="source\NewUIMasterLevel.cpp" />
     <ClCompile Include="source\NewUIMessageBox.cpp" />
@@ -1096,6 +1103,7 @@
     <ClCompile Include="source\_GlobalFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\CAIController.h" />
     <ClInclude Include="source\AutoClick.h" />
     <ClInclude Include="source\BaseCls.h" />
     <ClInclude Include="source\BlackWin.h" />
@@ -1110,6 +1118,10 @@
     <ClInclude Include="source\New_ModelBMD.h" />
     <ClInclude Include="source\MU_OpenGL.h" />
     <ClInclude Include="source\CShaderGL.h" />
+    <ClInclude Include="source\CUIListBox.h" />
+    <ClInclude Include="source\MuHelperProtocol.h" />
+    <ClInclude Include="source\MuHelperControls.h" />
+    <ClInclude Include="source\MuHelperDefines.h" />
     <ClInclude Include="source\CBTMessageBox.h" />
     <ClInclude Include="source\CComGem.h" />
     <ClInclude Include="source\CCRC32.h" />
@@ -1371,6 +1383,9 @@
     <ClInclude Include="source\NewUIKanturuEvent.h" />
     <ClInclude Include="source\NewUILuckyItemWnd.h" />
     <ClInclude Include="source\NewUIMainFrameWindow.h" />
+    <ClInclude Include="source\NewUIMacroGaugeBar.h" />
+    <ClInclude Include="source\NewUIMacroMain.h" />
+    <ClInclude Include="source\NewUIMacroSub.h" />
     <ClInclude Include="source\NewUIManager.h" />
     <ClInclude Include="source\NewUIMasterLevel.h" />
     <ClInclude Include="source\NewUIMessageBox.h" />

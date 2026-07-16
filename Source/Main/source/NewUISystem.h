@@ -81,6 +81,9 @@
 #include "NewUIUnitedMarketPlaceWindow.h"
 #include "MultiLanguage.h"
 #include "ChaosGenesis.h"
+#include "NewUIMacroMain.h"
+#include "NewUIMacroSub.h"
+#include "NewUIMacroGaugeBar.h"
 #ifdef LEM_ADD_LUCKYITEM
 #include "NewUILuckyItemWnd.h"
 #endif // LEM_ADD_LUCKYITEM
@@ -221,6 +224,10 @@ namespace SEASON3B
 		CNewUILuckyItemWnd*			m_pNewUILuckyItemWnd;
 #endif // LEM_ADD_LUCKYITEM
 		CNewUIRankingTop* m_NewUIRankTop;
+		// Official MuHelper windows. They are created with the normal in-game UI lifecycle.
+		CNewUIMacroMain* m_pNewUIMacroMain;
+		CNewUIMacroSub* m_pNewUIMacroSub;
+		CNewUIMacroGaugeBar* m_pNewUIMacroGaugeBar;
 
 	public:
 		CChaosGenesis* GetUI_ChaosGenesis() const;
@@ -298,6 +305,9 @@ namespace SEASON3B
 #endif
 		CNewUIGensRanking* GetUI_NewGensRanking() const;
 		CNewUIRankingTop* GetUI_NewUIRankingTop() const;
+		CNewUIMacroMain* GetUI_pNewUIMacroWindow() const;
+		CNewUIMacroSub* GetUI_pNewUIMacroSubWindow() const;
+		CNewUIMacroGaugeBar* GetUI_pNewUIMacroGaugeBar() const;
 		CNewUIUnitedMarketPlaceWindow*	GetUI_pNewUnitedMarketPlaceWindow() const;
 		//CNewUIUnitedMarketPlaceWindow*	GetUI_pNewUnitedMarketPlaceFrame() const;
 #ifdef LEM_ADD_LUCKYITEM
@@ -348,6 +358,9 @@ namespace SEASON3B
 #define g_pCommandWindow SEASON3B::CNewUISystem::GetInstance()->GetUI_NewCommandWindow()
 #define g_pWindowMenu SEASON3B::CNewUISystem::GetInstance()->GetUI_NewWindowMenu()
 #define g_pOption SEASON3B::CNewUISystem::GetInstance()->GetUI_NewOptionWindow()
+#define g_pMacroWindow SEASON3B::CNewUISystem::GetInstance()->GetUI_pNewUIMacroWindow()
+#define g_pMacroSubWindow SEASON3B::CNewUISystem::GetInstance()->GetUI_pNewUIMacroSubWindow()
+#define g_pMacroGaugeBar SEASON3B::CNewUISystem::GetInstance()->GetUI_pNewUIMacroGaugeBar()
 #define g_pHeroPositionInfo SEASON3B::CNewUISystem::GetInstance()->GetUI_NewHeroPositionInfo()
 #define g_pHelp SEASON3B::CNewUISystem::GetInstance()->GetUI_NewHelpWindow()
 #define g_pItemExplanation SEASON3B::CNewUISystem::GetInstance()->GetUI_NewItemExplanationWindow()

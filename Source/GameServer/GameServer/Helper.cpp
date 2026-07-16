@@ -28,7 +28,7 @@ CHelper::~CHelper() // OK
 
 void CHelper::MainProc() // OK
 {
-	#if(GAMESERVER_UPDATE>=603)
+	#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 
 	for(int n=OBJECT_START_USER;n < MAX_OBJECT;n++)
 	{
@@ -85,7 +85,7 @@ void CHelper::MainProc() // OK
 
 void CHelper::DisableHelper(LPOBJ lpObj) // OK
 {
-	#if(GAMESERVER_UPDATE>=603)
+	#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 
 	if(lpObj->HelperDelayTime == 0)
 	{
@@ -103,7 +103,7 @@ void CHelper::DisableHelper(LPOBJ lpObj) // OK
 
 void CHelper::CGHelperDataRecv(PMSG_HELPER_DATA_RECV* lpMsg,int aIndex) // OK
 {
-	#if(GAMESERVER_UPDATE>=603)
+	#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 
 	LPOBJ lpObj = &gObj[aIndex];
 
@@ -119,10 +119,17 @@ void CHelper::CGHelperDataRecv(PMSG_HELPER_DATA_RECV* lpMsg,int aIndex) // OK
 
 void CHelper::CGHelperStartRecv(PMSG_HELPER_START_RECV* lpMsg,int aIndex) // OK
 {
-	#if(GAMESERVER_UPDATE>=603)
+	#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
+
+	#ifdef _DEBUG
+	LogAdd(LOG_BLUE,"[MuHelper] Start request index=%d type=%d switch=%d",aIndex,lpMsg->type,gServerInfo.m_HelperSwitch);
+	#endif
 
 	if(gServerInfo.m_HelperSwitch == 0)
 	{
+		#ifdef _DEBUG
+		LogAdd(LOG_RED,"[MuHelper] Start rejected: HelperSwitch is disabled (index=%d)",aIndex);
+		#endif
 		return;
 	}
 
@@ -135,16 +142,25 @@ void CHelper::CGHelperStartRecv(PMSG_HELPER_START_RECV* lpMsg,int aIndex) // OK
 
 	if(lpObj->Level < gServerInfo.m_HelperActiveLevel)
 	{
+		#ifdef _DEBUG
+		LogAdd(LOG_RED,"[MuHelper] Start rejected: level %d is below %d [%s][%s]",lpObj->Level,gServerInfo.m_HelperActiveLevel,lpObj->Account,lpObj->Name);
+		#endif
 		return;
 	}
 
 	if(gMapManager.GetMapHelperEnable(lpObj->Map) == 0)
 	{
+		#ifdef _DEBUG
+		LogAdd(LOG_RED,"[MuHelper] Start rejected: HelperEnable=0 for map %d [%s][%s]",lpObj->Map,lpObj->Account,lpObj->Name);
+		#endif
 		return;
 	}
 
 	if(gMap[lpObj->Map].CheckAttr(lpObj->X,lpObj->Y,1) != 0)
 	{
+		#ifdef _DEBUG
+		LogAdd(LOG_RED,"[MuHelper] Start rejected: character is in safe zone map=%d x=%d y=%d [%s][%s]",lpObj->Map,lpObj->X,lpObj->Y,lpObj->Account,lpObj->Name);
+		#endif
 		return;
 	}
 
@@ -155,6 +171,10 @@ void CHelper::CGHelperStartRecv(PMSG_HELPER_START_RECV* lpMsg,int aIndex) // OK
 		lpObj->HelperTotalTime = GetTickCount();
 
 		this->GCHelperStartSend(aIndex,0,0,0);
+
+		#ifdef _DEBUG
+		LogAdd(LOG_BLUE,"[MuHelper] Started successfully [%s][%s] map=%d",lpObj->Account,lpObj->Name,lpObj->Map);
+		#endif
 	}
 	else
 	{
@@ -170,7 +190,7 @@ void CHelper::CGHelperStartRecv(PMSG_HELPER_START_RECV* lpMsg,int aIndex) // OK
 
 void CHelper::GCHelperStartSend(int aIndex,int time,int money,int result) // OK
 {
-	#if(GAMESERVER_UPDATE>=603)
+	#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 
 	PMSG_HELPER_START_SEND pMsg;
 
@@ -189,7 +209,7 @@ void CHelper::GCHelperStartSend(int aIndex,int time,int money,int result) // OK
 
 void CHelper::DGHelperDataRecv(SDHP_HELPER_DATA_RECV* lpMsg) // OK
 {
-	#if(GAMESERVER_UPDATE>=603)
+	#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 
 	if(gObjIsAccountValid(lpMsg->index,lpMsg->account) == 0)
 	{
@@ -213,7 +233,7 @@ void CHelper::DGHelperDataRecv(SDHP_HELPER_DATA_RECV* lpMsg) // OK
 
 void CHelper::GDHelperDataSend(int aIndex) // OK
 {
-	#if(GAMESERVER_UPDATE>=603)
+	#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 
 	if(gObjIsAccountValid(aIndex,gObj[aIndex].Account) == 0)
 	{
@@ -237,7 +257,7 @@ void CHelper::GDHelperDataSend(int aIndex) // OK
 
 void CHelper::GDHelperDataSaveSend(int aIndex,BYTE* data) // OK
 {
-	#if(GAMESERVER_UPDATE>=603)
+	#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 
 	SDHP_HELPER_DATA_SAVE_SEND pMsg;
 

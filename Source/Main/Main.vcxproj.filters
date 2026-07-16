@@ -859,6 +859,27 @@
     <ClCompile Include="source\NewUIHeroPositionInfo.cpp">
       <Filter>MU\Interface\NewUI</Filter>
     </ClCompile>
+    <ClCompile Include="source\CAIController.cpp">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CUIListBox.cpp">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MuHelperProtocol.cpp">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MuHelperControls.cpp">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\NewUIMacroGaugeBar.cpp">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\NewUIMacroMain.cpp">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\NewUIMacroSub.cpp">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClCompile>
     <ClCompile Include="source\NewUIHotKey.cpp">
       <Filter>MU\Interface\NewUI</Filter>
     </ClCompile>
@@ -2086,6 +2107,30 @@
       <Filter>MU\Interface\NewUI</Filter>
     </ClInclude>
     <ClInclude Include="source\NewUIHeroPositionInfo.h">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CAIController.h">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CUIListBox.h">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MuHelperDefines.h">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MuHelperProtocol.h">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MuHelperControls.h">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\NewUIMacroGaugeBar.h">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\NewUIMacroMain.h">
+      <Filter>MU\Interface\NewUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\NewUIMacroSub.h">
       <Filter>MU\Interface\NewUI</Filter>
     </ClInclude>
     <ClInclude Include="source\NewUIHotKey.h">

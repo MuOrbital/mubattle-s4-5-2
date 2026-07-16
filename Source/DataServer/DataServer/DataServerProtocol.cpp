@@ -31,6 +31,19 @@
 #include "Util.h"
 #include "Warehouse.h"
 
+static BYTE NormalizeRankingDBClass(BYTE dbClass)
+{
+	BYTE baseClass = dbClass / 16;
+	BYTE evolution = dbClass % 16;
+
+	if(baseClass >= 6)
+	{
+		return 0;
+	}
+
+	return ((evolution <= 2)?dbClass:(BYTE)(baseClass * 16));
+}
+
 void DataServerProtocolCore(int index,BYTE head,BYTE* lpMsg,int size) // OK
 {
 	PROTECT_START
@@ -240,12 +253,12 @@ void DataServerProtocolCore(int index,BYTE head,BYTE* lpMsg,int size) // OK
 			switch(((lpMsg[0]==0xC1)?lpMsg[3]:lpMsg[4]))
 			{
 				case 0x00:
-					#if(DATASERVER_UPDATE>=603)
+					#if(DATASERVER_UPDATE>=603 || DATASERVER_UPDATE==505 || DATASERVER_UPDATE==401)
 					gHelper.GDHelperDataRecv((SDHP_HELPER_DATA_RECV*)lpMsg,index);
 					#endif
 					break;
 				case 0x30:
-					#if(DATASERVER_UPDATE>=603)
+					#if(DATASERVER_UPDATE>=603 || DATASERVER_UPDATE==505 || DATASERVER_UPDATE==401)
 					gHelper.GDHelperDataSaveRecv((SDHP_HELPER_DATA_SAVE_RECV*)lpMsg);
 					#endif
 					break;
@@ -812,7 +825,8 @@ void GDCustomRankingRecv(SDHP_CUSTOM_RANKING_RECV* lpMsg, int index)
 			memset(&info, 0, sizeof(info));
 			gQueryManager.GetAsString("VALUE1", info.szName, sizeof(info.szName));
 			info.Score = gQueryManager.GetAsInteger("VALUE2");
-			info.Class = (BYTE)gQueryManager.GetAsInteger("VALUE3");
+			// VALUE3 is Character.Class in database format: 0,16,32,48,64,80.
+			info.Class = NormalizeRankingDBClass((BYTE)gQueryManager.GetAsInteger("VALUE3"));
 			info.Vip = (BYTE)gQueryManager.GetAsInteger("VALUE4");
 
 			if ((size + sizeof(info)) >= sizeof(send))
@@ -869,7 +883,7 @@ void GDRankingPlayerInfoRecv(SDHP_RANKING_CHARACTER_INFO_RECV* lpMsg, int index)
 		BYTE Inventory[INVENTORY_SIZE][16];
 		memset(Inventory, 0xFF, sizeof(Inventory));
 
-		pMsg.DBClass = (BYTE)gQueryManager.GetAsInteger("Class");
+		pMsg.DBClass = NormalizeRankingDBClass((BYTE)gQueryManager.GetAsInteger("Class"));
 		pMsg.CtlCode = (BYTE)gQueryManager.GetAsInteger("CtlCode");
 		gQueryManager.GetAsBinary("Inventory", Inventory[0], sizeof(Inventory));
 		pMsg.result = 1;

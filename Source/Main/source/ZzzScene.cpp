@@ -56,6 +56,7 @@
 #include "GameCensorship.h"
 #include "GM3rdChangeUp.h"
 #include "NewUISystem.h"
+#include "CAIController.h"
 #include "NewUICommonMessageBox.h"
 #include "PartyManager.h"
 #include "w_CursedTemple.h"
@@ -2168,6 +2169,13 @@ void MoveMainScene()
 	EarthQuake *= 0.2f;
 
 	InitTerrainLight();
+
+	// Execute MuHelper in the main-scene tick, matching the 5.2 Base.
+	// UI updates can stop early, so the bot loop must not depend on a UI object.
+	if (gmAIController->IsRunning())
+	{
+		gmAIController->WhatToDoNext();
+	}
 
 	CheckInventory = NULL;
 	CheckSkill = -1;

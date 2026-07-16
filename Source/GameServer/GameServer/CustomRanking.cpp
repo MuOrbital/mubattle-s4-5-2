@@ -14,6 +14,21 @@
 
 CCustomRanking gCustomRanking;
 
+static BYTE NormalizeRankingDBClass(BYTE dbClass)
+{
+	BYTE baseClass = dbClass / 16;
+	BYTE evolution = dbClass % 16;
+
+	// This ranking is configured for the six S6 classes. Keep the database
+	// representation in the packet, but never forward RF/invalid class values.
+	if(baseClass >= 6)
+	{
+		return 0;
+	}
+
+	return ((evolution <= 2)?dbClass:(BYTE)(baseClass * 16));
+}
+
 void CCustomRanking::Load(char* path)
 {
 	CMemScript* lpMemScript = new CMemScript;
@@ -89,7 +104,7 @@ void CCustomRanking::SendCharacterInfo(int Index, int characterIndex, const char
 	pMsg.header.set(0xF3, 0xEF, sizeof(pMsg));
 	pMsg.characterIndex = characterIndex;
 	pMsg.result = result;
-	pMsg.PlayerClass = dbClass;
+	pMsg.PlayerClass = NormalizeRankingDBClass(dbClass);
 	pMsg.CtlCode = ctlCode;
 	pMsg.PetIndex = petIndex;
 	pMsg.WingIndex = wingIndex;
@@ -250,7 +265,7 @@ void CCustomRanking::GDCustomRankingRecv(BYTE* ReceiveBuffer)
 		memcpy(info.szName, Data2->szName, sizeof(info.szName));
 		info.Score = Data2->Score;
 		info.Vip = Data2->Vip;
-		info.Class = Data2->Class;
+		info.Class = NormalizeRankingDBClass(Data2->Class);
 
 		if ((size + sizeof(info)) >= sizeof(send))
 		{
@@ -273,6 +288,8 @@ void CCustomRanking::GDCustomRankingRecv(BYTE* ReceiveBuffer)
 void CCustomRanking::BuildCharacterSet(BYTE dbClass, BYTE inventory[RANKING_INVENTORY_SLOTS][5],
 	BYTE charSet[RANKING_CHARSET_SIZE], WORD* petIndex, WORD* wingIndex)
 {
+	dbClass = NormalizeRankingDBClass(dbClass);
+
 	memset(charSet, 0, RANKING_CHARSET_SIZE);
 	*petIndex = 0;
 	*wingIndex = 0;

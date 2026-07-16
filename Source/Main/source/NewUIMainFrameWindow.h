@@ -138,6 +138,8 @@ namespace SEASON3B
 
 		static void UI2DEffectCallback(LPVOID pClass, DWORD dwParamA, DWORD dwParamB);
 		void UseHotKey(int iHotKey);
+		// Public for the official MuHelper configuration window skill slots.
+		void RenderSkillIcon(int iIndex, float x, float y, float width, float height);
 
 	private:
 		void LoadImages();
@@ -145,7 +147,6 @@ namespace SEASON3B
 		bool IsArrayUp(BYTE bySkill);
 		bool IsArrayIn(BYTE bySkill);
 		
-		void RenderSkillIcon(int iIndex, float x, float y, float width, float height);
 		void RenderSkillDelay(int iIndex, float x, float y, float width, float height);
 		void RenderPetSkill();
 

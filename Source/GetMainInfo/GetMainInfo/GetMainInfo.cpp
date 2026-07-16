@@ -90,6 +90,10 @@ struct MAIN_FILE_INFO
 	int m_VideoLogin;
 	int m_VisualBugHPFerrarezi;
 	int m_SelectServerCustom;
+	// Must stay byte-for-byte aligned with Source/Main/source/Protect.h.
+	int m_MuHelperEnabled;
+	int m_HelperActiveAlert;
+	int m_HelperActiveLevel;
 
 	//Custom
 	int LoadingLegend;
@@ -455,6 +459,10 @@ void GerateConfig()// OK
 	info.m_VideoLogin = GetPrivateProfileInt("Interface", "VideoLogin", 0, ".\\MainInfo.ini");
 	info.m_VisualBugHPFerrarezi = GetPrivateProfileInt("Interface", "VisualBugHPFerrarezi", 0, ".\\MainInfo.ini");
 	info.m_SelectServerCustom = GetPrivateProfileInt("Interface", "SelectServerCustom", 0, ".\\MainInfo.ini");
+	// MuHelper is opt-in so existing clients keep the current coordinate interface by default.
+	info.m_MuHelperEnabled = GetPrivateProfileInt("HelperInfo", "MuHelperEnabled", 0, ".\\MainInfo.ini");
+	info.m_HelperActiveAlert = GetPrivateProfileInt("HelperInfo", "HelperActiveAlert", 0, ".\\MainInfo.ini");
+	info.m_HelperActiveLevel = GetPrivateProfileInt("HelperInfo", "HelperActiveLevel", 80, ".\\MainInfo.ini");
 
 	//Custom
 	info.LoadingLegend = GetPrivateProfileInt("Custom", "LoadingLegend", 1, ".\\MainInfo.ini");

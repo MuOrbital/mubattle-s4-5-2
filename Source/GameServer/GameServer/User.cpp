@@ -241,7 +241,7 @@ void gObjFirstProc() // OK
 
 	gEffectManager.MainProc();
 
-	#if(GAMESERVER_UPDATE>=603)
+	#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 
 	gHelper.MainProc();
 

@@ -8,6 +8,32 @@
 
 static const WORD RANKING_PREVIEW_KEY = 0xFFFE;
 
+static BYTE RankingDBClassToClientClass(BYTE dbClass)
+{
+	// Ranking packets carry the database encoding (0,16,32,48,64,80), not
+	// the compact network encoding used by ChangeServerClassTypeToClientClassType.
+	BYTE baseClass = dbClass / 16;
+	BYTE evolution = dbClass % 16;
+
+	if (baseClass >= 6)
+	{
+		return 0;
+	}
+
+	BYTE clientClass = baseClass;
+
+	if (evolution == 1)
+	{
+		clientClass |= 0x08;
+	}
+	else if (evolution >= 2)
+	{
+		clientClass |= 0x10;
+	}
+
+	return clientClass;
+}
+
 static void BuildEmptyRankingEquipment(BYTE* equipment)
 {
 	static const BYTE emptyEquipment[EQUIPMENT_LENGTH] =
@@ -443,7 +469,7 @@ void SEASON3B::CNewUIRankingTop::ReceiveCharacterInfo(BYTE* ReceiveBuffer)
 		m_RenderCharacter.GetPhotoChar()->CtlCode = CTLCODE_08OPERATOR;
 	}
 	m_RenderCharacter.SetID(CharacterName);
-	m_RenderCharacter.SetClass(gCharacterManager.ChangeServerClassTypeToClientClassType(Data->PlayerClass));
+	m_RenderCharacter.SetClass(RankingDBClassToClientClass(Data->PlayerClass));
 	m_RenderCharacter.SetEquipmentPacket(Data->Equipment);
 }
 
@@ -467,7 +493,7 @@ void SEASON3B::CNewUIRankingTop::ReceiveRankingListInfo(BYTE* ReceiveBuffer)
 	{
 		LPPCREATE_RANKING_INFO Data2 = (LPPCREATE_RANKING_INFO)(ReceiveBuffer + offset);
 
-		BYTE Class = gCharacterManager.ChangeServerClassTypeToClientClassType(Data2->PlayerClass);
+		BYTE Class = RankingDBClassToClientClass(Data2->PlayerClass);
 
 		this->rankingList.push_back(TEMPLATE_RANKING(Data2->Name, gCharacterManager.GetCharacterClassText(Class), Class, Data2->LevelVip, Data2->TotalScore));
 

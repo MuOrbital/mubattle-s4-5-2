@@ -24,7 +24,9 @@ CHelper::~CHelper() // OK
 
 void CHelper::GDHelperDataRecv(SDHP_HELPER_DATA_RECV* lpMsg,int index) // OK
 {
-	#if(DATASERVER_UPDATE>=603)
+	// Nemesis's DataServer solution is EX401 while its GameServer is EX505;
+	// both use the same 0x17 HelperData persistence contract.
+	#if(DATASERVER_UPDATE>=603 || DATASERVER_UPDATE==505 || DATASERVER_UPDATE==401)
 
 	SDHP_HELPER_DATA_SEND pMsg;
 
@@ -60,7 +62,7 @@ void CHelper::GDHelperDataRecv(SDHP_HELPER_DATA_RECV* lpMsg,int index) // OK
 
 void CHelper::GDHelperDataSaveRecv(SDHP_HELPER_DATA_SAVE_RECV* lpMsg) // OK
 {
-	#if(DATASERVER_UPDATE>=603)
+	#if(DATASERVER_UPDATE>=603 || DATASERVER_UPDATE==505 || DATASERVER_UPDATE==401)
 
 	if(gQueryManager.ExecQuery("SELECT Name FROM HelperData WHERE Name='%s'",lpMsg->name) == 0 || gQueryManager.Fetch() == SQL_NO_DATA)
 	{

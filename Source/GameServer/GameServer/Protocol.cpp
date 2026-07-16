@@ -396,7 +396,7 @@ void ProtocolCore(BYTE head, BYTE* lpMsg, int size, int aIndex, int encrypt, int
 #endif
 		break;
 	case 0xAE:
-#if(GAMESERVER_UPDATE>=603)
+#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 		gHelper.CGHelperDataRecv((PMSG_HELPER_DATA_RECV*)lpMsg, aIndex);
 #endif
 		break;
@@ -574,7 +574,7 @@ void ProtocolCore(BYTE head, BYTE* lpMsg, int size, int aIndex, int encrypt, int
 #endif
 			break;
 		case 0x51:
-#if(GAMESERVER_UPDATE>=603)
+#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 			gHelper.CGHelperStartRecv((PMSG_HELPER_START_RECV*)lpMsg, aIndex);
 #endif
 			break;

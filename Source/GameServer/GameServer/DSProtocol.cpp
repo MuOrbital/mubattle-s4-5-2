@@ -206,7 +206,7 @@ void DataServerProtocolCore(BYTE head, BYTE* lpMsg, int size) // OK
 			switch (((lpMsg[0] == 0xC1) ? lpMsg[3] : lpMsg[4]))
 			{
 			case 0x00:
-#if(GAMESERVER_UPDATE>=603)
+#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 				gHelper.DGHelperDataRecv((SDHP_HELPER_DATA_RECV*)lpMsg);
 #endif
 				break;
@@ -1490,7 +1490,7 @@ void DGCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg) // OK
 
 #endif
 
-#if(GAMESERVER_UPDATE>=603)
+#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 
 	gHelper.GDHelperDataSend(lpObj->Index);
 
@@ -1556,7 +1556,7 @@ void DGCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg) // OK
 
 #endif
 
-#if(GAMESERVER_UPDATE>=603)
+#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 
 	gHelper.GCHelperStartSend(lpObj->Index, 0, 0, 1);
 

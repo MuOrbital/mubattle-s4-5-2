@@ -59,6 +59,18 @@ SetItemAcceptHarmonySwitch = 0
 SocketItemHarmonySwitch = 0
 
 ;==================================================
+; Helper Settings (MuHelper oficial)
+;==================================================
+HelperSwitch = 1
+HelperActiveLevel = 80
+HelperActiveDelay = 5
+HelperActiveMoney1 = 20
+HelperActiveMoney2 = 50
+HelperActiveMoney3 = 80
+HelperActiveMoney4 = 100
+HelperActiveMoney5 = 120
+
+;==================================================
 ; Monster Settings
 ;==================================================
 MonsterLifeRate = 100

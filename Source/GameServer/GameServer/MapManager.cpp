@@ -76,8 +76,10 @@ void CMapManager::Load(char* path) // OK
 
 			info.SocketItemDrop = lpMemScript->GetAsNumber();
 
-			#if(GAMESERVER_UPDATE>=603)
+			#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 
+			// EX505 uses the official MuHelper too. Without consuming this column,
+			// HelperEnable stayed forced to zero and every PLAY request was rejected.
 			info.HelperEnable = lpMemScript->GetAsNumber();
 
 			#else

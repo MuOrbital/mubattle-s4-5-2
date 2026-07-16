@@ -1,11 +1,8 @@
-3
-///Index | DropRate
+0
+//EventName        	 #DropZen    #ItemDropRate #ItemDropCount #SetItemDropRate #ItemDropType #Fireworks
+"Chaos Card Mix 2" 	 1000        100           1              0                0             0         
 end
 
-4
-///Index | Section | SectionRate | VIP | VipExtraRate | MoneyAmmount | OptionValue | DW | DK | FE | MG | DL | SU
-end
-
-5
-///Index | Level | Grade | Option0 | Option1 | Option2 | Option3 | Option4 | Option5 | Option6 | Duration | ShowMessage | Coment
+1
+//Group #Type #MinLevel   #MaxLevel  #Skill      #Luck   #Option #Excellent
 end

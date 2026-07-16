@@ -91,6 +91,9 @@ SEASON3B::CNewUISystem::CNewUISystem()
 #endif //PBG_ADD_GENSRANKING
 	m_pNewUnitedMarketPlaceWindow = NULL;
 	m_NewUIRankTop = NULL;
+	m_pNewUIMacroMain = NULL;
+	m_pNewUIMacroSub = NULL;
+	m_pNewUIMacroGaugeBar = NULL;
 }
 
 SEASON3B::CNewUISystem::~CNewUISystem()
@@ -487,6 +490,23 @@ bool SEASON3B::CNewUISystem::LoadMainSceneInterface()
 		return false;
 #endif // LEM_ADD_LUCKYITEM
 
+	// The official helper UI is available only when generated MainInfo enables it.
+	// Keeping creation in this lifecycle guarantees safe unloading on reconnect/scene changes.
+	if (gProtect->m_MainInfo.m_MuHelperEnabled != 0)
+	{
+		m_pNewUIMacroGaugeBar = new CNewUIMacroGaugeBar;
+		if (m_pNewUIMacroGaugeBar->Create(m_pNewUIMng, 0, 2) == false)
+			return false;
+
+		m_pNewUIMacroMain = new CNewUIMacroMain;
+		if (m_pNewUIMacroMain->Create(m_pNewUIMng, GWidescreen.WidescreenPosX1, 0) == false)
+			return false;
+
+		m_pNewUIMacroSub = new CNewUIMacroSub;
+		if (m_pNewUIMacroSub->Create(m_pNewUIMng, GWidescreen.WidescreenPosX1 - WIN_WINDOW_SIZEX, 0) == false)
+			return false;
+	}
+
 	return true;
 }
 
@@ -576,6 +596,9 @@ void SEASON3B::CNewUISystem::UnloadMainSceneInterface()
 	SAFE_DELETE(m_pNewGensRanking);
 	SAFE_DELETE(m_NewUIRankTop);
 	SAFE_DELETE(m_pNewUnitedMarketPlaceWindow);
+	SAFE_DELETE(m_pNewUIMacroMain);
+	SAFE_DELETE(m_pNewUIMacroSub);
+	SAFE_DELETE(m_pNewUIMacroGaugeBar);
 #ifdef LEM_FIX_LUCKYITEM_UICLASS_SAFEDELETE
 	SAFE_DELETE(m_pNewUILuckyItemWnd);
 #endif // LEM_FIX_LUCKYITEM_UICLASS_SAFEDELETE
@@ -595,6 +618,11 @@ bool SEASON3B::CNewUISystem::IsVisible(DWORD dwKey)
 
 void SEASON3B::CNewUISystem::Show(DWORD dwKey)
 {
+	if ((dwKey == SEASON3B::INTERFACE_MACRO_OFICIAL || dwKey == SEASON3B::INTERFACE_MACRO_OFICIAL_SUB) &&
+		(gProtect->m_MainInfo.m_MuHelperEnabled == 0 || m_pNewUIMacroMain == NULL))
+	{
+		return;
+	}
 #ifdef PBG_ADD_INGAMESHOP_UI_ITEMSHOP
 	if (g_pInGameShop->IsInGameShop())
 		return;
@@ -982,6 +1010,11 @@ void SEASON3B::CNewUISystem::Show(DWORD dwKey)
 			m_pNewUIMng->ShowInterface(SEASON3B::INTERFACE_INVENTORY);
 		}
 #endif // LEM_ADD_LUCKYITEM
+		else if (dwKey == SEASON3B::INTERFACE_MACRO_OFICIAL)
+		{
+			HideAllGroupA();
+			m_pNewUIMacroMain->OpenningProcess();
+		}
 
 		m_pNewUIMng->ShowInterface(dwKey);
 
@@ -1212,6 +1245,12 @@ void SEASON3B::CNewUISystem::Hide(DWORD dwKey)
 		else if (dwKey == SEASON3B::INTERFACE_HERO_POSITION_INFO)
 		{
 			m_pNewHeroPositionInfo->ClosingProcess();
+		}
+		else if (dwKey == SEASON3B::INTERFACE_MACRO_OFICIAL && m_pNewUIMacroMain != NULL)
+		{
+			m_pNewUIMacroMain->ClosingProcess();
+			if (m_pNewUIMacroSub != NULL)
+				m_pNewUIMng->ShowInterface(SEASON3B::INTERFACE_MACRO_OFICIAL_SUB, false);
 		}
 		else if (dwKey == SEASON3B::INTERFACE_HELP)
 		{
@@ -2059,6 +2098,21 @@ CNewUIOptionWindow* SEASON3B::CNewUISystem::GetUI_NewOptionWindow() const
 CNewUIHeroPositionInfo* SEASON3B::CNewUISystem::GetUI_NewHeroPositionInfo() const
 {
 	return m_pNewHeroPositionInfo;
+}
+
+CNewUIMacroMain* SEASON3B::CNewUISystem::GetUI_pNewUIMacroWindow() const
+{
+	return m_pNewUIMacroMain;
+}
+
+CNewUIMacroSub* SEASON3B::CNewUISystem::GetUI_pNewUIMacroSubWindow() const
+{
+	return m_pNewUIMacroSub;
+}
+
+CNewUIMacroGaugeBar* SEASON3B::CNewUISystem::GetUI_pNewUIMacroGaugeBar() const
+{
+	return m_pNewUIMacroGaugeBar;
 }
 
 CNewUIHelpWindow* SEASON3B::CNewUISystem::GetUI_NewHelpWindow() const

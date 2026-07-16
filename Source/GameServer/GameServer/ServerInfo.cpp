@@ -3006,7 +3006,7 @@ void CServerInfo::ReadCommonInfo(char* section,char* path) // OK
 
 	#endif
 
-	#if(GAMESERVER_UPDATE>=603)
+	#if(GAMESERVER_UPDATE>=603 || GAMESERVER_UPDATE==505)
 
 	this->m_HelperSwitch = GetPrivateProfileInt(section,"HelperSwitch",0,path);
 

@@ -64,7 +64,8 @@ enum KWAIT_REASON
 	MaximumWaitReason = 37,
 };
 
-struct CLIENT_ID
+// Avoid colliding with CLIENT_ID declared by modern Windows SDK headers.
+struct MHP_CLIENT_ID
 {
 	PVOID UniqueProcess;
 	PVOID UniqueThread;
@@ -77,7 +78,7 @@ struct SYSTEM_THREAD_INFO
 	LARGE_INTEGER CreateTime;
 	ULONG WaitTime;
 	PVOID StartAddress;
-	CLIENT_ID ClientId;
+	MHP_CLIENT_ID ClientId;
 	KPRIORITY Priority;
 	LONG BasePriority;
 	ULONG ContextSwitches;

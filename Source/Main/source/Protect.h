@@ -73,6 +73,10 @@ struct MAIN_FILE_INFO
 	int m_VideoLogin;
 	int m_VisualBugHPFerrarezi;
 	int m_SelectServerCustom;
+	// Official MuHelper port: controls the client UI/AI without replacing the legacy coordinate HUD.
+	int m_MuHelperEnabled;
+	int m_HelperActiveAlert;
+	int m_HelperActiveLevel;
 
 	//Custom
 	int LoadingLegend;

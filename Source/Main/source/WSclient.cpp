@@ -78,6 +78,7 @@
 #include "HelperManager.h"
 #include "Camera3D.h"
 #include "InvasionInfo.h"
+#include "MuHelperProtocol.h"
 
 #define MAX_DEBUG_MAX 10
 
@@ -918,6 +919,7 @@ BOOL ReceiveJoinMapServer(BYTE *ReceiveBuffer, BOOL bEncrypted)
    	SetCharacterClass(c);
 
 	Hero = c;
+	BindMuHelperCharacter(Hero);
 
 	memcpy(c->ID,(char *)CharacterAttribute->Name,MAX_ID_SIZE);
 
@@ -13974,6 +13976,10 @@ BOOL TranslateProtocol( int HeadCode, BYTE *ReceiveBuffer, int Size, BOOL bEncry
 		}
 		break;
 		
+	case 0xAE:
+		// Official MuHelper settings payload loaded from DataServer.
+		ReceiveMuHelperData(ReceiveBuffer);
+		break;
 	case 0xB3:
 		ReceiveBCNPCList( ReceiveBuffer );
 		break;
@@ -14338,6 +14344,9 @@ BOOL TranslateProtocol( int HeadCode, BYTE *ReceiveBuffer, int Size, BOOL bEncry
 				ReceiveEquippingInventoryItem(ReceiveBuffer);
 				break;
 #endif //LJH_ADD_SYSTEM_OF_EQUIPPING_ITEM_FROM_INVENTORY
+			case 0x51:
+				ReceiveMuHelperResult(ReceiveBuffer);
+				break;
 				}
 			}
 			break;
