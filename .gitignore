@@ -13,7 +13,6 @@ Source/GameServer/.vs/GameServer/v17/.suo
 *.res
 *.tlog
 *.pdb
-*.lib
 *.exp
 /Source/GameServer/Release
 Source/GetMainInfo/.vs/GetMainInfo/v17/.suo
